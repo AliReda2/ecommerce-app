@@ -22,12 +22,13 @@ export class AuthRegisterDto {
   @IsNotEmpty({ message: 'Password is required' })
   password: string;
 
-  @ApiProperty({ enum: ['ADMIN', 'TRADER'] })
+  @ApiProperty({ required: false })
+  @IsString({ message: 'address must be a string' })
   @IsOptional()
-  role?: UserRole;
-}
+  address?: string;
 
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  TRADER = 'TRADER',
+  @ApiProperty({ required: false })
+  @IsString({ message: 'phone must be a string' })
+  @IsOptional()
+  phone?: string;
 }
