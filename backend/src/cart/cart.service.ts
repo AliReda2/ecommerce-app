@@ -44,7 +44,12 @@ export class CartService {
     };
   }
 
-  async addToCart(userId: string, productId: string, quantity: number) {
+  async addToCart(
+    userId: string,
+    productId: string,
+    quantity: number,
+    productPrice: number,
+  ) {
     const existingCartItem = await this.prisma.cartItem.findFirst({
       where: { userId, productId },
     });
@@ -62,7 +67,7 @@ export class CartService {
     }
 
     const newCartItem = await this.prisma.cartItem.create({
-      data: { userId, productId, quantity },
+      data: { userId, productId, productPrice, quantity },
     });
 
     return {

@@ -57,9 +57,10 @@ model Product {
 }
 
 model CartItem {
-  id        String   @id @default(uuid())
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  quantity     Int      @default(1)
+  productPrice Float
+  createdAt    DateTime @default(now())
 
   userId    String
   productId String
