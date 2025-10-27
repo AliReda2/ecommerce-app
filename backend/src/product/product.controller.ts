@@ -34,6 +34,12 @@ export class ProductController {
     return this.productService.getProductById(id);
   }
 
+  @Get('category/:categoryId')
+  @ApiOperation({ summary: 'Get products by category ID' })
+  async getProductsByCategory(@Param('categoryId') categoryId: string) {
+    return this.productService.getProductsByCategory(categoryId);
+  }
+
   @Post()
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Create a new product' })
