@@ -40,7 +40,7 @@ export class CartController {
     description: 'Data for adding an item to the cart',
   })
   async addToCart(@GetUser() user: User, data: AddCartDto) {
-    return this.cartService.addToCart(user.id, data.productId, data.quantity);
+    return this.cartService.addToCart(user.id, data.productId,data.productPrice, data.quantity);
   }
 
   @Delete('remove')

@@ -11,6 +11,14 @@ export class AddCartDto {
   productId: string;
 
   @ApiProperty({
+    example: 29.99,
+    description: 'The price of the product to add to the cart',
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  productPrice: number;
+
+  @ApiProperty({
     example: 2,
     description: 'The quantity of the product to add to the cart',
   })
