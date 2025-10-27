@@ -1,17 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class CategoryService {
   constructor(private prisma: PrismaService) {}
 
   async getAllCategories() {
-    const categories = await this.prisma.category.findMany({});
+    const categories = await this.prisma.category.findMany();
 
-    if (categories.length == 0) {
-      throw new Error('No categories found');
+    if (categories.length === 0) {
+      throw new NotFoundException('No categories found');
     }
 
     return {
@@ -24,9 +29,11 @@ export class CategoryService {
     const category = await this.prisma.category.findUnique({
       where: { id: categoryId },
     });
+
     if (!category) {
-      throw new Error('Category not found');
+      throw new NotFoundException('Category not found');
     }
+
     return {
       data: category,
       msg: 'Category fetched successfully',
@@ -34,51 +41,64 @@ export class CategoryService {
   }
 
   async createCategory(data: CreateCategoryDto) {
-    const category = await this.prisma.category.findUnique({
+    const existingCategory = await this.prisma.category.findUnique({
       where: { name: data.name },
     });
-    if (category) {
-      throw new Error('Category with this name already exists');
+
+    if (existingCategory) {
+      throw new ConflictException('Category with this name already exists');
     }
+
     const newCategory = await this.prisma.category.create({
       data,
     });
+
     return {
       data: newCategory,
       msg: 'Category created successfully',
     };
   }
 
-  async deleteCategory(categoryId: string) {
-    const category = this.prisma.category.findUnique({
-      where: { id: categoryId },
-    });
-    if (!category) {
-      throw new Error('Category not found');
+  async updateCategory(categoryId: string, data: UpdateCategoryDto) {
+    try {
+      const updatedCategory = await this.prisma.category.update({
+        where: { id: categoryId },
+        data,
+      });
+
+      return {
+        data: updatedCategory,
+        msg: 'Category updated successfully',
+      };
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Category not found');
+      }
+      throw error;
     }
-    const deletedCategory = await this.prisma.category.delete({
-      where: { id: categoryId },
-    });
-    return {
-      data: deletedCategory,
-      msg: 'Category deleted successfully',
-    };
   }
 
-  async updateCategory(categoryId: string, data: UpdateCategoryDto) {
-    const category = this.prisma.category.findUnique({
-      where: { id: categoryId },
-    });
-    if (!category) {
-      throw new Error('Category not found');
+  async deleteCategory(categoryId: string) {
+    try {
+      const deletedCategory = await this.prisma.category.delete({
+        where: { id: categoryId },
+      });
+
+      return {
+        data: deletedCategory,
+        msg: 'Category deleted successfully',
+      };
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Category not found');
+      }
+      throw error;
     }
-    const updatedCategory = await this.prisma.category.update({
-      where: { id: categoryId },
-      data,
-    });
-    return {
-      data: updatedCategory,
-      msg: 'Category updated successfully',
-    };
   }
 }

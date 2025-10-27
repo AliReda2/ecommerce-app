@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
     });
 
     if (!dbUser) {
-      return { data: null, msg: 'User not found' };
+      throw new NotFoundException('User not found');
     }
 
     return {
@@ -32,9 +33,7 @@ export class UserService {
 
   async getAllUsers() {
     const users = await this.prisma.user.findMany({
-      where: {
-        role: 'CUSTOMER',
-      },
+      where: { role: 'CUSTOMER' },
       select: {
         id: true,
         firstName: true,
@@ -45,6 +44,10 @@ export class UserService {
         isActive: true,
       },
     });
+
+    if (users.length === 0) {
+      throw new NotFoundException('No users found');
+    }
 
     const data = users.map((u) => ({
       ...u,
@@ -58,26 +61,46 @@ export class UserService {
   }
 
   async banUser(userId: string) {
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: { isActive: false },
-    });
+    try {
+      const user = await this.prisma.user.update({
+        where: { id: userId },
+        data: { isActive: false },
+      });
 
-    return {
-      data: user,
-      msg: 'User banned successfully',
-    };
+      return {
+        data: user,
+        msg: 'User banned successfully',
+      };
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('User not found');
+      }
+      throw error;
+    }
   }
 
   async unbanUser(userId: string) {
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: { isActive: true },
-    });
+    try {
+      const user = await this.prisma.user.update({
+        where: { id: userId },
+        data: { isActive: true },
+      });
 
-    return {
-      data: user,
-      msg: 'User unbanned successfully',
-    };
+      return {
+        data: user,
+        msg: 'User unbanned successfully',
+      };
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('User not found');
+      }
+      throw error;
+    }
   }
 }
