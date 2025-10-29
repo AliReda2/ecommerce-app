@@ -21,14 +21,4 @@ export class AuthRegisterDto {
   @IsString({ message: 'Password must be a string' })
   @IsNotEmpty({ message: 'Password is required' })
   password: string;
-
-  @ApiProperty({ required: false })
-  @IsString({ message: 'address must be a string' })
-  @IsOptional()
-  address?: string;
-
-  @ApiProperty({ required: false })
-  @IsString({ message: 'phone must be a string' })
-  @IsOptional()
-  phone?: string;
 }
