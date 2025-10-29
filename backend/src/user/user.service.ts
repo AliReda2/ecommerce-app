@@ -15,9 +15,9 @@ export class UserService {
         firstName: true,
         lastName: true,
         email: true,
+        isActive: true,
         createdAt: true,
         updatedAt: true,
-        isActive: true,
       },
     });
 
