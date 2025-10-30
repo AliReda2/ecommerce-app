@@ -15,7 +15,6 @@ export function proxy(req: NextRequest) {
     if (!accessToken) {
       const redirectUrl = new URL("/", req.url);
       // optional: preserve return URL for after-login navigation
-      redirectUrl.searchParams.set("returnUrl", pathname + (search || ""));
       return NextResponse.redirect(redirectUrl);
     }
   }
