@@ -10,12 +10,17 @@ export default function AdminLayoutContent({
 }) {
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
+  const authChecked = useAppSelector((state) => state.auth.authChecked);
 
   useEffect(() => {
-    if (!user || user.role !== "ADMIN") {
+    // Wait until we've checked auth (hydration or refresh attempt)
+    if (authChecked && (!user || user.role !== "ADMIN")) {
       router.replace("/login");
     }
-  }, [user, router]);
+  }, [authChecked, user, router]);
+
+  // optional: show a loading state while auth is being checked
+  if (!authChecked) return null; // or a spinner component
 
   return <main className="flex-1 p-4">{children}</main>;
 }

@@ -4,6 +4,7 @@ import { fetchAllProducts } from "@/lib/features/productSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton"; // <-- adjust path if needed
+import Link from "next/link";
 
 export default function Product() {
   const dispatch = useAppDispatch();
@@ -55,7 +56,12 @@ export default function Product() {
 
   // Display message only if loading = false and products list is empty
   if (!isLoading && products.length === 0) {
-    return "NO Products To Display";
+    return (
+      <>
+      <h1>NO Products To Display</h1>
+      <Link href={"/admin"}>Go Back</Link>
+      </>
+    )
   }
 
   return (
