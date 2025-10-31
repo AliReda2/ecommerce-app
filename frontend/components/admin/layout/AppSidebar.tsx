@@ -33,29 +33,29 @@ const navItems: NavItem[] = [
   {
     icon: <CalenderIcon />,
     name: "Calendar",
-    path: "calendar",
+    path: "/admin/calendar",
   },
   {
     icon: <UserCircleIcon />,
     name: "User Profile",
-    path: "profile",
+    path: "/admin/profile",
   },
   {
     name: "Forms",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "form-elements", pro: false }],
+    subItems: [{ name: "Form Elements", path: "/admin/forms", pro: false }],
   },
   {
     name: "Tables",
     icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "basic-tables", pro: false }],
+    subItems: [{ name: "Basic Tables", path: "/admin/tables", pro: false }],
   },
   {
     name: "Pages",
     icon: <PageIcon />,
     subItems: [
-      { name: "Blank Page", path: "blank", pro: false },
-      { name: "404 Error", path: "error-404", pro: false },
+      { name: "Blank Page", path: "/admin/blank", pro: false },
+      { name: "404 Error", path: "/admin/error-404", pro: false },
     ],
   },
 ];

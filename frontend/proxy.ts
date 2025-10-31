@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function proxy(req: NextRequest) {
-  const { pathname, search } = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
   const adminPublic = ["/admin/login", "/admin/register"];
   if (adminPublic.some((p) => pathname.startsWith(p))) {
