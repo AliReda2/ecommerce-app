@@ -52,39 +52,32 @@ async function main() {
 
   // Create Products
   await Promise.all([
-    prisma.product.upsert({
-      where: {
-        name: 'Smartphone',
-      },
-      update: {},
-      create: {
+    prisma.product.create({
+      data: {
         name: 'Smartphone',
         description: 'A high-end smartphone with a great camera.',
         price: 699.99,
+        stock: 50,
         categoryId: category1.id,
       },
     }),
-    prisma.product.upsert({
-      where: {
-        name: 'Phone Charger',
-      },
-      update: {},
-      create: {
+    prisma.product.create({
+      data: {
         name: 'Phone Charger',
         description: 'A fast-charging USB-C phone charger.',
         price: 29.99,
+
+        stock: 50,
         categoryId: category1.id,
       },
     }),
-    prisma.product.upsert({
-      where: {
-        name: 'Science Fiction Novel',
-      },
-      update: {},
-      create: {
+    prisma.product.create({
+      data: {
         name: 'Science Fiction Novel',
         description: 'An exciting science fiction novel set in space.',
         price: 19.99,
+
+        stock: 50,
         categoryId: category2.id,
       },
     }),
