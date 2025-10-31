@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -89,26 +94,45 @@ export class ProductService {
   ): Promise<string | null> {
     if (!file) return null;
 
-    // Convert incoming to webp
-    const webpBuffer = await sharp(file.buffer)
-      .webp({ quality: 80 })
-      .toBuffer();
+    try {
+      // Convert file to webp format
+      const webpBuffer = await sharp(file.buffer)
+        .webp({ quality: 80 })
+        .toBuffer();
 
-    const filePath = `products/${Date.now()}.webp`;
+      const filePath = `products/${Date.now()}.webp`;
 
-    const { error } = await this.supabase.storage
-      .from('products')
-      .upload(filePath, webpBuffer, {
-        contentType: 'image/webp',
-      });
+      const { error } = await this.supabase.storage
+        .from('products')
+        .upload(filePath, webpBuffer, {
+          contentType: 'image/webp',
+        });
 
-    if (error) throw new Error(error.message);
+      if (error) {
+        console.error('❌ Supabase upload error:', error); // <-- detailed logging
+        throw new BadRequestException(
+          `Failed to upload file: ${error.message}`,
+        );
+      }
 
-    const {
-      data: { publicUrl },
-    } = this.supabase.storage.from('products').getPublicUrl(filePath);
+      const { data, error: urlError } = this.supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
 
-    return publicUrl;
+      if (urlError) {
+        console.error('❌ Supabase getPublicUrl error:', urlError);
+        throw new BadRequestException(
+          `Failed to generate public URL: ${urlError.message}`,
+        );
+      }
+
+      return data.publicUrl;
+    } catch (err: any) {
+      console.error('❌ Unexpected upload error:', err); // <-- logs sharp errors, network errors, etc.
+      throw new InternalServerErrorException(
+        err?.message || 'Unexpected error occurred while uploading image.',
+      );
+    }
   }
 
   /** CREATE */
