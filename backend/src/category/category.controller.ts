@@ -17,7 +17,6 @@ import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 
 @ApiBearerAuth('access-token')
-@UseGuards(AtGuard, RolesGuard)
 @Controller('category')
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
@@ -35,6 +34,7 @@ export class CategoryController {
   }
 
   @Post()
+  @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Create a new category' })
   @ApiBody({
@@ -47,6 +47,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Update an existing category' })
   @ApiBody({
@@ -62,6 +63,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Delete a category' })
   async deleteCategory(@Param('id') id: string) {

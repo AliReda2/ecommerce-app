@@ -16,7 +16,6 @@ import { RemoveCartDto } from './dto/remove-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 
 @ApiBearerAuth('access-token')
-@UseGuards(AtGuard)
 @Controller('cart')
 export class CartController {
   constructor(private cartService: CartService) {}
