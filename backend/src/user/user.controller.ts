@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { AtGuard } from 'src/auth/guard';
 import { GetUser } from '../auth/decorator';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
@@ -6,6 +6,7 @@ import { UserService } from './user.service';
 import type { User } from '@prisma/client';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiBearerAuth('access-token')
 @UseGuards(AtGuard, RolesGuard)
@@ -17,6 +18,12 @@ export class UserController {
   @ApiOperation({ summary: 'Get current user' })
   async getMe(@GetUser() user: User) {
     return this.userService.getCurrentUser(user);
+  }
+
+  @Patch('me')
+  @ApiOperation({ summary: 'Update current user' })
+  async updateMe(@GetUser('id') userId: string, @Body() data: UpdateUserDto) {
+    return this.userService.updateCurrentUser(userId, data);
   }
 
   @Roles('ADMIN')
