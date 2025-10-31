@@ -6,6 +6,6 @@ config();
 
 export default defineConfig({
     migrations: {
-        seed: 'ts-node prisma/seed.ts',
+        seed: 'node prisma/seed.js',
     },
 });
