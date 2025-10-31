@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -15,9 +16,8 @@ export class UserService {
         firstName: true,
         lastName: true,
         email: true,
-        isActive: true,
-        createdAt: true,
-        updatedAt: true,
+        address: true,
+        phone: true,
       },
     });
 
@@ -28,6 +28,34 @@ export class UserService {
     return {
       data: { ...dbUser, fullName: `${dbUser.firstName} ${dbUser.lastName}` },
       msg: 'User fetched successfully',
+    };
+  }
+
+  async updateCurrentUser(userId: string, data: UpdateUserDto) {
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(data.firstName && { firstName: data.firstName }),
+        ...(data.lastName && { lastName: data.lastName }),
+        ...(data.address && { address: data.address }),
+        ...(data.phone && { phone: data.phone }),
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        address: true,
+        phone: true,
+      },
+    });
+
+    return {
+      data: {
+        ...updatedUser,
+        fullName: `${updatedUser.firstName} ${updatedUser.lastName}`,
+      },
+      msg: 'User updated successfully',
     };
   }
 
