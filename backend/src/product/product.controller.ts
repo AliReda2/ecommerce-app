@@ -17,7 +17,6 @@ import { Roles } from 'src/roles/roles.decorator';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @ApiBearerAuth('access-token')
-@UseGuards(AtGuard, RolesGuard)
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
@@ -41,6 +40,7 @@ export class ProductController {
   }
 
   @Post()
+  @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Create a new product' })
   @ApiBody({
@@ -53,6 +53,7 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Update an existing product' })
   @ApiBody({
@@ -65,6 +66,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Delete a product' })
   async deleteProduct(@Param('id') id: string) {
