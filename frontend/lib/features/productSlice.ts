@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  createProductDto,
   Product,
   ProductResponse,
   SingleProductResponse,
@@ -54,7 +55,7 @@ export const fetchProductById = createAsyncThunk<
 
 export const createProduct = createAsyncThunk<
   Product,
-  Partial<Product>,
+  createProductDto,
   { rejectValue: string }
 >("product/create", async (productData, { rejectWithValue }) => {
   try {
