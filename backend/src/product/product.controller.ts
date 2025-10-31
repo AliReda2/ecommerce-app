@@ -54,19 +54,7 @@ export class ProductController {
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        price: { type: 'number' },
-        stock: { type: 'number' },
-        description: { type: 'string' },
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
+    type: CreateProductDto,
   })
   async createProduct(
     @UploadedFile() file: Express.Multer.File,
@@ -81,19 +69,7 @@ export class ProductController {
   @ApiOperation({ summary: 'Update an existing product' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string', example: 'Product Name' },
-        description: { type: 'string', example: 'Product Description' },
-        price: { type: 'number', example: 19.99 },
-        stock: { type: 'number', example: 3 },
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
+    type: UpdateProductDto,
   })
   @UseInterceptors(FileInterceptor('image'))
   async updateProduct(
