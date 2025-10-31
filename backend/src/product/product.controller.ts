@@ -6,15 +6,23 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { AtGuard } from 'src/auth/guard';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Roles } from 'src/roles/roles.decorator';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth('access-token')
 @Controller('product')
@@ -43,26 +51,57 @@ export class ProductController {
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Create a new product' })
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
-    type: CreateProductDto,
-    required: true,
-    description: 'Data for creating a new product',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        price: { type: 'number' },
+        stock: { type: 'number' },
+        description: { type: 'string' },
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
   })
-  async createProduct(@Body() data: CreateProductDto) {
-    return this.productService.createProduct(data);
+  async createProduct(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() data: CreateProductDto,
+  ) {
+    return this.productService.createProduct(data, file);
   }
 
   @Patch(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Update an existing product' })
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
-    type: UpdateProductDto,
-    required: true,
-    description: 'Data for updating the product',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'Product Name' },
+        description: { type: 'string', example: 'Product Description' },
+        price: { type: 'number', example: 19.99 },
+        stock: { type: 'number', example: 3 },
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
   })
-  async updateProduct(@Param('id') id: string, @Body() data: UpdateProductDto) {
-    return this.productService.updateProduct(id, data);
+  @UseInterceptors(FileInterceptor('image'))
+  async updateProduct(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() data: UpdateProductDto,
+  ) {
+    return this.productService.updateProduct(id, data, file);
   }
 
   @Delete(':id')
