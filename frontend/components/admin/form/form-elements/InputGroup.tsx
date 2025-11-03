@@ -1,8 +1,10 @@
+'use client'
+
 import ComponentCard from "../../common/ComponentCard";
 import Label from "../Label";
 import Input from "../input/InputField";
-import { EnvelopeIcon } from "../../../icons";
 import PhoneInput from "../group-input/PhoneInput";
+import { EnvelopeIcon } from "@/icons";
 
 export default function InputGroup() {
   const countries = [

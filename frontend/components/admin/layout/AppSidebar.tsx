@@ -3,12 +3,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSidebar } from "../context/SidebarContext";
 import {
   GridIcon,
-  CalenderIcon,
   UserCircleIcon,
   ListIcon,
   TableIcon,
   PageIcon,
-  PieChartIcon,
   BoxCubeIcon,
   PlugInIcon,
   ChevronDownIcon,
@@ -31,10 +29,14 @@ const navItems: NavItem[] = [
     path: "/admin",
   },
   {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/admin/calendar",
+    name: "Products",
+    icon: <PageIcon />,
+    subItems: [
+      { name: "Products", path: "/admin/products", pro: false },
+      { name: "Create Product", path: "/admin/products", pro: false },
+    ],
   },
+
   {
     icon: <UserCircleIcon />,
     name: "User Profile",
@@ -53,22 +55,11 @@ const navItems: NavItem[] = [
   {
     name: "Pages",
     icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/admin/blank", pro: false },
-      { name: "404 Error", path: "/admin/error-404", pro: false },
-    ],
+    subItems: [{ name: "Blank Page", path: "/admin/blank", pro: false }],
   },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "line-chart", pro: false },
-      { name: "Bar Chart", path: "bar-chart", pro: false },
-    ],
-  },
   {
     icon: <BoxCubeIcon />,
     name: "UI Elements",

@@ -55,13 +55,18 @@ export const fetchProductById = createAsyncThunk<
 
 export const createProduct = createAsyncThunk<
   Product,
-  createProductDto,
+  FormData,
   { rejectValue: string }
->("product/create", async (productData, { rejectWithValue }) => {
+>("product/create", async (formData, { rejectWithValue }) => {
   try {
     const response = await api.post<SingleProductResponse>(
       "/product",
-      productData
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data.data;
   } catch (err: any) {

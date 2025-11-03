@@ -16,7 +16,6 @@ import { AtGuard } from 'src/auth/guard';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 
-@ApiBearerAuth('access-token')
 @Controller('category')
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
@@ -36,6 +35,7 @@ export class CategoryController {
   @Post()
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create a new category' })
   @ApiBody({
     type: CreateCategoryDto,
@@ -49,6 +49,7 @@ export class CategoryController {
   @Patch(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an existing category' })
   @ApiBody({
     type: UpdateCategoryDto,
@@ -65,6 +66,7 @@ export class CategoryController {
   @Delete(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Delete a category' })
   async deleteCategory(@Param('id') id: string) {
     return this.categoryService.deleteCategory(id);

@@ -24,7 +24,6 @@ import { Roles } from 'src/roles/roles.decorator';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@ApiBearerAuth('access-token')
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
@@ -50,6 +49,7 @@ export class ProductController {
   @Post()
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create a new product' })
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
@@ -66,6 +66,7 @@ export class ProductController {
   @Patch(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an existing product' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -83,6 +84,7 @@ export class ProductController {
   @Delete(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Delete a product' })
   async deleteProduct(@Param('id') id: string) {
     return this.productService.deleteProduct(id);

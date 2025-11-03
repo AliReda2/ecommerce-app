@@ -1,92 +1,24 @@
-"use client";
-
-import { createProduct, fetchAllProducts } from "@/lib/features/productSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton"; // <-- adjust path if needed
 import Link from "next/link";
+import ComponentCard from "@/components/admin/common/ComponentCard";
+import PageBreadcrumb from "@/components/admin/common/PageBreadCrumb";
+import Badge from "@/components/admin/ui/badge/Badge";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@/components/admin/ui/table";
 
-export default function Product() {
-  const dispatch = useAppDispatch();
-  const { isLoading, error, products } = useAppSelector(
-    (state) => state.product
-  );
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
-
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(0);
-  const [stock, setStock] = useState(0);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Create FormData if you want to send image
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("category", category);
-    formData.append("description", description);
-    formData.append("price", price.toString());
-    formData.append("stock", stock.toString());
-    if (imageFile) formData.append("image", imageFile);
-
-    // Dispatch createProduct thunk
-    await dispatch(createProduct(formData));
-
-    // Reset form
-    setName("");
-    setCategory("");
-    setDescription("");
-    setPrice(0);
-    setStock(0);
-    setImageFile(null);
-  };
-
-  // Show skeleton while loading
-  if (isLoading) {
-    return (
-      <table className="w-full border-collapse">
-        <tbody>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <tr key={index}>
-              <td>
-                <Skeleton className="h-6 w-32" />
-              </td>
-              <td>
-                <Skeleton className="h-6 w-24" />
-              </td>
-              <td>
-                <Skeleton className="h-6 w-48" />
-              </td>
-              <td>
-                <Skeleton className="h-6 w-24" />
-              </td>
-              <td>
-                <Skeleton className="h-6 w-16" />
-              </td>
-              <td>
-                <Skeleton className="h-6 w-16" />
-              </td>
-              <td>
-                <Skeleton className="h-6 w-32" />
-              </td>
-              <td>
-                <Skeleton className="h-6 w-32" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  }
+export default async function Product() {
+  const response = await fetch(`${BASE_URL}/product`);
+  const {data} = await response.json();
 
   // Display message only if loading = false and products list is empty
-  if (!isLoading && products.length === 0) {
+  if (data.length === 0) {
     return (
       <>
         <h1>NO Products To Display</h1>
@@ -97,84 +29,97 @@ export default function Product() {
 
   return (
     <>
-      <table className="w-full border-collapse">
-        <thead>
-          <th>name</th>
-          <th>category</th>
-          <th>description</th>
-          <th>imageUrl</th>
-          <th>price</th>
-          <th>stock</th>
-          <th>createdAt</th>
-          <th>updatedAt</th>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td>{product.name}</td>
-              <td>{product.category}</td>
-              <td>{product.description}</td>
-              <td>{product.imageUrl}</td>
-              <td>{product.price}</td>
-              <td>{product.stock}</td>
-              <td>{new Date(product.updatedAt).toLocaleString()}</td>
-              <td>{new Date(product.createdAt).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <PageBreadcrumb pageTitle="Basic Tables" />
+      <div className="space-y-6">
+        <ComponentCard>
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
+            <div className="max-w-full overflow-x-auto">
+              <div className="min-w-[1102px]">
+                <Table>
+                  {/* Table Header */}
+                  <TableHeader className="border-b border-gray-100 dark:border-white/5">
+                    <TableRow>
+                      <TableCell
+                        isHeader
+                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                      >
+                        Product
+                      </TableCell>
+                      <TableCell
+                        isHeader
+                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                      >
+                        Category
+                      </TableCell>
+                      <TableCell
+                        isHeader
+                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                      >
+                        Stock
+                      </TableCell>
+                      <TableCell
+                        isHeader
+                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                      >
+                        Price
+                      </TableCell>
+                      <TableCell
+                        isHeader
+                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                      >
+                        Budget
+                      </TableCell>
+                    </TableRow>
+                  </TableHeader>
 
-      <h2 className="mt-8 text-xl font-bold">Create New Product</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2 max-w-md">
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          className="border p-2"
-          required
-        />
-        <input
-          type="number"
-          placeholder="Stock"
-          value={stock}
-          onChange={(e) => setStock(Number(e.target.value))}
-          className="border p-2"
-          required
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-          className="border p-2"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 mt-2">
-          Create Product
-        </button>
-      </form>
+                  {/* Table Body */}
+                  <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
+                    {data &&
+                      data.map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell className="px-5 py-4 sm:px-6 text-start">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 overflow-hidden rounded-full">
+                                <img
+                                  width={40}
+                                  height={40}
+                                  src={`${product.imageUrl}`}
+                                  alt={product.name}
+                                />
+                              </div>
+                              <div>
+                                <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                  {product.name}
+                                </span>
+                                <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+                                  {product.description}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            {product.category ?? 'null'}
+                          </TableCell>
+                          <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            <Badge
+                              size="sm"
+                              color={product.stock === 0 ? "warning" : "light"}
+                            >
+                              {product.stock}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                            {product.price}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        </ComponentCard>
+      </div>
     </>
   );
 }
