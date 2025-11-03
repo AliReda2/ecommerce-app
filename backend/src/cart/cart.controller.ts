@@ -1,22 +1,16 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { GetUser } from 'src/auth/decorator';
 import type { User } from '@prisma/client';
 import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
-import { AtGuard } from 'src/auth/guard';
 import { AddCartDto } from './dto/add-cart.dto';
 import { RemoveCartDto } from './dto/remove-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
+import { AtGuard } from 'src/auth/guard';
 
-@ApiBearerAuth('access-token')
 @Controller('cart')
+@ApiBearerAuth('access-token')
+@UseGuards(AtGuard)
 export class CartController {
   constructor(private cartService: CartService) {}
 
@@ -39,7 +33,12 @@ export class CartController {
     description: 'Data for adding an item to the cart',
   })
   async addToCart(@GetUser() user: User, data: AddCartDto) {
-    return this.cartService.addToCart(user.id, data.productId,data.productPrice, data.quantity);
+    return this.cartService.addToCart(
+      user.id,
+      data.productId,
+      data.productPrice,
+      data.quantity,
+    );
   }
 
   @Delete('remove')
