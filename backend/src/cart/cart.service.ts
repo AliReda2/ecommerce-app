@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { AddCartDto } from './dto/add-cart.dto';
 
 @Injectable()
 export class CartService {
@@ -44,20 +45,15 @@ export class CartService {
     };
   }
 
-  async addToCart(
-    userId: string,
-    productId: string,
-    quantity: number,
-    productPrice: number,
-  ) {
+  async addToCart(userId: string, data: AddCartDto) {
     const existingCartItem = await this.prisma.cartItem.findFirst({
-      where: { userId, productId },
+      where: { userId, productId: data.productId },
     });
 
     if (existingCartItem) {
       const updatedCartItem = await this.prisma.cartItem.update({
         where: { id: existingCartItem.id },
-        data: { quantity: existingCartItem.quantity + quantity },
+        data: { quantity: existingCartItem.quantity + data.quantity },
       });
 
       return {
@@ -67,7 +63,12 @@ export class CartService {
     }
 
     const newCartItem = await this.prisma.cartItem.create({
-      data: { userId, productId, productPrice, quantity },
+      data: {
+        userId,
+        productId: data.productId,
+        productPrice: data.productPrice,
+        quantity: data.quantity,
+      },
     });
 
     return {
