@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 
 export class AddCartDto {
   @ApiProperty({
     example: 'prod_12345',
     description: 'The ID of the product to add to the cart',
   })
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   productId: string;
 

@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CartService } from './cart.service';
 import { GetUser } from 'src/auth/decorator';
 import type { User } from '@prisma/client';
@@ -32,13 +40,8 @@ export class CartController {
     required: true,
     description: 'Data for adding an item to the cart',
   })
-  async addToCart(@GetUser() user: User, data: AddCartDto) {
-    return this.cartService.addToCart(
-      user.id,
-      data.productId,
-      data.productPrice,
-      data.quantity,
-    );
+  async addToCart(@GetUser() user: User, @Body() data: AddCartDto) {
+    return this.cartService.addToCart(user.id, data);
   }
 
   @Delete('remove')
@@ -48,7 +51,7 @@ export class CartController {
     required: true,
     description: 'Data for removing an item from the cart',
   })
-  async removeFromCart(@GetUser() user: User, data: RemoveCartDto) {
+  async removeFromCart(@GetUser() user: User, @Body() data: RemoveCartDto) {
     return this.cartService.removeFromCart(user.id, data.cartItemId);
   }
 
@@ -59,7 +62,7 @@ export class CartController {
     required: true,
     description: 'Data for updating an item quantity in the cart',
   })
-  async updateCartItem(@GetUser() user: User, data: UpdateCartDto) {
+  async updateCartItem(@GetUser() user: User, @Body() data: UpdateCartDto) {
     return this.cartService.updateCartItemQuantity(
       user.id,
       data.cartItemId,
