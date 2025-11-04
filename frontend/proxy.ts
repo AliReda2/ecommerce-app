@@ -12,7 +12,7 @@ export function proxy(req: NextRequest) {
   if (pathname.startsWith("/admin")) {
     const accessToken = req.cookies.get("access_token")?.value;
     if (!accessToken) {
-      const redirectUrl = new URL("/login", req.url);
+      const redirectUrl = new URL("/admin-auth/login", req.url);
       return NextResponse.redirect(redirectUrl);
     }
   }
