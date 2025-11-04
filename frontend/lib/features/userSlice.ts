@@ -48,7 +48,7 @@ export const banUser = createAsyncThunk<void, string, { rejectValue: string }>(
   "user/ban",
   async (userId, { rejectWithValue }) => {
     try {
-      await api.get(`/users/ban/${userId}`);
+      await api.post(`/users/ban/${userId}`);
     } catch (err: any) {
       return rejectWithValue(
         err.response?.data?.message || "Banning user failed"
@@ -63,7 +63,7 @@ export const unbanUser = createAsyncThunk<
   { rejectValue: string }
 >("user/unban", async (userId, { rejectWithValue }) => {
   try {
-    await api.get(`/users/unban/${userId}`);
+    await api.post(`/users/unban/${userId}`);
   } catch (err: any) {
     return rejectWithValue(
       err.response?.data?.message || "Unbanning user failed"

@@ -3,6 +3,7 @@
 import { banUser, unbanUser, fetchAllUsers } from "@/lib/features/userSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 interface UpdateUserStatusProps {
   userId: string;
@@ -16,6 +17,7 @@ const UpdateUserStatus = ({
   isBanned,
 }: UpdateUserStatusProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleUpdateStatus = async () => {
     const action = isBanned ? "unban" : "ban";
@@ -31,7 +33,7 @@ const UpdateUserStatus = ({
         await dispatch(banUser(userId)).unwrap();
       }
 
-      await dispatch(fetchAllUsers());
+      router.refresh(); // 👈 Forces server component to re-fetch data
     } catch (err) {
       console.error(`Failed to ${action} user:`, err);
       alert(`Failed to ${action} user. Please try again.`);

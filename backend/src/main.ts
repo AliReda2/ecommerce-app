@@ -18,18 +18,15 @@ async function bootstrap() {
     .setTitle('E-Commerce API')
     .setDescription('API documentation for the E-Commerce application')
     .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        in: 'header',
-      },
-      'access-token',
-    )
+    .addCookieAuth('access_token', {
+      type: 'apiKey',
+      in: 'cookie',
+    })
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

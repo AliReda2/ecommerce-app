@@ -38,7 +38,7 @@ const UsersTable = ({ data }: { data: User[] }) => {
                 <UpdateUserStatus
                   userEmail={user.email}
                   userId={user.id}
-                  isBanned={user.isActive}
+                  isBanned={!user.isActive}
                 />
               </TableCell>
             </TableRow>

@@ -4,7 +4,7 @@ import * as argon from 'argon2';
 
 async function main() {
   // Create Users
-  const [user1, user2] = await Promise.all([
+  await Promise.all([
     prisma.user.upsert({
       where: {
         email: 'admin@example.com',
@@ -32,8 +32,7 @@ async function main() {
     }),
   ]);
 
-  // Create Categories
-  const [category1, category2] = await Promise.all([
+ await Promise.all([
     prisma.category.upsert({
       where: {
         name: 'Electronics',
@@ -47,39 +46,6 @@ async function main() {
       },
       update: {},
       create: { name: 'Books' },
-    }),
-  ]);
-
-  // Create Products
-  await Promise.all([
-    prisma.product.create({
-      data: {
-        name: 'Smartphone',
-        description: 'A high-end smartphone with a great camera.',
-        price: 699.99,
-        stock: 50,
-        categoryId: category1.id,
-      },
-    }),
-    prisma.product.create({
-      data: {
-        name: 'Phone Charger',
-        description: 'A fast-charging USB-C phone charger.',
-        price: 29.99,
-
-        stock: 50,
-        categoryId: category1.id,
-      },
-    }),
-    prisma.product.create({
-      data: {
-        name: 'Science Fiction Novel',
-        description: 'An exciting science fiction novel set in space.',
-        price: 19.99,
-
-        stock: 50,
-        categoryId: category2.id,
-      },
     }),
   ]);
 }
