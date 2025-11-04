@@ -42,20 +42,11 @@ const navItems: NavItem[] = [
     name: "User Profile",
     path: "/admin/profile",
   },
+
   {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/admin/forms", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/admin/tables", pro: false }],
-  },
-  {
-    name: "Pages",
+    name: "Users",
     icon: <PageIcon />,
-    subItems: [{ name: "Blank Page", path: "/admin/blank", pro: false }],
+    subItems: [{ name: "Users Page", path: "/admin/users", pro: false }],
   },
 ];
 

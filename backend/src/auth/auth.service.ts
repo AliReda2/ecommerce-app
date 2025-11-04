@@ -80,6 +80,7 @@ export class AuthService {
     const tokens = await this.signToken(user.id, user.role, fullName);
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
+
     // Return the tokens
     return tokens;
   }

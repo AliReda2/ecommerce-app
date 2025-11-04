@@ -25,7 +25,7 @@ export default function SelectInputs() {
     { value: "5", text: "Option 5", selected: false },
   ];
   return (
-    <ComponentCard title="Select Inputs">
+    <ComponentCard>
       <div className="space-y-6">
         <div>
           <Label>Select Input</Label>
