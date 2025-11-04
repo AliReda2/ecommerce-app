@@ -43,19 +43,9 @@ const navItems: NavItem[] = [
     path: "/admin/profile",
   },
   {
-    name: "Forms",
+    name: "Users Page",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/admin/forms", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/admin/tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [{ name: "Blank Page", path: "/admin/blank", pro: false }],
+    subItems: [{ name: "users", path: "/admin/users", pro: false }],
   },
 ];
 
@@ -70,14 +60,6 @@ const othersItems: NavItem[] = [
       { name: "Buttons", path: "buttons", pro: false },
       { name: "Images", path: "images", pro: false },
       { name: "Videos", path: "videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "signin", pro: false },
-      { name: "Sign Up", path: "signup", pro: false },
     ],
   },
 ];

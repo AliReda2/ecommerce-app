@@ -1,8 +1,8 @@
 "use client";
 
-import { Modal } from "../ui/modal";
-import Input from "../form/input/InputField";
-import Label from "../form/Label";
+import { Modal } from "../../../../components/admin/ui/modal";
+import Input from "../../../../components/admin/form/input/InputField";
+import Label from "../../../../components/admin/form/Label";
 import { useModal } from "@/hooks/useModal";
 import { Button } from "@/components/ui/button";
 
