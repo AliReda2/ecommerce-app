@@ -16,7 +16,7 @@ import Image from "next/image";
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default async function Product() {
-  const response = await fetch(`${BASE_URL}/users`, { cache: "no-store" });
+  const response = await fetch(`${BASE_URL}/product`);
   const { data } = await response.json();
 
   // if (data.length === 0) {
