@@ -1,23 +1,61 @@
+"use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout } from "@/lib/features/authSlice";
+import type { RootState, AppDispatch } from "@/lib/store";
+import { showSuccess, showError } from "@/lib/alert";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
-import Button from "../ui/button/Button";
 import { ChevronLeftIcon, EyeIcon, EyeCloseIcon } from "@/icons";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function SignInForm() {
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const { isLoading } = useSelector((state: RootState) => state.auth);
+
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const result = await dispatch(
+        login({ email: formData.email, password: formData.password })
+      ).unwrap();
+
+      if (result.user.role !== "ADMIN") {
+        showError("Access denied. Admin privileges required.");
+        await dispatch(logout());
+        return;
+      }
+
+      showSuccess("Logged in successfully!");
+      router.replace("/admin");
+    } catch (err: any) {
+      showError(err || "Failed to login");
+    }
+  };
   return (
     <div className="flex flex-col flex-1">
       <div className="w-full max-w-md pt-10 mx-auto">
         <Link
-          href="/admin"
+          href="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />
-          Back to dashboard
+          Back to Store
         </Link>
       </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
@@ -83,13 +121,19 @@ export default function SignInForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div>
                   <Label>
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" />
+                  <Input
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="info@gmail.com"
+                  />
                 </div>
                 <div>
                   <Label>
@@ -97,7 +141,10 @@ export default function SignInForm() {
                   </Label>
                   <div className="relative">
                     <Input
+                      name="password"
                       type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
                       placeholder="Enter your password"
                     />
                     <span
@@ -127,8 +174,8 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
-                    Sign in
+                  <Button type="submit" className="w-full" size="sm" disabled={isLoading}>
+                    {isLoading ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>
               </div>

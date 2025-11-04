@@ -1,10 +1,14 @@
-import React from "react";
+import React, { TextareaHTMLAttributes } from "react";
 
-interface TextareaProps {
+interface TextareaProps
+  extends Omit<
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    "onChange" | "value" | "rows" | "disabled" | "className" | "placeholder"
+  > {
   placeholder?: string; // Placeholder text
   rows?: number; // Number of rows
   value?: string; // Current value
-  onChange?: (value: string) => void; // Change handler
+  onChange?: (value: string) => void; // Change handler (string-only for convenience)
   className?: string; // Additional CSS classes
   disabled?: boolean; // Disabled state
   error?: boolean; // Error state
@@ -20,6 +24,7 @@ const TextArea: React.FC<TextareaProps> = ({
   disabled = false, // Disabled state
   error = false, // Error state
   hint = "", // Default hint text
+  ...rest
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) {
@@ -46,6 +51,7 @@ const TextArea: React.FC<TextareaProps> = ({
         onChange={handleChange}
         disabled={disabled}
         className={textareaClasses}
+        {...rest}
       />
       {hint && (
         <p

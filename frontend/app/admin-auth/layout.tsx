@@ -3,12 +3,15 @@
 import GridShape from "@/components/admin/common/GridShape";
 import ThemeTogglerTwo from "@/components/admin/common/ThemeTogglerTwo";
 import { ThemeProvider } from "@/components/admin/context/ThemeContext";
+import { Provider } from "react-redux";
+import { store } from "@/lib/store";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
       <div className="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
         <div className="relative flex flex-col justify-center w-full h-screen lg:flex-row dark:bg-gray-900 sm:p-0">
           {children}
@@ -19,14 +22,14 @@ export default function layout({ children }: { children: React.ReactNode }) {
               <div className="flex flex-col items-center max-w-xs">
                 <Link href="/">
                   <Image
-                    src="/images/logo/auth-logo.svg"
+                    src="/images/icon.png"
                     width={231}
                     height={48}
                     alt="Logo"
                   />
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Free and Open-Source Tailwind CSS Admin Dashboard Template
+                  This Page Is Only For Admins
                 </p>
               </div>
             </div>
@@ -37,6 +40,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }

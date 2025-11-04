@@ -1,15 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-
+  app.use(cookieParser());
   app.enableCors({
-    origin: '*',
+    origin: process.env.CLIENT_URL || 'http://localhost:3001',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   const config = new DocumentBuilder()
@@ -29,7 +31,5 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
   await app.listen(process.env.PORT ?? 3000);
-
-  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

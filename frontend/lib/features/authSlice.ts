@@ -1,26 +1,17 @@
 // store/authSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { jwtDecode } from "jwt-decode";
 import { api } from "@/api/axios";
 import type { RegisterUser, UserRole } from "../types";
 import { showError } from "../alert";
-
-interface JwtPayload {
-  sub: string;
-  role: UserRole;
-  fullName: string;
-  iat: number;
-  exp: number;
-}
 
 interface AuthUser {
   id: string;
   role: UserRole;
   fullName: string;
+  email: string;
 }
 
 interface AuthState {
-  access_token: string | null;
   user: AuthUser | null;
   isLoading: boolean;
   error: string | null;
@@ -29,7 +20,6 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  access_token: null,
   user: null,
   isLoading: false,
   error: null,
@@ -37,81 +27,34 @@ const initialState: AuthState = {
   authChecked: false,
 };
 
-// Helper function to extract user data from token (throws if invalid)
-const getUserFromToken = (token: string): AuthUser => {
-  try {
-    const decoded = jwtDecode<JwtPayload>(token);
-    if (!decoded?.sub) throw new Error("Invalid token payload");
-    return {
-      id: decoded.sub,
-      role: decoded.role,
-      fullName: decoded.fullName,
-    };
-  } catch (err: any) {
-    throw new Error("Failed to decode token", err);
-  }
-};
-
 // Thunks
 export const checkAuth = createAsyncThunk<
-  { access_token: string; user: AuthUser },
+  { user: AuthUser },
   void,
   { rejectValue: string }
 >("auth/checkAuth", async (_, { rejectWithValue }) => {
-  const access_token = localStorage.getItem("access_token");
-  const refresh_token = localStorage.getItem("refresh_token");
-  if (!access_token) return rejectWithValue("No token");
-
   try {
-    const currentTime = Math.floor(Date.now() / 1000);
-    let token = access_token;
-
-    // Check token expiration
-    if (jwtDecode<JwtPayload>(access_token).exp < currentTime) {
-      if (!refresh_token) throw new Error("No refresh token");
-
-      const { data } = await api.post(
-        "/auth/refresh",
-        {},
-        { headers: { Authorization: `Bearer ${refresh_token}` } }
-      );
-
-      token = data.access_token;
-      localStorage.setItem("access_token", token);
-      if (data.refresh_token) {
-        localStorage.setItem("refresh_token", data.refresh_token);
-      }
-    }
-
-    return {
-      access_token: token,
-      user: getUserFromToken(token),
-    };
+    // Verify authentication by making a request to get current user
+    console.log("Checking auth via /auth/me...");
+    const { data } = await api.get("/auth/me");
+    console.log("Auth check successful:", data);
+    return { user: data };
   } catch (err: any) {
-    showError(err?.message || "Failed to check authentication");
-    // remove only auth keys
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    return rejectWithValue(err?.message || "Token invalid");
+    console.error("Auth check failed:", err?.response?.data || err.message);
+    return rejectWithValue(err?.response?.data?.message || "Not authenticated");
   }
 });
 
 export const login = createAsyncThunk<
-  { access_token: string; user: AuthUser },
+  { user: AuthUser },
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    const { data } = await api.post("/auth/login", credentials);
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-    // If you must set a cookie, prefer server-set httpOnly cookie for refresh token.
-    document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; samesite=lax`;
-
-    return {
-      access_token: data.access_token,
-      user: getUserFromToken(data.access_token),
-    };
+    await api.post("/auth/login", credentials);
+    // Cookies are set by the server, now fetch user data
+    const { data } = await api.get("/auth/me");
+    return { user: data };
   } catch (err: any) {
     showError(err?.message || "Failed to login");
     return rejectWithValue(
@@ -125,12 +68,7 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
   async (_, { rejectWithValue }) => {
     try {
       await api.post("/auth/logout");
-      // remove only the auth keys
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      // expire the cookie if you set it
-      document.cookie =
-        "access_token=; path=/; max-age=0; samesite=lax; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      // Cookies are cleared by the server
     } catch (err: any) {
       showError(err?.message || "Failed to logout");
       return rejectWithValue(
@@ -141,20 +79,15 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
 );
 
 export const register = createAsyncThunk<
-  { access_token: string; user: AuthUser },
+  { user: AuthUser },
   RegisterUser,
   { rejectValue: string }
 >("auth/register", async (userData, { rejectWithValue }) => {
   try {
-    const { data } = await api.post("/auth/register", userData);
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-    document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; samesite=lax`;
-
-    return {
-      access_token: data.access_token,
-      user: getUserFromToken(data.access_token),
-    };
+    await api.post("/auth/register", userData);
+    // Cookies are set by the server, now fetch user data
+    const { data } = await api.get("/auth/me");
+    return { user: data };
   } catch (err: any) {
     showError(err?.message || "Failed to register");
     return rejectWithValue(
@@ -187,7 +120,6 @@ const authSlice = createSlice({
       .addCase(login.pending, handlePending)
       .addCase(login.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.access_token = payload.access_token;
         state.user = payload.user;
         state.authChecked = true;
       })
@@ -198,13 +130,11 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.access_token = payload.access_token;
         state.user = payload.user;
         state.authChecked = true;
       })
       .addCase(checkAuth.rejected, (state) => {
         state.isLoading = false;
-        state.access_token = null;
         state.user = null;
         state.authChecked = true;
       })
@@ -223,7 +153,6 @@ const authSlice = createSlice({
       .addCase(register.pending, handlePending)
       .addCase(register.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.access_token = payload.access_token;
         state.user = payload.user;
         state.registrationSuccess = true;
         state.authChecked = true;

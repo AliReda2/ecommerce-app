@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  createProductDto,
   Product,
   ProductResponse,
   SingleProductResponse,

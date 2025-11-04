@@ -4,19 +4,11 @@ export interface Product {
   description?: string;
   price: number;
   imageUrl?: string;
-  category: string;
+  categoryId: string;
+  categoryName: string;
   stock: number;
   createdAt: Date;
   updatedAt: Date;
-}
-export interface createProductDto {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  imageUrl?: string;
-  category: string;
-  stock?: number;
 }
 
 export interface ProductResponse {

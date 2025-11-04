@@ -40,14 +40,14 @@ export default function AuthPage() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const user = await dispatch(
+      const result = await dispatch(
         login({ email: loginData.email, password: loginData.password })
       ).unwrap();
 
       showSuccess("Logged in successfully!");
 
       // Redirect based on role
-      if (user.user.role == "ADMIN") {
+      if (result.user.role === "ADMIN") {
         router.replace("/admin");
       } else {
         router.replace("/");

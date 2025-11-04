@@ -11,21 +11,21 @@ import {
 } from "@/components/admin/ui/table";
 import type { Product } from "@/lib/types/product";
 import DeleteProduct from "./components/DeleteProduct";
+import Image from "next/image";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default async function Product() {
-  const response = await fetch(`${BASE_URL}/product`);
+  const response = await fetch(`${BASE_URL}/users`, { cache: "no-store" });
   const { data } = await response.json();
 
-  if (data.length === 0) {
-    return (
-      <>
-        <h1>NO Products To Display</h1>
-        <Link href={"/admin"}>Go Back</Link>
-      </>
-    );
-  }
+  // if (data.length === 0) {
+  //   return (
+  //     <>
+  //       <h1>NO Products To Display</h1>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
@@ -80,11 +80,11 @@ export default async function Product() {
                           <TableCell className="px-5 py-4 sm:px-6 text-start">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 overflow-hidden rounded-full">
-                                <img
+                                <Image
+                                  src={product.imageUrl ?? "/images/icon.png"}
+                                  alt={product.name}
                                   width={40}
                                   height={40}
-                                  src={`${product.imageUrl}`}
-                                  alt={product.name}
                                 />
                               </div>
                               <div>
@@ -98,7 +98,7 @@ export default async function Product() {
                             </div>
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {product.category ?? "null"}
+                            {product?.categoryName ?? "Null"}
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             <Badge
@@ -112,7 +112,7 @@ export default async function Product() {
                             {product.price}
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                            <DeleteProduct productId={product.id}/>
+                            <DeleteProduct productId={product.id} />
                           </TableCell>
                         </TableRow>
                       ))}
