@@ -10,8 +10,9 @@ import {
   Table,
 } from "@/components/ui/table";
 import { User } from "@/lib/types";
+import UpdateUserStatus from "./UpdateUserStatus";
 
-const UsersTable = ({data}:{data:User[]}) => {
+const UsersTable = ({ data }: { data: User[] }) => {
   return (
     <Table>
       <TableCaption>Users</TableCaption>
@@ -32,6 +33,13 @@ const UsersTable = ({data}:{data:User[]}) => {
               <TableCell>{user.isActive ? "✅" : "❌"}</TableCell>
               <TableCell className="text-right">
                 {new Date(user.createdAt).toLocaleString()}
+              </TableCell>
+              <TableCell>
+                <UpdateUserStatus
+                  userEmail={user.email}
+                  userId={user.id}
+                  isBanned={user.isActive}
+                />
               </TableCell>
             </TableRow>
           ))}

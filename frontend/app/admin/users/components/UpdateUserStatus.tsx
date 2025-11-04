@@ -1,48 +1,51 @@
 "use client";
 
-import { useEffect } from "react";
 import { banUser, unbanUser, fetchAllUsers } from "@/lib/features/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-const UpdateUserStatus = () => {
+import { useAppDispatch } from "@/lib/hooks";
+import { Button } from "@/components/ui/button";
+
+interface UpdateUserStatusProps {
+  userId: string;
+  userEmail: string;
+  isBanned: boolean;
+}
+
+const UpdateUserStatus = ({
+  userId,
+  userEmail,
+  isBanned,
+}: UpdateUserStatusProps) => {
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector((state) => state.user);
 
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
-
-  // ✅ Ban user with confirmation
-  const handleBanUser = async (userId: string, userEmail: string) => {
+  const handleUpdateStatus = async () => {
+    const action = isBanned ? "unban" : "ban";
     const confirmed = window.confirm(
-      `Are you sure you want to ban user: ${userEmail}?`
+      `Are you sure you want to ${action} user: ${userEmail}?`
     );
     if (!confirmed) return;
 
     try {
-      await dispatch(banUser(userId)).unwrap();
+      if (isBanned) {
+        await dispatch(unbanUser(userId)).unwrap();
+      } else {
+        await dispatch(banUser(userId)).unwrap();
+      }
+
       await dispatch(fetchAllUsers());
     } catch (err) {
-      console.error("Failed to ban user:", err);
-      alert("Failed to ban user. Please try again.");
+      console.error(`Failed to ${action} user:`, err);
+      alert(`Failed to ${action} user. Please try again.`);
     }
   };
 
-  // ✅ Unban user with confirmation
-  const handleUnbanUser = async (userId: string, userEmail: string) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to unban user: ${userEmail}?`
-    );
-    if (!confirmed) return;
-
-    try {
-      await dispatch(unbanUser(userId)).unwrap();
-      await dispatch(fetchAllUsers());
-    } catch (err) {
-      console.error("Failed to unban user:", err);
-      alert("Failed to unban user. Please try again.");
-    }
-  };
-  return <div>UpdateUserStatus</div>;
+  return (
+    <Button
+      variant={isBanned ? "default" : "destructive"}
+      onClick={handleUpdateStatus}
+    >
+      {isBanned ? "Unban User" : "Ban User"}
+    </Button>
+  );
 };
 
 export default UpdateUserStatus;

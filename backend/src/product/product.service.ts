@@ -139,7 +139,7 @@ export class ProductService {
 
       return data.publicUrl;
     } catch (err: any) {
-      console.error('❌ Unexpected upload error:', err); // <-- logs sharp errors, network errors, etc.
+      console.error('❌ Unexpected upload error:', err);
       throw new InternalServerErrorException(
         err?.message || 'Unexpected error occurred while uploading image.',
       );
