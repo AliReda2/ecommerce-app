@@ -6,16 +6,14 @@ import {
   Post,
   Get,
   UseGuards,
-  Res,
 } from '@nestjs/common';
-import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthRegisterDto } from './dto';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Tokens } from './types';
 import { AtGuard, RtGuard } from './guard';
 import { GetUser } from './decorator';
+import { Tokens } from './types';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -25,29 +23,28 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a user' })
-  async register(@Body() dto: AuthRegisterDto, @Res() res: Response) {
+  async register(@Body() dto: AuthRegisterDto): Promise<Tokens> {
     const tokens = await this.authService.register(dto);
-    this.setTokenCookies(res, tokens);
-    return res.json({ message: 'User registered successfully' });
+    // Return tokens in the body for client-side storage
+    return tokens;
   }
+
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login a user' })
-  async login(@Body() dto: AuthLoginDto, @Res() res: Response) {
+  async login(@Body() dto: AuthLoginDto): Promise<Tokens> {
     const tokens = await this.authService.login(dto);
-    this.setTokenCookies(res, tokens);
-    return res.json({ message: 'User logged in successfully' });
+    // Return tokens in the body for client-side storage
+    return tokens;
   }
 
   @UseGuards(AtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout a user' })
-  async logout(@GetUser('id') userId: string, @Res() res: Response) {
+  async logout(@GetUser('id') userId: string) {
     await this.authService.logout(userId);
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
-    return res.json({ message: 'User logged out successfully' });
+    return { message: 'User logged out successfully' };
   }
 
   @UseGuards(AtGuard)
@@ -70,26 +67,9 @@ export class AuthController {
   async refreshTokens(
     @GetUser('id') userId: string,
     @GetUser('refreshToken') refreshToken: string,
-    @Res() res: Response,
-  ) {
+  ): Promise<Tokens> {
     const tokens = await this.authService.refreshTokens(userId, refreshToken);
-    this.setTokenCookies(res, tokens);
-    return res.json({ message: 'Tokens refreshed successfully' });
-  }
-
-  private setTokenCookies(res: Response, tokens: Tokens) {
-    const isProd = process.env.NODE_ENV === 'production';
-    res.cookie('access_token', tokens.access_token, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? 'none' : 'lax', // cross-site in prod, dev works on localhost
-      maxAge: 15 * 60 * 1000, // 15 minutes
-    });
-    res.cookie('refresh_token', tokens.refresh_token, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? 'none' : 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+    // Return tokens in the body for client-side storage
+    return tokens;
   }
 }

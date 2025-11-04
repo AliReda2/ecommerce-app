@@ -13,7 +13,13 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   ) {
     super({
       jwtFromRequest: (req: Request) => {
-        return req.cookies['access_token'] || null;
+        // Prefer Authorization header, fallback to cookie for backward compatibility
+        const auth = req.headers['authorization'];
+        const bearer = Array.isArray(auth) ? auth[0] : auth;
+        const headerToken = bearer?.startsWith('Bearer ')
+          ? bearer.substring('Bearer '.length)
+          : undefined;
+        return headerToken || req.cookies['access_token'] || null;
       },
       secretOrKey: config.get('ACCESS_JWT_SECRET') || 'defaultsecret',
     });

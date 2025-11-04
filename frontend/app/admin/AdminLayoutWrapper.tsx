@@ -10,9 +10,18 @@ export default function AdminLayoutWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  // hydrate auth from localStorage / refresh token on mount
+  // hydrate auth from cookie / verify on mount
   useEffect(() => {
-    store.dispatch(checkAuth());
+    console.log("[AdminLayoutWrapper] dispatching checkAuth...");
+    // The promise resolves with the action; log outcome for debugging
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (store.dispatch(checkAuth()) as unknown as Promise<any>)
+      .then((action) => {
+        console.log("[AdminLayoutWrapper] checkAuth finished", action?.type, action);
+      })
+      .catch((e) => {
+        console.error("[AdminLayoutWrapper] checkAuth error", e);
+      });
   }, []);
 
   return (

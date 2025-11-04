@@ -42,7 +42,7 @@ export default function SignInForm() {
       }
 
       showSuccess("Logged in successfully!");
-      router.replace("/admin");
+      if (typeof window !== "undefined") window.location.assign("/admin");
     } catch (err: any) {
       showError(err || "Failed to login");
     }

@@ -34,13 +34,15 @@ export const checkAuth = createAsyncThunk<
   { rejectValue: string }
 >("auth/checkAuth", async (_, { rejectWithValue }) => {
   try {
-    // Verify authentication by making a request to get current user
-    console.log("Checking auth via /auth/me...");
+    // Use stored access token to verify authentication
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("access_token")
+        : null;
+    if (!token) throw new Error("No access token");
     const { data } = await api.get("/auth/me");
-    console.log("Auth check successful:", data);
     return { user: data };
   } catch (err: any) {
-    console.error("Auth check failed:", err?.response?.data || err.message);
     return rejectWithValue(err?.response?.data?.message || "Not authenticated");
   }
 });
@@ -51,11 +53,24 @@ export const login = createAsyncThunk<
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    await api.post("/auth/login", credentials);
-    // Cookies are set by the server, now fetch user data
+    console.log("[auth/login] posting credentials", {
+      email: credentials.email,
+    });
+    const { data: tokens } = await api.post("/auth/login", credentials);
+    // Save tokens and set Authorization header
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (api as any).tokenStore?.set?.(tokens);
+    // Or use the exported helper directly
+    try {
+      // dynamic import to avoid circular
+      const { tokenStore } = await import("@/api/axios");
+      tokenStore.set(tokens as any);
+    } catch {}
+    // Now fetch user data
     const { data } = await api.get("/auth/me");
     return { user: data };
   } catch (err: any) {
+    console.error("[auth/login] failed", err?.response?.data || err?.message);
     showError(err?.message || "Failed to login");
     return rejectWithValue(
       err?.response?.data?.message || err?.message || "Login failed"
@@ -68,12 +83,14 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
   async (_, { rejectWithValue }) => {
     try {
       await api.post("/auth/logout");
-      // Cookies are cleared by the server
     } catch (err: any) {
-      showError(err?.message || "Failed to logout");
-      return rejectWithValue(
-        err?.response?.data?.message || err?.message || "Logout failed"
-      );
+      // ignore API error for logout cleanup
+    } finally {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+      }
+      delete api.defaults.headers.common["Authorization"];
     }
   }
 );
@@ -84,8 +101,13 @@ export const register = createAsyncThunk<
   { rejectValue: string }
 >("auth/register", async (userData, { rejectWithValue }) => {
   try {
-    await api.post("/auth/register", userData);
-    // Cookies are set by the server, now fetch user data
+    const { data: tokens } = await api.post("/auth/register", userData);
+    // Save tokens and set Authorization header
+    try {
+      const { tokenStore } = await import("@/api/axios");
+      tokenStore.set(tokens as any);
+    } catch {}
+    // Now fetch user data
     const { data } = await api.get("/auth/me");
     return { user: data };
   } catch (err: any) {
