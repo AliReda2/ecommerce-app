@@ -1,4 +1,3 @@
-import { Skeleton } from "@/components/ui/skeleton"; // <-- adjust path if needed
 import Link from "next/link";
 import ComponentCard from "@/components/admin/common/ComponentCard";
 import PageBreadcrumb from "@/components/admin/common/PageBreadCrumb";
@@ -10,14 +9,15 @@ import {
   TableCell,
   TableBody,
 } from "@/components/admin/ui/table";
+import type { Product } from "@/lib/types/product";
+import DeleteProduct from "./components/DeleteProduct";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default async function Product() {
   const response = await fetch(`${BASE_URL}/product`);
-  const {data} = await response.json();
+  const { data } = await response.json();
 
-  // Display message only if loading = false and products list is empty
   if (data.length === 0) {
     return (
       <>
@@ -67,7 +67,7 @@ export default async function Product() {
                         isHeader
                         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                       >
-                        Budget
+                        Action
                       </TableCell>
                     </TableRow>
                   </TableHeader>
@@ -75,7 +75,7 @@ export default async function Product() {
                   {/* Table Body */}
                   <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
                     {data &&
-                      data.map((product) => (
+                      data.map((product: Product) => (
                         <TableRow key={product.id}>
                           <TableCell className="px-5 py-4 sm:px-6 text-start">
                             <div className="flex items-center gap-3">
@@ -98,7 +98,7 @@ export default async function Product() {
                             </div>
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {product.category ?? 'null'}
+                            {product.category ?? "null"}
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             <Badge
@@ -110,6 +110,9 @@ export default async function Product() {
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                             {product.price}
+                          </TableCell>
+                          <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                            <DeleteProduct productId={product.id}/>
                           </TableCell>
                         </TableRow>
                       ))}

@@ -14,14 +14,13 @@ const HeroSidePanel = () => {
       animate={{ left: isRight ? "50%" : "0%" }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full bg-white">
         <Image
-          src="/globe.svg"
+          src="/images/codart.png"
           alt="Authentication Visual"
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 flex items-center justify-center">
           <Button onClick={() => setIsRight(!isRight)}>
             {isRight ? "Register?" : "Sign In?"}

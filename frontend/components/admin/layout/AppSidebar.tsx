@@ -306,31 +306,26 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link href="/TailAdmin/">
+        <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
                 className="dark:hidden"
-                src="images/logo/logo.svg"
+                src="images/codart.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
               <img
                 className="hidden dark:block"
-                src="./images/logo/logo-dark.svg"
+                src="images/codart.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
             </>
           ) : (
-            <img
-              src="./images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
+            <img src="images/codart.png" alt="Logo" width={32} height={32} />
           )}
         </Link>
       </div>
