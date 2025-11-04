@@ -141,10 +141,14 @@ export class ProductService {
 
     const product = await this.prisma.product.create({
       data: {
-        ...data,
+        name: data.name,
+        description: data.description,
         price: Number(data.price),
         stock: Number(data.stock),
         imageUrl,
+        ...(data.categoryId
+          ? { category: { connect: { id: data.categoryId } } }
+          : {}),
       },
     });
 
@@ -207,6 +211,28 @@ export class ProductService {
 
   /** DELETE */
   async deleteProduct(productId: string) {
+    const existingProduct = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+    if (!existingProduct) {
+      throw new NotFoundException('Product not found');
+    }
+    // Delete image from Supabase storage
+    if (existingProduct.imageUrl) {
+      const path = existingProduct.imageUrl.split('/products/')[1];
+      await this.supabase.storage.from('products').remove([path]);
+    }
+    const productInCart = await this.prisma.cartItem.findFirst({
+      where: { productId },
+    });
+    if (productInCart) {
+      throw new BadRequestException(
+        'Cannot delete product that is in a user cart',
+      );
+    }
+    await this.prisma.wishlist.deleteMany({
+      where: { productId },
+    });
     const product = await this.prisma.product.delete({
       where: { id: productId },
     });
