@@ -7,11 +7,19 @@ import PageBreadcrumb from "@/components/admin/common/PageBreadCrumb";
 import FileInput from "@/components/admin/form/input/FileInput";
 import TextArea from "@/components/admin/form/input/TextArea";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { fetchCategories } from "@/lib/features/categorySlice";
 import { createProduct } from "@/lib/features/productSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -24,6 +32,14 @@ const ALLOWED_IMAGE_TYPES = [
 
 const CreateProduct = () => {
   const dispatch = useAppDispatch();
+  const { categories, isLoading, error } = useAppSelector(
+    (state) => state.category
+  );
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -139,8 +155,18 @@ const CreateProduct = () => {
       setImageFile(null);
 
       router.push("/admin/products");
-    } catch (err: any) {
-      const message = err?.message || "Failed to create product.";
+    } catch (err: unknown) {
+      let message = "Failed to create product.";
+      if (typeof err === "string") {
+        message = err;
+      } else if (
+        err &&
+        typeof err === "object" &&
+        "message" in err &&
+        typeof (err as { message: unknown }).message === "string"
+      ) {
+        message = (err as { message: string }).message;
+      }
       toast.warning("Creation failed", {
         description: message,
       });
@@ -183,33 +209,18 @@ const CreateProduct = () => {
                 </p>
               )}
             </div>
-
-            <div>
-              <Label htmlFor={ids.category}>Category</Label>
-              <Input
-                id={ids.category}
-                type="text"
-                placeholder="Category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="border p-2"
-                aria-invalid={!!errors.category}
-                aria-describedby={
-                  errors.category ? `${ids.category}-error` : undefined
-                }
-                required
-                disabled={isSubmitting}
-              />
-              {errors.category && (
-                <p
-                  id={`${ids.category}-error`}
-                  role="alert"
-                  className="mt-1 text-sm text-red-600"
-                >
-                  {errors.category}
-                </p>
-              )}
-            </div>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <div>
               <Label htmlFor={ids.price}>Price</Label>
@@ -278,7 +289,7 @@ const CreateProduct = () => {
           <div className="space-y-2">
             <Label htmlFor={ids.description}>Description</Label>
             <TextArea
-              id={ids.description as any}
+              id={ids.description}
               value={description}
               onChange={(value) => setDescription(value)}
               rows={6}
@@ -304,10 +315,10 @@ const CreateProduct = () => {
           <div>
             <Label htmlFor={ids.image}>Upload file</Label>
             <FileInput
-              id={ids.image as any}
+              id={ids.image}
               onChange={handleFileChange}
               className="custom-class"
-              accept={ALLOWED_IMAGE_TYPES.join(",") as any}
+              accept={ALLOWED_IMAGE_TYPES.join(",")}
               disabled={isSubmitting}
             />
             {errors.image && (

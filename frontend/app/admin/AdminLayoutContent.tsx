@@ -13,11 +13,14 @@ export default function AdminLayoutContent({
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
   const authChecked = useAppSelector((state) => state.auth.authChecked);
+  console.log("[AdminLayoutContent] state", { authChecked, user });
 
   useEffect(() => {
+    console.log("[AdminLayoutContent] effect", { authChecked, hasUser: !!user, role: user?.role });
     // Wait until we've checked auth (hydration or refresh attempt)
     if (authChecked && (!user || user.role !== "ADMIN")) {
-      router.replace("/login");
+      console.warn("[AdminLayoutContent] not authorized, redirecting to /admin-auth/login");
+      router.replace("/admin-auth/login");
     }
   }, [authChecked, user, router]);
 

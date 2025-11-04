@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { AtGuard } from 'src/auth/guard';
 import { GetUser } from '../auth/decorator';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
@@ -34,14 +34,14 @@ export class UserController {
   }
 
   @Roles('ADMIN')
-  @Get('ban/:userId')
+  @Post('ban/:userId')
   @ApiOperation({ summary: 'Ban a user' })
   async banUser(@Param('userId') userId: string) {
     return this.userService.banUser(userId);
   }
 
   @Roles('ADMIN')
-  @Get('unban/:userId')
+  @Post('unban/:userId')
   @ApiOperation({ summary: 'Unban a user' })
   async unbanUser(@Param('userId') userId: string) {
     return this.userService.unbanUser(userId);

@@ -36,8 +36,12 @@ export class ProductService {
         price: true,
         stock: true,
         imageUrl: true,
-        categoryId: true,
         createdAt: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -45,8 +49,15 @@ export class ProductService {
       throw new NotFoundException('No products found');
     }
 
+    // Map to return categoryName as string | null
+    const formatted = products.map((product) => ({
+      ...product,
+      categoryName: product.category?.name ?? null,
+      category: undefined, // remove nested object if you don't want it in response
+    }));
+
     return {
-      data: products,
+      data: formatted,
       msg: 'Products fetched successfully',
     };
   }
@@ -128,7 +139,7 @@ export class ProductService {
 
       return data.publicUrl;
     } catch (err: any) {
-      console.error('❌ Unexpected upload error:', err); // <-- logs sharp errors, network errors, etc.
+      console.error('❌ Unexpected upload error:', err);
       throw new InternalServerErrorException(
         err?.message || 'Unexpected error occurred while uploading image.',
       );
@@ -233,6 +244,14 @@ export class ProductService {
     await this.prisma.wishlist.deleteMany({
       where: { productId },
     });
+    const productInOrders = await this.prisma.orderItem.findFirst({
+      where: { productId },
+    });
+    if (productInOrders) {
+      throw new BadRequestException(
+        'Cannot delete product that is part of an order',
+      );
+    }
     const product = await this.prisma.product.delete({
       where: { id: productId },
     });

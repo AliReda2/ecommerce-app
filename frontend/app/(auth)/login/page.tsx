@@ -40,19 +40,24 @@ export default function AuthPage() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const user = await dispatch(
+      console.log("[login/page] dispatching login", { email: loginData.email });
+      const result = await dispatch(
         login({ email: loginData.email, password: loginData.password })
       ).unwrap();
+      console.log("[login/page] login fulfilled", result);
 
       showSuccess("Logged in successfully!");
 
-      // Redirect based on role
-      if (user.user.role == "ADMIN") {
-        router.replace("/admin");
+      // Redirect based on role (hard redirect to avoid client-side guard race)
+      if (result.user.role === "ADMIN") {
+        console.log("[login/page] redirecting to /admin (hard)");
+        if (typeof window !== "undefined") window.location.assign("/admin");
       } else {
-        router.replace("/");
+        console.log("[login/page] redirecting to / (hard)");
+        if (typeof window !== "undefined") window.location.assign("/");
       }
     } catch (err: any) {
+      console.error("[login/page] login rejected", err);
       showError(err || "Failed to login");
     }
   };
