@@ -2,9 +2,9 @@ import { useState } from "react";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
-import Button from "../ui/button/Button";
 import { ChevronLeftIcon, EyeIcon, EyeCloseIcon } from "@/icons";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
