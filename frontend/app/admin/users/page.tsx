@@ -1,23 +1,33 @@
-import { cookies } from "next/headers";
+"use client";
+import { useEffect, useState } from "react";
 import UsersTable from "./components/UsersTable";
+import { api } from "@/api/axios";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+export default function Users() {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const Users = async () => {
-  const token = (await cookies()).get("access_token")?.value;
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await api.get("/users");
+        if (!mounted) return;
+        setData(res.data.data);
+      } catch (e: any) {
+        if (!mounted) return;
+        setError(e?.response?.data?.message || e?.message || "Failed to load users");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-  const response = await fetch(`${BASE_URL}/users`, {
-    method: "GET",
-    cache: "no-store",
-    headers: {
-      Cookie: `access_token=${token}`, // <-- send token in header
-    },
-    credentials: "include",
-  });
-
-  const result = await response.json();
-
-  return <UsersTable data={result.data} />;
-};
-
-export default Users;
+  if (loading) return <div className="p-4">Loading users…</div>;
+  if (error) return <div className="p-4 text-red-600">{error}</div>;
+  return <UsersTable data={data} />;
+}
