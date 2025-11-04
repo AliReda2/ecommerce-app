@@ -141,10 +141,14 @@ export class ProductService {
 
     const product = await this.prisma.product.create({
       data: {
-        ...data,
+        name: data.name,
+        description: data.description,
         price: Number(data.price),
         stock: Number(data.stock),
         imageUrl,
+        ...(data.categoryId
+          ? { category: { connect: { id: data.categoryId } } }
+          : {}),
       },
     });
 

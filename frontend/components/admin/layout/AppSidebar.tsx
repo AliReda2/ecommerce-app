@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
     icon: <PageIcon />,
     subItems: [
       { name: "Products", path: "/admin/products", pro: false },
-      { name: "Create Product", path: "/admin/products", pro: false },
+      { name: "Create Product", path: "/admin/products/create", pro: false },
     ],
   },
 

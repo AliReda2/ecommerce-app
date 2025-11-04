@@ -17,7 +17,7 @@ export default function InputGroup() {
     console.log("Updated phone number:", phoneNumber);
   };
   return (
-    <ComponentCard title="Input Group">
+    <ComponentCard>
       <div className="space-y-6">
         <div>
           <Label>Email</Label>
