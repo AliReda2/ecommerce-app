@@ -78,16 +78,17 @@ export class AuthController {
   }
 
   private setTokenCookies(res: Response, tokens: Tokens) {
+    const isProd = process.env.NODE_ENV === 'production';
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax', // 'lax' allows cookies in cross-origin navigation
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax', // cross-site in prod, dev works on localhost
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
   }

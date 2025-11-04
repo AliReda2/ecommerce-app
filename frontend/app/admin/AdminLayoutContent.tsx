@@ -13,6 +13,7 @@ export default function AdminLayoutContent({
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
   const authChecked = useAppSelector((state) => state.auth.authChecked);
+  console.log(user)
 
   useEffect(() => {
     // Wait until we've checked auth (hydration or refresh attempt)
