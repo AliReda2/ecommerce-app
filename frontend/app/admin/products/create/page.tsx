@@ -1,9 +1,15 @@
 "use client";
 
-import ComponentCard from "@/components/admin/common/ComponentCard";
-import PageBreadcrumb from "@/components/admin/common/PageBreadCrumb";
+import { Button } from "@/components/ui/button";
+import {
+  FieldSet,
+  FieldLegend,
+  FieldDescription,
+  FieldGroup,
+  Field,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -11,328 +17,131 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { fetchAllCategories } from "@/lib/features/categorySlice";
 import { createProduct } from "@/lib/features/productSlice";
 import { AppDispatch, RootState } from "@/lib/store";
-import { FileInput } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "sonner";
 
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
-const ALLOWED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-];
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const CreateProduct = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error, categories } = useSelector(
-    (state: RootState) => state.category
-  );
+
+  const { categories } = useSelector((state: RootState) => state.category);
+  const { isLoading } = useSelector((state: RootState) => state.product);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
-  const router = useRouter();
 
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(""); // keep as string, parse on submit
-  const [stock, setStock] = useState(""); // keep as string, parse on submit
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    categoryId: "",
+    price: 0,
+    stock: 0,
+    image: null as File | null,
+  });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const handleCreate = () => {
+    const form = new FormData();
+    form.append("name", formData.name);
+    form.append("description", formData.description);
+    form.append("categoryId", formData.categoryId);
+    form.append("price", String(formData.price));
+    form.append("stock", String(formData.stock));
+    if (formData.image) form.append("image", formData.image);
 
-  const ids = useMemo(
-    () => ({
-      name: "name",
-      category: "category",
-      price: "price",
-      stock: "stock",
-      description: "description",
-      image: "image",
-    }),
-    []
-  );
-
-  const validate = useCallback(() => {
-    const newErrors: Record<string, string> = {};
-
-    if (!name.trim()) newErrors.name = "Name is required.";
-    if (!category.trim()) newErrors.category = "Category is required.";
-
-    const priceNum = parseFloat(price);
-    if (!price.trim() || Number.isNaN(priceNum) || priceNum <= 0) {
-      newErrors.price = "Price must be a number greater than 0.";
-    }
-
-    const stockNum = Number(stock);
-    if (
-      !stock.trim() ||
-      !Number.isFinite(stockNum) ||
-      stockNum < 0 ||
-      !Number.isInteger(stockNum)
-    ) {
-      newErrors.stock = "Stock must be an integer greater than or equal to 0.";
-    }
-
-    if (imageFile) {
-      if (!ALLOWED_IMAGE_TYPES.includes(imageFile.type)) {
-        newErrors.image = "Invalid file type. Use JPG, PNG, WEBP, or GIF.";
-      } else if (imageFile.size > MAX_IMAGE_BYTES) {
-        newErrors.image = "File size must be 5MB or less.";
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, [name, category, price, stock, imageFile]);
-
-  const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0] || null;
-      if (file) {
-        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-          setErrors((prev) => ({ ...prev, image: "Invalid file type." }));
-          setImageFile(null);
-          return;
-        }
-        if (file.size > MAX_IMAGE_BYTES) {
-          setErrors((prev) => ({
-            ...prev,
-            image: "File size must be 5MB or less.",
-          }));
-          setImageFile(null);
-          return;
-        }
-      }
-      setErrors((prev) => {
-        const { image, ...rest } = prev;
-        return rest;
-      });
-      setImageFile(file);
-    },
-    []
-  );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-
-    const priceNum = parseFloat(price);
-    const stockNum = parseInt(stock, 10);
-
-    const formData = new FormData();
-    formData.append("name", name.trim());
-    formData.append("category", category.trim());
-    formData.append("description", description);
-    formData.append("price", String(priceNum));
-    formData.append("stock", String(stockNum));
-    if (imageFile) formData.append("image", imageFile);
-
-    setIsSubmitting(true);
-    try {
-      await dispatch(createProduct(formData)).unwrap();
-      toast.success("Product created", {
-        description: `${name} added successfully.`,
-      });
-
-      // Reset form
-      setName("");
-      setCategory("");
-      setDescription("");
-      setPrice("");
-      setStock("");
-      setImageFile(null);
-
-      router.push("/admin/products");
-    } catch (err: any) {
-      const message = err?.message || "Failed to create product.";
-      toast.warning("Creation failed", {
-        description: message,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    dispatch(createProduct(form));
   };
 
   return (
-    <>
-      <PageBreadcrumb pageTitle="Create New Product" />
+    <FieldSet>
+      <FieldLegend>Product</FieldLegend>
+      <FieldDescription>Update Product Details</FieldDescription>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col flex-wrap gap-2 max-w-md"
-      >
-        <ComponentCard>
-          <div className="space-y-6">
-            <div>
-              <Label htmlFor={ids.name}>Name</Label>
-              <Input
-                id={ids.name}
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="border p-2"
-                aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? `${ids.name}-error` : undefined}
-                required
-                disabled={isSubmitting}
-              />
-              {errors.name && (
-                <p
-                  id={`${ids.name}-error`}
-                  role="alert"
-                  className="mt-1 text-sm text-red-600"
-                >
-                  {errors.name}
-                </p>
-              )}
-            </div>
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="name">Product name</FieldLabel>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+        </Field>
 
-            <div>
-              <Select value={product?.category}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        <Field>
+          <FieldLabel htmlFor="description">Description</FieldLabel>
+          <Input
+            id="description"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+          />
+        </Field>
 
-            <div>
-              <Label htmlFor={ids.price}>Price</Label>
-              <Input
-                id={ids.price}
-                type="number"
-                placeholder="Price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="border p-2"
-                min={0.01}
-                step={0.01}
-                inputMode="decimal"
-                aria-invalid={!!errors.price}
-                aria-describedby={
-                  errors.price ? `${ids.price}-error` : undefined
-                }
-                required
-                disabled={isSubmitting}
-              />
-              {errors.price && (
-                <p
-                  id={`${ids.price}-error`}
-                  role="alert"
-                  className="mt-1 text-sm text-red-600"
-                >
-                  {errors.price}
-                </p>
-              )}
-            </div>
+        <Field>
+          <Select
+            value={formData.categoryId}
+            onValueChange={(value) =>
+              setFormData({ ...formData, categoryId: value })
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
 
-            <div>
-              <Label htmlFor={ids.stock}>Stock</Label>
-              <Input
-                id={ids.stock}
-                type="number"
-                placeholder="Stock"
-                value={stock}
-                onChange={(e) => setStock(e.target.value)}
-                className="border p-2"
-                min={0}
-                step={1}
-                inputMode="numeric"
-                pattern="[0-9]*"
-                aria-invalid={!!errors.stock}
-                aria-describedby={
-                  errors.stock ? `${ids.stock}-error` : undefined
-                }
-                required
-                disabled={isSubmitting}
-              />
-              {errors.stock && (
-                <p
-                  id={`${ids.stock}-error`}
-                  role="alert"
-                  className="mt-1 text-sm text-red-600"
-                >
-                  {errors.stock}
-                </p>
-              )}
-            </div>
-          </div>
-        </ComponentCard>
+            <SelectContent>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
 
-        <ComponentCard>
-          <div className="space-y-2">
-            <Label htmlFor={ids.description}>Description</Label>
-            <Textarea
-              id={ids.description as any}
-              value={description}
-              onChange={(value) => setDescription(value)}
-              rows={6}
-              aria-invalid={!!errors.description}
-              aria-describedby={
-                errors.description ? `${ids.description}-error` : undefined
-              }
-              disabled={isSubmitting}
-            />
-            {errors.description && (
-              <p
-                id={`${ids.description}-error`}
-                role="alert"
-                className="mt-1 text-sm text-red-600"
-              >
-                {errors.description}
-              </p>
-            )}
-          </div>
-        </ComponentCard>
+        <Field>
+          <FieldLabel htmlFor="price">Price</FieldLabel>
+          <Input
+            type="number"
+            id="price"
+            value={formData.price}
+            onChange={(e) =>
+              setFormData({ ...formData, price: +e.target.value })
+            }
+          />
+        </Field>
 
-        <ComponentCard>
-          <div>
-            <Label htmlFor={ids.image}>Upload file</Label>
-            <FileInput
-              id={ids.image as any}
-              onChange={handleFileChange}
-              className="custom-class"
-              accept={ALLOWED_IMAGE_TYPES.join(",") as any}
-              disabled={isSubmitting}
-            />
-            {errors.image && (
-              <p
-                id={`${ids.image}-error`}
-                role="alert"
-                className="mt-1 text-sm text-red-600"
-              >
-                {errors.image}
-              </p>
-            )}
-          </div>
-        </ComponentCard>
+        <Field>
+          <FieldLabel htmlFor="stock">Stock</FieldLabel>
+          <Input
+            type="number"
+            id="stock"
+            value={formData.stock}
+            onChange={(e) =>
+              setFormData({ ...formData, stock: +e.target.value })
+            }
+          />
+        </Field>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white p-2 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Creating..." : "Create Product"}
-        </button>
-      </form>
-    </>
+        <Field>
+          <FieldLabel htmlFor="image">Image</FieldLabel>
+          <Input
+            type="file"
+            id="image"
+            onChange={(e) =>
+              setFormData({ ...formData, image: e.target.files?.[0] || null })
+            }
+          />
+        </Field>
+      </FieldGroup>
+
+      <Button disabled={isLoading} onClick={handleCreate}>
+        {isLoading ? "Creating..." : "Create"}
+      </Button>
+    </FieldSet>
   );
 };
 
