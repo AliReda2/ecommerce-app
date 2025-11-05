@@ -1,6 +1,6 @@
 
+import { Badge } from "@/components/ui/badge";
 import { GroupIcon, ArrowUpIcon, BoxIconLine, ArrowDownIcon } from "@/icons";
-import Badge from "../ui/badge/Badge";
 
 export default function EcommerceMetrics() {
   return (

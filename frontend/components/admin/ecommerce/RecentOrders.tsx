@@ -1,11 +1,11 @@
+import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Badge from "../ui/badge/Badge";
+  TableCell,
+  TableBody,
+  Table,
+} from "@/components/ui/table";
 
 // Define the TypeScript interface for the table rows
 interface Product {
@@ -127,28 +127,16 @@ export default function RecentOrders() {
           {/* Table Header */}
           <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
             <TableRow>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Products
               </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Category
               </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Price
               </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Status
               </TableCell>
             </TableRow>
@@ -186,7 +174,6 @@ export default function RecentOrders() {
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   <Badge
-                    size="sm"
                     color={
                       product.status === "Delivered"
                         ? "success"
