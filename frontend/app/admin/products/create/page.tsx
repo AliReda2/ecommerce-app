@@ -1,17 +1,24 @@
 "use client";
 
-// TODO: Protect this route with admin auth guard (client + server) and sanitize description on the server.
-
 import ComponentCard from "@/components/admin/common/ComponentCard";
 import PageBreadcrumb from "@/components/admin/common/PageBreadCrumb";
-import FileInput from "@/components/admin/form/input/FileInput";
-import TextArea from "@/components/admin/form/input/TextArea";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { fetchAllCategories } from "@/lib/features/categorySlice";
 import { createProduct } from "@/lib/features/productSlice";
-import { useAppDispatch } from "@/lib/hooks";
-import { Label } from "@radix-ui/react-label";
+import { AppDispatch, RootState } from "@/lib/store";
+import { FileInput } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -23,7 +30,14 @@ const ALLOWED_IMAGE_TYPES = [
 ];
 
 const CreateProduct = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error, categories } = useSelector(
+    (state: RootState) => state.category
+  );
+
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -185,30 +199,18 @@ const CreateProduct = () => {
             </div>
 
             <div>
-              <Label htmlFor={ids.category}>Category</Label>
-              <Input
-                id={ids.category}
-                type="text"
-                placeholder="Category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="border p-2"
-                aria-invalid={!!errors.category}
-                aria-describedby={
-                  errors.category ? `${ids.category}-error` : undefined
-                }
-                required
-                disabled={isSubmitting}
-              />
-              {errors.category && (
-                <p
-                  id={`${ids.category}-error`}
-                  role="alert"
-                  className="mt-1 text-sm text-red-600"
-                >
-                  {errors.category}
-                </p>
-              )}
+              <Select value={product?.category}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -277,7 +279,7 @@ const CreateProduct = () => {
         <ComponentCard>
           <div className="space-y-2">
             <Label htmlFor={ids.description}>Description</Label>
-            <TextArea
+            <Textarea
               id={ids.description as any}
               value={description}
               onChange={(value) => setDescription(value)}

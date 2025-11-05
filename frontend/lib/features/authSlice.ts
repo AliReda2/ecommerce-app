@@ -128,9 +128,6 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
       // remove only the auth keys
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
-      // expire the cookie if you set it
-      document.cookie =
-        "access_token=; path=/; max-age=0; samesite=lax; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     } catch (err: any) {
       showError(err?.message || "Failed to logout");
       return rejectWithValue(

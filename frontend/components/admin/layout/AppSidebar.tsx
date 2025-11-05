@@ -8,7 +8,6 @@ import {
   TableIcon,
   PageIcon,
   BoxCubeIcon,
-  PlugInIcon,
   ChevronDownIcon,
   HorizontaLDots,
 } from "@/icons";
@@ -45,7 +44,7 @@ const navItems: NavItem[] = [
   {
     name: "Users Page",
     icon: <ListIcon />,
-    subItems: [{ name: "users", path: "/admin/users", pro: false }],
+    subItems: [{ name: "Users", path: "/admin/users", pro: false }],
   },
 ];
 
@@ -54,12 +53,12 @@ const othersItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     name: "UI Elements",
     subItems: [
-      { name: "Alerts", path: "alerts", pro: false },
-      { name: "Avatar", path: "avatars", pro: false },
-      { name: "Badge", path: "badge", pro: false },
-      { name: "Buttons", path: "buttons", pro: false },
-      { name: "Images", path: "images", pro: false },
-      { name: "Videos", path: "videos", pro: false },
+      { name: "Alerts", path: "#", pro: false },
+      { name: "Avatar", path: "#", pro: false },
+      { name: "Badge", path: "#", pro: false },
+      { name: "Buttons", path: "#", pro: false },
+      { name: "Images", path: "#", pro: false },
+      { name: "Videos", path: "#", pro: false },
     ],
   },
 ];
@@ -293,21 +292,21 @@ const AppSidebar: React.FC = () => {
             <>
               <img
                 className="dark:hidden"
-                src="images/codart.png"
+                src="/images/codart.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
               <img
                 className="hidden dark:block"
-                src="images/codart.png"
+                src="/images/codart.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
             </>
           ) : (
-            <img src="images/codart.png" alt="Logo" width={32} height={32} />
+            <img src="/images/codart.png" alt="Logo" width={32} height={32} />
           )}
         </Link>
       </div>

@@ -11,6 +11,9 @@ import {
 } from "@/components/admin/ui/table";
 import type { Product } from "@/lib/types/product";
 import DeleteProduct from "./components/DeleteProduct";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -26,7 +29,6 @@ export default async function Product() {
       </>
     );
   }
-
   return (
     <>
       <PageBreadcrumb pageTitle="Basic Tables" />
@@ -65,7 +67,7 @@ export default async function Product() {
                       </TableCell>
                       <TableCell
                         isHeader
-                        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                        className="px-5 py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
                       >
                         Action
                       </TableCell>
@@ -79,14 +81,17 @@ export default async function Product() {
                         <TableRow key={product.id}>
                           <TableCell className="px-5 py-4 sm:px-6 text-start">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 overflow-hidden rounded-full">
-                                <img
-                                  width={40}
-                                  height={40}
-                                  src={`${product.imageUrl}`}
-                                  alt={product.name}
-                                />
-                              </div>
+                              <Avatar className="size-14">
+                                <AvatarImage src={product.imageUrl} />
+                                <AvatarFallback>
+                                  <Image
+                                    src={"/images/codart.png"}
+                                    alt={product.name}
+                                    width={60}
+                                    height={60}
+                                  />
+                                </AvatarFallback>
+                              </Avatar>
                               <div>
                                 <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
                                   {product.name}
@@ -98,7 +103,7 @@ export default async function Product() {
                             </div>
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {product.category ?? "null"}
+                            {product?.category?.name ?? "null"}
                           </TableCell>
                           <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             <Badge
@@ -111,8 +116,15 @@ export default async function Product() {
                           <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                             {product.price}
                           </TableCell>
-                          <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                            <DeleteProduct productId={product.id}/>
+                          <TableCell className="flex justify-evenly px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                            <DeleteProduct productId={product.id} />
+                            <Button>
+                              <Link
+                                href={`/admin/products/${product.id}/update`}
+                              >
+                                Update
+                              </Link>
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}

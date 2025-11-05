@@ -38,6 +38,11 @@ export class ProductService {
         imageUrl: true,
         categoryId: true,
         createdAt: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -200,7 +205,16 @@ export class ProductService {
     // 4. Update product
     const product = await this.prisma.product.update({
       where: { id: productId },
-      data: updateData,
+      data: {
+        name: updateData.name,
+        description: updateData.description,
+        price: updateData.price,
+        stock: updateData.stock,
+        imageUrl: updateData.imageUrl,
+        category: {
+          connect: { id: updateData.categoryId },
+        },
+      },
     });
 
     return {

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  createProductDto,
   Product,
   ProductResponse,
   SingleProductResponse,
@@ -63,13 +62,30 @@ export const createProduct = createAsyncThunk<
 
 export const updateProduct = createAsyncThunk<
   Product,
-  { productId: string; productData: Partial<Product> },
+  {
+    productId: string;
+    productData:
+      | FormData
+      | Partial<
+          Omit<Product, "id" | "category" | "createdAt" | "updatedAt">
+        >;
+  },
   { rejectValue: string }
 >("product/update", async ({ productId, productData }, { rejectWithValue }) => {
   try {
+    const isFormData =
+      typeof FormData !== "undefined" && productData instanceof FormData;
+
     const response = await api.patch<SingleProductResponse>(
       `/product/${productId}`,
-      productData
+      productData as any,
+      isFormData
+        ? {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        : undefined
     );
     return response.data.data;
   } catch (err: any) {
@@ -162,6 +178,10 @@ const productSlice = createSlice({
         );
         if (index !== -1) {
           state.products[index] = action.payload;
+        }
+        // Keep current product in sync when updating on detail page
+        if (state.currentProduct && state.currentProduct.id === action.payload.id) {
+          state.currentProduct = action.payload;
         }
       })
       .addCase(updateProduct.rejected, (state, action) => {

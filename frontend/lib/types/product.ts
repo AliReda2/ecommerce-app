@@ -1,21 +1,23 @@
 export interface Product {
   id: string;
   name: string;
-  description?: string;
+  description?: string | null;
   price: number;
   imageUrl?: string;
-  category: string;
+  categoryId: string;
   stock: number;
   createdAt: Date;
   updatedAt: Date;
+  category: {
+    name: string;
+  };
 }
 export interface createProductDto {
-  id: string;
   name: string;
   description?: string;
   price: number;
   imageUrl?: string;
-  category: string;
+  categoryId: string;
   stock?: number;
 }
 

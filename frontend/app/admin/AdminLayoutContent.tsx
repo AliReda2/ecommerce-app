@@ -17,7 +17,7 @@ export default function AdminLayoutContent({
   useEffect(() => {
     // Wait until we've checked auth (hydration or refresh attempt)
     if (authChecked && (!user || user.role !== "ADMIN")) {
-      router.replace("/login");
+      router.replace("/admin-auth/login");
     }
   }, [authChecked, user, router]);
 

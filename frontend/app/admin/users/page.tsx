@@ -1,59 +1,68 @@
+"use client";
 
-import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
 import UpdateUserStatus from "./components/UpdateUserStatus";
+import { User } from "@/lib/types";
+import { AppDispatch, RootState } from "@/lib/store";
+import { fetchAllUsers } from "@/lib/features/userSlice";
+import { useEffect } from "react";
+import {
+  TableCaption,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+  Table,
+} from "@/components/ui/table";
 
 const Users = () => {
-  return (
-    <>
-      <div className="overflow-x-auto p-4">
-        <table className="min-w-full border border-gray-300 text-sm text-left">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2 border">ID</th>
-              <th className="px-4 py-2 border">First Name</th>
-              <th className="px-4 py-2 border">Last Name</th>
-              <th className="px-4 py-2 border">Email</th>
-              <th className="px-4 py-2 border">Is Active</th>
-              <th className="px-4 py-2 border">Updated At</th>
-              <th className="px-4 py-2 border">Created At</th>
-              <th className="px-4 py-2 border text-center">Action</th>
-            </tr>
-          </thead>
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error, users } = useSelector(
+    (state: RootState) => state.user
+  );
 
-          <tbody>
-            {users.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="text-center py-4 text-gray-500">
-                  No users found.
-                </td>
-              </tr>
-            ) : (
-              users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 border">{user.id}</td>
-                  <td className="px-4 py-2 border">{user.firstName}</td>
-                  <td className="px-4 py-2 border">{user.lastName}</td>
-                  <td className="px-4 py-2 border">{user.email}</td>
-                  <td className="px-4 py-2 border">
-                    {user.isActive ? "Yes" : "No"}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {new Date(user.updatedAt).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {new Date(user.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    <UpdateUserStatus />
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <Link href={"/admin"}>Go Back</Link>
-    </>
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
+
+  return (
+    <div className="overflow-x-auto p-4">
+      <Table>
+        <TableCaption>A list of Users.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">ID</TableHead>
+            <TableHead>Full Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Is Active</TableHead>
+            <TableHead>Created At</TableHead>
+            <TableHead className="text-right">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users &&
+            users.map((user: User) => (
+              <TableRow key={user.id}>
+                <TableCell className="font-medium">{user.id}</TableCell>
+                <TableCell>{user.fullName}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  {user.isActive ? "✅ Active" : "⛔ Banned"}
+                </TableCell>
+                <TableCell>{user.createdAt.toString()}</TableCell>
+                <TableCell className="text-right">
+                  <UpdateUserStatus
+                    userEmail={user.email}
+                    userId={user.id}
+                    isActive={user.isActive}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

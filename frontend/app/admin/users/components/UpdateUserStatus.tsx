@@ -1,18 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
-import { banUser, unbanUser, fetchAllUsers } from "@/lib/features/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-const UpdateUserStatus = () => {
+import { Button } from "@/components/ui/button";
+import { banUser, unbanUser } from "@/lib/features/userSlice";
+import { useAppDispatch } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
+
+interface UpdateUserStatusProps {
+  userId: string;
+  userEmail: string;
+  isActive: boolean;
+}
+
+const UpdateUserStatus = ({
+  userId,
+  userEmail,
+  isActive,
+}: UpdateUserStatusProps) => {
   const dispatch = useAppDispatch();
-  const { users, isLoading, error } = useAppSelector((state) => state.user);
+  const router = useRouter();
 
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
-
-  // ✅ Ban user with confirmation
-  const handleBanUser = async (userId: string, userEmail: string) => {
+  const handleBanUser = async () => {
     const confirmed = window.confirm(
       `Are you sure you want to ban user: ${userEmail}?`
     );
@@ -20,15 +27,13 @@ const UpdateUserStatus = () => {
 
     try {
       await dispatch(banUser(userId)).unwrap();
-      await dispatch(fetchAllUsers());
     } catch (err) {
       console.error("Failed to ban user:", err);
       alert("Failed to ban user. Please try again.");
     }
   };
 
-  // ✅ Unban user with confirmation
-  const handleUnbanUser = async (userId: string, userEmail: string) => {
+  const handleUnbanUser = async () => {
     const confirmed = window.confirm(
       `Are you sure you want to unban user: ${userEmail}?`
     );
@@ -36,31 +41,23 @@ const UpdateUserStatus = () => {
 
     try {
       await dispatch(unbanUser(userId)).unwrap();
-      await dispatch(fetchAllUsers());
+      router.refresh();
     } catch (err) {
       console.error("Failed to unban user:", err);
       alert("Failed to unban user. Please try again.");
     }
   };
 
-  if (isLoading) return <p>Loading users...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
   return (
-    <div className="px-4 py-2 border text-center">
-      {user.isActive ? (
-        <button
-          onClick={() => handleBanUser(user.id, user.email)}
-          className="btn btn-destructive"
-        >
+    <div>
+      {isActive ? (
+        <Button onClick={handleBanUser} variant={"destructive"}>
           BAN
-        </button>
+        </Button>
       ) : (
-        <button
-          onClick={() => handleUnbanUser(user.id, user.email)}
-          className="btn btn-primary"
-        >
+        <Button onClick={handleUnbanUser} variant={"default"}>
           UNBAN
-        </button>
+        </Button>
       )}
     </div>
   );
