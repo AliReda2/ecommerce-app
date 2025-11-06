@@ -1,5 +1,6 @@
 export interface Product {
   id: string;
+  slug?: string;
   name: string;
   description?: string | null;
   price: number;
@@ -9,7 +10,10 @@ export interface Product {
   createdAt: Date;
   updatedAt: Date;
   category: {
+    id?: string;
     name: string;
+    description?: string;
+    createdAt?: string;
   };
 }
 export interface createProductDto {

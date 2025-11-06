@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    name: "Users Page",
+    name: "Users",
     icon: <ListIcon />,
     path: "/admin/users",
   },
@@ -41,6 +41,11 @@ const navItems: NavItem[] = [
     name: "Orders Page",
     icon: <ListIcon />,
     path: "/admin/orders"
+  },
+  {
+    name: "Categories",
+    icon: <ListIcon />,
+    subItems: [{ name: "Categories", path: "/admin/categories", pro: false }],
   },
 ];
 
@@ -305,7 +310,6 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
   );

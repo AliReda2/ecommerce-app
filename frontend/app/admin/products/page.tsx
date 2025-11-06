@@ -1,7 +1,6 @@
-import Link from "next/link";
-import ComponentCard from "@/components/admin/common/ComponentCard";
-import PageBreadcrumb from "@/components/admin/common/PageBreadCrumb";
+"use client";
 
+import Link from "next/link";
 import type { Product } from "@/lib/types/product";
 import DeleteProduct from "./components/DeleteProduct";
 import { Button } from "@/components/ui/button";
@@ -17,14 +16,20 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/store";
+import { fetchProducts } from "@/lib/features/productSlice";
+import { useEffect } from "react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+export default function Product() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { products } = useSelector((state: RootState) => state.product);
 
-export default async function Product() {
-  const response = await fetch(`${BASE_URL}/product`);
-  const { data } = await response.json();
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
-  if (data.length === 0) {
+  if (products.length === 0) {
     return (
       <>
         <h1>NO Products To Display</h1>
@@ -45,8 +50,8 @@ export default async function Product() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data &&
-          data.map((product: Product) => (
+        {products &&
+          products.map((product: Product) => (
             <TableRow key={product.id}>
               <TableCell className="font-medium flex">
                 <Avatar className="size-12">

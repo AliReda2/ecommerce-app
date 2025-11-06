@@ -5,6 +5,7 @@ import {
   SingleProductResponse,
 } from "../types/product";
 import { api } from "@/api/axios";
+import { showSuccess } from "../alert";
 
 interface productState {
   products: Product[];
@@ -19,6 +20,21 @@ const initialState: productState = {
   isLoading: false,
   error: null,
 };
+
+export const fetchProducts = createAsyncThunk<
+  Product[],
+  void,
+  { rejectValue: string }
+>("product/fetchAll", async (_, { rejectWithValue }) => {
+  try {
+    const response = await api.get<ProductResponse>("/product");
+    return response.data.data;
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Fetching products failed"
+    );
+  }
+});
 
 export const fetchProductById = createAsyncThunk<
   Product,
@@ -52,6 +68,7 @@ export const createProduct = createAsyncThunk<
         },
       }
     );
+    showSuccess(response.data.msg);
     return response.data.data;
   } catch (err: any) {
     return rejectWithValue(
@@ -66,9 +83,7 @@ export const updateProduct = createAsyncThunk<
     productId: string;
     productData:
       | FormData
-      | Partial<
-          Omit<Product, "id" | "category" | "createdAt" | "updatedAt">
-        >;
+      | Partial<Omit<Product, "id" | "category" | "createdAt" | "updatedAt">>;
   },
   { rejectValue: string }
 >("product/update", async ({ productId, productData }, { rejectWithValue }) => {
@@ -87,6 +102,7 @@ export const updateProduct = createAsyncThunk<
           }
         : undefined
     );
+    showSuccess(response.data.msg);
     return response.data.data;
   } catch (err: any) {
     return rejectWithValue(
@@ -101,7 +117,8 @@ export const deleteProduct = createAsyncThunk<
   { rejectValue: string }
 >("product/delete", async (productId, { rejectWithValue }) => {
   try {
-    await api.delete(`/product/${productId}`);
+    const response = await api.delete(`/product/${productId}`);
+    showSuccess(response.data.msg);
   } catch (err: any) {
     return rejectWithValue(
       err.response?.data?.message || "Deleting product failed"
@@ -179,8 +196,10 @@ const productSlice = createSlice({
         if (index !== -1) {
           state.products[index] = action.payload;
         }
-        // Keep current product in sync when updating on detail page
-        if (state.currentProduct && state.currentProduct.id === action.payload.id) {
+        if (
+          state.currentProduct &&
+          state.currentProduct.id === action.payload.id
+        ) {
           state.currentProduct = action.payload;
         }
       })
@@ -199,6 +218,18 @@ const productSlice = createSlice({
       .addCase(fetchProductsByCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Failed to fetch products by category";
+      })
+      .addCase(fetchProducts.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.products = action.payload;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Failed to fetch products";
       });
   },
 });

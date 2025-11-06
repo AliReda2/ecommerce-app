@@ -55,6 +55,22 @@ export class ProductService {
       msg: 'Products fetched successfully',
     };
   }
+  async getAllProductsAdmin() {
+    const products = await this.prisma.product.findMany({
+      include:{
+        category: true
+      }
+    });
+
+    if (products.length === 0) {
+      throw new NotFoundException('No products found');
+    }
+
+    return {
+      data: products,
+      msg: 'Products fetched successfully',
+    };
+  }
 
   async getProductById(productId: string) {
     const product = await this.prisma.product.findUnique({

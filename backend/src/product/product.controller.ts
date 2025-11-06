@@ -33,6 +33,14 @@ export class ProductController {
   async getAllProducts() {
     return this.productService.getAllProducts();
   }
+  @Get('admin')
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'Get all products Admin' })
+  async getAllProductsAdmin() {
+    return this.productService.getAllProductsAdmin();
+  }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get product by ID' })

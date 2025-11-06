@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { SingleUserResponse, User, UserResponse } from "../types";
 import { api } from "@/api/axios";
+import { showSuccess } from "../alert";
 
 interface userState {
   users: User[];
@@ -44,30 +45,40 @@ export const fetchCurrentUser = createAsyncThunk<
   }
 });
 
-export const banUser = createAsyncThunk<
-  User,
-  string,
-  { rejectValue: string }
->("user/ban", async (userId, { rejectWithValue }) => {
-  try {
-    const response = await api.get<SingleUserResponse>(`/users/ban/${userId}`);
-    return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(err.response?.data?.message || "Banning user failed");
-  }
-});
-
-export const unbanUser = createAsyncThunk<User, string, { rejectValue: string }>(
-  "user/unban",
+export const banUser = createAsyncThunk<User, string, { rejectValue: string }>(
+  "user/ban",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await api.get<SingleUserResponse>(`/users/unban/${userId}`);
+      const response = await api.get<SingleUserResponse>(
+        `/users/ban/${userId}`
+      );
+      showSuccess(response.data.msg);
       return response.data.data;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Unbanning user failed");
+      return rejectWithValue(
+        err.response?.data?.message || "Banning user failed"
+      );
     }
   }
 );
+
+export const unbanUser = createAsyncThunk<
+  User,
+  string,
+  { rejectValue: string }
+>("user/unban", async (userId, { rejectWithValue }) => {
+  try {
+    const response = await api.get<SingleUserResponse>(
+      `/users/unban/${userId}`
+    );
+    showSuccess(response.data.msg);
+    return response.data.data;
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Unbanning user failed"
+    );
+  }
+});
 
 const userSlice = createSlice({
   name: "user",
