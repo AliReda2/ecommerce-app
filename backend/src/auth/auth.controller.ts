@@ -13,6 +13,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Tokens } from './types';
 import { AtGuard, RtGuard } from './guard';
 import { GetUser } from './decorator';
+import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -21,10 +22,23 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Register a user' })
-  register(@Body() dto: AuthRegisterDto): Promise<Tokens> {
+  @ApiOperation({ summary: 'Register a user (email verification required)' })
+  register(
+    @Body() dto: AuthRegisterDto,
+  ): Promise<{ message: string; userId: string }> {
     return this.authService.register(dto);
   }
+
+  @Post('verify-email')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify user email using OTP' })
+  verifyEmail(
+    @GetUser('id') userId: string,
+    @Body() dto: VerifyEmailDto,
+  ): Promise<{ message: string; tokens: Tokens }> {
+    return this.authService.verifyEmail(userId, dto);
+  }
+
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login a user' })

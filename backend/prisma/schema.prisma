@@ -22,14 +22,24 @@ model User {
   address      String?
   phone        String?
   isActive     Boolean  @default(true)
+  isVerified   Boolean  @default(false)
   hashedRtoken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  orders    Order[]
-  cartItems CartItem[]
-  reviews   Review[]
-  Wishlist  Wishlist[]
+  orders            Order[]
+  cartItems         CartItem[]
+  reviews           Review[]
+  Wishlist          Wishlist[]
+  emailVerification EmailVerification?
+}
+
+model EmailVerification {
+  id        String   @id @default(uuid())
+  otp       String
+  expiresAt DateTime
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Category {
@@ -43,6 +53,7 @@ model Category {
 
 model Product {
   id          String   @id @default(uuid())
+  slug        String?
   name        String
   description String?
   price       Float

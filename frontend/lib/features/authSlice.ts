@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 import { api } from "@/api/axios";
-import type { RegisterUser, UserRole } from "../types";
+import type { RegisterResponse, RegisterUser, UserRole } from "../types";
 import { showError } from "../alert";
 
 interface JwtPayload {
@@ -138,22 +138,20 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
 );
 
 export const register = createAsyncThunk<
-  { access_token: string; user: AuthUser },
+  RegisterResponse,
   RegisterUser,
   { rejectValue: string }
 >("auth/register", async (userData, { rejectWithValue }) => {
   try {
     const { data } = await api.post("/auth/register", userData);
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-    document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; samesite=lax`;
 
     return {
-      access_token: data.access_token,
-      user: getUserFromToken(data.access_token),
+      message: data.message,
+      userId: data.userId,
     };
   } catch (err: any) {
     showError(err?.message || "Failed to register");
+
     return rejectWithValue(
       err?.response?.data?.message || err?.message || "Registration failed"
     );

@@ -11,6 +11,8 @@ import { AuthRegisterDto } from './dto';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { MailService } from 'src/mail/mail.service';
+import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,10 +20,12 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private mailService: MailService,
   ) {}
 
   async register(dto: AuthRegisterDto) {
     const hash = await argon.hash(dto.password);
+
     try {
       const user = await this.prisma.user.create({
         data: {
@@ -32,21 +36,43 @@ export class AuthService {
         },
       });
 
-      const fullName = user.firstName + ' ' + user.lastName;
-      // Return the new user
-      const tokens = await this.signToken(user.id, user.role, fullName);
-      // Save the refresh token hash in the database
-      await this.updateRtHash(user.id, tokens.refresh_token);
-      // Return the tokens
-      return tokens;
+      // Send OTP to the user
+      await this.mailService.sendOtp(user.id, user.email);
+
+      return {
+        message: 'Registration successful. Please verify your email.',
+        userId: user.id,
+      };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ForbiddenException('Credentials taken');
+          throw new ForbiddenException('Email already in use.');
         }
       }
       throw error;
     }
+  }
+
+  async verifyEmail(userId: string, dto: VerifyEmailDto) {
+    const verified = await this.mailService.verifyEmail(userId, dto);
+
+    if (!verified) {
+      throw new ForbiddenException('Invalid or expired OTP.');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const fullName = `${user.firstName} ${user.lastName}`;
+
+    const tokens = await this.signToken(user.id, user.role, fullName);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+
+    return {
+      message: 'Email verified successfully.',
+      tokens,
+    };
   }
 
   async login(dto: AuthLoginDto) {
