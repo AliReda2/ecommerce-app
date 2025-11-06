@@ -15,7 +15,7 @@ export default function DeleteProduct({ productId }: { productId: string }) {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
       await dispatch(deleteProduct(productId)).unwrap();
-      router.refresh(); // 👈 Forces server component to re-fetch data
+      router.refresh(); 
     } catch (err: unknown) {
       let msg = "Deleting product failed";
       if (typeof err === "string") {

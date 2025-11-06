@@ -28,7 +28,6 @@ export default async function Product() {
     return (
       <>
         <h1>NO Products To Display</h1>
-        <Link href={"/admin"}>Go Back</Link>
       </>
     );
   }
@@ -37,19 +36,20 @@ export default async function Product() {
       <TableCaption>A list of Products</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Product</TableHead>
+          <TableHead>Product</TableHead>
+          <TableHead>Description</TableHead>
           <TableHead>Category</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Price</TableHead>
-          <TableHead className="text-right">Action</TableHead>
+          <TableHead className="text-center">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {data &&
           data.map((product: Product) => (
             <TableRow key={product.id}>
-              <TableCell className="font-medium">
-                <Avatar className="size-14">
+              <TableCell className="font-medium flex">
+                <Avatar className="size-12">
                   <AvatarImage src={product.imageUrl} />
                   <AvatarFallback>
                     <Image
@@ -60,8 +60,8 @@ export default async function Product() {
                     />
                   </AvatarFallback>
                 </Avatar>
-              </TableCell>
               <TableCell> {product.name}</TableCell>
+              </TableCell>
               <TableCell> {product.description}</TableCell>
               <TableCell> {product?.category?.name ?? "null"}</TableCell>
               <TableCell>

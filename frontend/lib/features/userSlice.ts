@@ -44,32 +44,30 @@ export const fetchCurrentUser = createAsyncThunk<
   }
 });
 
-export const banUser = createAsyncThunk<void, string, { rejectValue: string }>(
-  "user/ban",
+export const banUser = createAsyncThunk<
+  User,
+  string,
+  { rejectValue: string }
+>("user/ban", async (userId, { rejectWithValue }) => {
+  try {
+    const response = await api.get<SingleUserResponse>(`/users/ban/${userId}`);
+    return response.data.data;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data?.message || "Banning user failed");
+  }
+});
+
+export const unbanUser = createAsyncThunk<User, string, { rejectValue: string }>(
+  "user/unban",
   async (userId, { rejectWithValue }) => {
     try {
-      await api.get(`/users/ban/${userId}`);
+      const response = await api.get<SingleUserResponse>(`/users/unban/${userId}`);
+      return response.data.data;
     } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || "Banning user failed"
-      );
+      return rejectWithValue(err.response?.data?.message || "Unbanning user failed");
     }
   }
 );
-
-export const unbanUser = createAsyncThunk<
-  void,
-  string,
-  { rejectValue: string }
->("user/unban", async (userId, { rejectWithValue }) => {
-  try {
-    await api.get(`/users/unban/${userId}`);
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Unbanning user failed"
-    );
-  }
-});
 
 const userSlice = createSlice({
   name: "user",
@@ -105,8 +103,23 @@ const userSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(banUser.fulfilled, (state) => {
+      .addCase(banUser.fulfilled, (state, action) => {
         state.isLoading = false;
+        const updated = action.payload;
+        if (updated) {
+          // update users list
+          const idx = state.users.findIndex((u) => u.id === updated.id);
+          if (idx !== -1) {
+            state.users[idx] = { ...state.users[idx], ...updated };
+          } else {
+            // If not found, optionally push
+            state.users.push(updated);
+          }
+          // update currentUser if matches
+          if (state.currentUser?.id === updated.id) {
+            state.currentUser = { ...state.currentUser, ...updated };
+          }
+        }
       })
       .addCase(banUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -116,8 +129,20 @@ const userSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(unbanUser.fulfilled, (state) => {
+      .addCase(unbanUser.fulfilled, (state, action) => {
         state.isLoading = false;
+        const updated = action.payload;
+        if (updated) {
+          const idx = state.users.findIndex((u) => u.id === updated.id);
+          if (idx !== -1) {
+            state.users[idx] = { ...state.users[idx], ...updated };
+          } else {
+            state.users.push(updated);
+          }
+          if (state.currentUser?.id === updated.id) {
+            state.currentUser = { ...state.currentUser, ...updated };
+          }
+        }
       })
       .addCase(unbanUser.rejected, (state, action) => {
         state.isLoading = false;

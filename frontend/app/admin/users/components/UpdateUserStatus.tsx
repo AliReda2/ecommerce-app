@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { banUser, unbanUser } from "@/lib/features/userSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { useRouter } from "next/navigation";
 
 interface UpdateUserStatusProps {
   userId: string;
@@ -17,7 +16,6 @@ const UpdateUserStatus = ({
   isActive,
 }: UpdateUserStatusProps) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
   const handleBanUser = async () => {
     const confirmed = window.confirm(
@@ -26,6 +24,7 @@ const UpdateUserStatus = ({
     if (!confirmed) return;
 
     try {
+      // thunk now returns the updated User; reducer will merge it into state
       await dispatch(banUser(userId)).unwrap();
     } catch (err) {
       console.error("Failed to ban user:", err);
@@ -40,8 +39,8 @@ const UpdateUserStatus = ({
     if (!confirmed) return;
 
     try {
+      // thunk now returns the updated User; reducer will merge it into state
       await dispatch(unbanUser(userId)).unwrap();
-      router.refresh();
     } catch (err) {
       console.error("Failed to unban user:", err);
       alert("Failed to unban user. Please try again.");
