@@ -52,7 +52,7 @@ export default function Category() {
               <TableCell> {cat.name}</TableCell>
               <TableCell> {cat.description || "Null"}</TableCell>
               <TableCell className="text-right">
-                <Button>
+                <Button variant={'success'}>
                   <Link href={`/admin/categories/${cat.id}/update`}>Update</Link>
                 </Button>
               </TableCell>

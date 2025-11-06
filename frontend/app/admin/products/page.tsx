@@ -77,7 +77,7 @@ export default function Product() {
               <TableCell> {product.price}</TableCell>
               <TableCell className="text-right">
                 <DeleteProduct productId={product.id} />
-                <Button>
+                <Button variant={'success'}>
                   <Link href={`/admin/products/${product.id}/update`}>
                     Update
                   </Link>
