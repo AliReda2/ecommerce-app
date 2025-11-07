@@ -14,6 +14,7 @@ import { Tokens } from './types';
 import { AtGuard, RtGuard } from './guard';
 import { GetUser } from './decorator';
 import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
+import type { User } from '@prisma/client';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -33,10 +34,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify user email using OTP' })
   verifyEmail(
-    @GetUser('id') userId: string,
     @Body() dto: VerifyEmailDto,
   ): Promise<{ message: string; tokens: Tokens }> {
-    return this.authService.verifyEmail(userId, dto);
+    return this.authService.verifyEmail(dto);
   }
 
   @Post('login')

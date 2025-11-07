@@ -53,14 +53,18 @@ export class AuthService {
     }
   }
 
-  async verifyEmail(userId: string, dto: VerifyEmailDto) {
-    const verified = await this.mailService.verifyEmail(userId, dto);
+  async verifyEmail(dto: VerifyEmailDto) {
+    const verified = await this.mailService.verifyEmail(dto);
 
     if (!verified) {
       throw new ForbiddenException('Invalid or expired OTP.');
     }
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
 
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
