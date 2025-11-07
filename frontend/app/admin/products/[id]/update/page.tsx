@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useGoBack from "@/hooks/useGoBack";
 import { fetchAllCategories } from "@/lib/features/categorySlice";
 import { fetchProductById, updateProduct } from "@/lib/features/productSlice";
 import { AppDispatch, RootState } from "@/lib/store";
@@ -26,6 +27,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const UpdateProduct = () => {
+  const goBack = useGoBack();
+  
   const params = useParams();
   const productId = params.id as string;
   const dispatch = useDispatch<AppDispatch>();
@@ -74,102 +77,111 @@ const UpdateProduct = () => {
   };
 
   return (
-    <FieldSet>
-      <FieldLegend>Product</FieldLegend>
-      <FieldDescription>Update Product Details</FieldDescription>
-
-      <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="name">Product name</FieldLabel>
-          <Input
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="description">Description</FieldLabel>
-          <Input
-            id="description"
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-          />
-        </Field>
-
-        <Field>
-          <Select
-            value={formData.categoryId}
-            onValueChange={(value) =>
-              setFormData({ ...formData, categoryId: value })
-            }
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Category" />
-            </SelectTrigger>
-
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="price">Price</FieldLabel>
-          <Input
-            type="number"
-            id="price"
-            value={formData.price}
-            onChange={(e) =>
-              setFormData({ ...formData, price: +e.target.value })
-            }
-          />
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="stock">Stock</FieldLabel>
-          <Input
-            type="number"
-            id="stock"
-            value={formData.stock}
-            onChange={(e) =>
-              setFormData({ ...formData, stock: +e.target.value })
-            }
-          />
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="image">Image</FieldLabel>
-          <Input
-            type="file"
-            id="image"
-            onChange={(e) =>
-              setFormData({ ...formData, image: e.target.files?.[0] || null })
-            }
-          />
-
-          {product?.imageUrl && (
-            <Image
-              src={product.imageUrl}
-              alt="Product Image"
-              width={1080}
-              height={1080}
-              className="rounded-md"
-            />
-          )}
-        </Field>
-      </FieldGroup>
-
-      <Button disabled={isLoading} onClick={handleUpdate}>
-        {isLoading ? "Updating..." : "Update"}
+    <>
+      <Button variant={"outline"} onClick={goBack}>
+        Back
       </Button>
-    </FieldSet>
+      <FieldSet>
+        <FieldLegend className="text-center">Product</FieldLegend>
+        <FieldDescription className="text-center">
+          Update Product Details
+        </FieldDescription>
+
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="name">Product name</FieldLabel>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+            />
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="description">Description</FieldLabel>
+            <Input
+              id="description"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+            />
+          </Field>
+
+          <Field>
+            <Select
+              value={formData.categoryId}
+              onValueChange={(value) =>
+                setFormData({ ...formData, categoryId: value })
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="price">Price</FieldLabel>
+            <Input
+              type="number"
+              id="price"
+              value={formData.price}
+              onChange={(e) =>
+                setFormData({ ...formData, price: +e.target.value })
+              }
+            />
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="stock">Stock</FieldLabel>
+            <Input
+              type="number"
+              id="stock"
+              value={formData.stock}
+              onChange={(e) =>
+                setFormData({ ...formData, stock: +e.target.value })
+              }
+            />
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="image">Image</FieldLabel>
+            <Input
+              type="file"
+              id="image"
+              onChange={(e) =>
+                setFormData({ ...formData, image: e.target.files?.[0] || null })
+              }
+            />
+
+            {product?.imageUrl && (
+              <Image
+                src={product.imageUrl}
+                alt="Product Image"
+                width={1080}
+                height={1080}
+                className="rounded-md"
+              />
+            )}
+          </Field>
+        </FieldGroup>
+
+        <Button disabled={isLoading} onClick={handleUpdate}>
+          {isLoading ? "Updating..." : "Update"}
+        </Button>
+      </FieldSet>
+    </>
   );
 };
 
