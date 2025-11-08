@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from 'src/mail/mail.service';
 import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,7 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
     private mailService: MailService,
+    private userService: UserService,
   ) {}
 
   async register(dto: AuthRegisterDto) {
@@ -113,6 +115,36 @@ export class AuthService {
     // Return the tokens
     return tokens;
   }
+  async googleLogin(id: string) {
+    // Find the user by email
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        role: true,
+        password: true,
+        firstName: true,
+        lastName: true,
+        isActive: true,
+      },
+    });
+    // If user not found, throw an error
+    if (!user) throw new ForbiddenException('User not found (Google login)');
+
+    if (!user.isActive) {
+      throw new ForbiddenException('User account is inactive');
+    }
+    const fullName = user.firstName + ' ' + user.lastName;
+
+    // Return the new tokens
+    const tokens = await this.signToken(user.id, user.role, fullName);
+    // Save the refresh token hash in the database
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    // Return the tokens
+    return tokens;
+  }
 
   async logout(userId: string) {
     if (!userId) {
@@ -196,6 +228,27 @@ export class AuthService {
       data: {
         hashedRtoken: hash,
       },
+    });
+  }
+
+  async validateGoogleUser(googleUser: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    picture?: string;
+  }) {
+    const existingUser = await this.userService.findUserByEmail(
+      googleUser.email,
+    );
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    return await this.userService.createUser({
+      ...googleUser,
+      //generate a random
+      password: Math.random().toString(36).slice(-8),
     });
   }
 }

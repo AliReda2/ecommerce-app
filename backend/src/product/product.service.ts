@@ -7,10 +7,10 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { createClient } from '@supabase/supabase-js';
 import { ConfigService } from '@nestjs/config';
 import sharp from 'sharp';
+import { slugify } from 'src/utility/slugify';
 
 @Injectable()
 export class ProductService {
@@ -57,9 +57,9 @@ export class ProductService {
   }
   async getAllProductsAdmin() {
     const products = await this.prisma.product.findMany({
-      include:{
-        category: true
-      }
+      include: {
+        category: true,
+      },
     });
 
     if (products.length === 0) {
@@ -272,4 +272,20 @@ export class ProductService {
       msg: 'Product deleted successfully',
     };
   }
+
+  // private async generateUniqueSlug(name: string): Promise<string> {
+  //   const baseSlug = slugify(name);
+  //   let slug = baseSlug;
+  //   let counter = 1;
+
+  //   while (true) {
+  //     const exists = await this.prisma.product.findUnique({ where: { slug } });
+  //     if (!exists) break;
+
+  //     slug = `${baseSlug}-${counter}`;
+  //     counter++;
+  //   }
+
+  //   return slug;
+  // }
 }

@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
@@ -70,6 +71,7 @@ export class UserService {
         createdAt: true,
         updatedAt: true,
         isActive: true,
+        isVerified: true,
       },
     });
 
@@ -130,5 +132,19 @@ export class UserService {
       }
       throw error;
     }
+  }
+
+  async findUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+  }
+
+  async createUser(data: CreateUserDto) {
+    return this.prisma.user.create({
+      data,
+    });
   }
 }

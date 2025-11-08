@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -14,7 +17,8 @@ import { Tokens } from './types';
 import { AtGuard, RtGuard } from './guard';
 import { GetUser } from './decorator';
 import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
-import type { User } from '@prisma/client';
+import { GoogleAuthGuard } from './guard/google-auth/google-auth.guard';
+import type { Request, Response } from 'express'; // ✅ add this
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -63,5 +67,20 @@ export class AuthController {
     @GetUser('refreshToken') refreshToken: string,
   ) {
     return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  @ApiOperation({ summary: 'Google OAuth2 login' })
+  googleLogin() {}
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  async googleCallback(@Req() req: Request, @Res() res: Response) {
+    const response = await this.authService.googleLogin(req?.user?.id);
+
+    res.redirect(
+      `http://localhost:3001/auth/google/callback?access_token=${response.access_token}&refresh_token=${response.refresh_token}`,
+    );
   }
 }

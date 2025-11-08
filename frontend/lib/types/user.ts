@@ -20,6 +20,7 @@ export interface User {
   lastName: string;
   email: string;
   isActive: boolean;
+  isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

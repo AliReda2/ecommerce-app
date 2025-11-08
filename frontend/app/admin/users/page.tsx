@@ -36,6 +36,7 @@ const Users = () => {
             <TableHead>Full Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Is Active</TableHead>
+            <TableHead>Is Verified</TableHead>
             <TableHead>Created At</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
@@ -49,6 +50,9 @@ const Users = () => {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
                   {user.isActive ? "✅ Active" : "⛔ Banned"}
+                </TableCell>
+                <TableCell>
+                  {user.isVerified ? "✅ Verified" : "⛔ UnVerified"}
                 </TableCell>
                 <TableCell>{user.createdAt.toString()}</TableCell>
                 <TableCell className="text-right">

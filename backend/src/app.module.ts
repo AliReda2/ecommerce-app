@@ -10,10 +10,14 @@ import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { MailModule } from './mail/mail.module';
+import googleOAuthConfig from './config/google-oauth.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [googleOAuthConfig],
+    }),
     AuthModule,
     PrismaModule,
     UserModule,
