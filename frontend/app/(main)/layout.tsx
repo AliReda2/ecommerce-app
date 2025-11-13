@@ -4,6 +4,7 @@
 import { Provider } from "react-redux";
 import { store } from "@/lib/store";
 import "@/app/globals.css";
+import Navbar from "./component/Navbar";
 
 export default function MainLayout({
   children,
@@ -12,7 +13,10 @@ export default function MainLayout({
 }) {
   return (
     <Provider store={store}>
-      <main className="flex-1 p-4 ">{children}</main>
+      <main className="bg-[url('/images/pattern-bg.png')] bg-repeat bg-size-[300px_300px]">
+        <Navbar />
+        {children}
+      </main>
     </Provider>
   );
 }

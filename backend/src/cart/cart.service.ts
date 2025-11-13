@@ -62,11 +62,18 @@ export class CartService {
       };
     }
 
+    const product = await this.prisma.product.findUnique({
+      where: { id: data.productId },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
     const newCartItem = await this.prisma.cartItem.create({
       data: {
         userId,
         productId: data.productId,
-        productPrice: data.productPrice,
+        productPrice: product.price,
         quantity: data.quantity,
       },
     });
