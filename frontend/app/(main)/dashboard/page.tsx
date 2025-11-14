@@ -1,4 +1,5 @@
 import CategoryCarousel from "../component/CategoryCarousel";
+import Footer from "../component/Footer";
 import Hero from "../component/Hero";
 import Products from "../component/Products";
 
@@ -10,6 +11,7 @@ const page = () => {
         <CategoryCarousel />
         <Products />
       </div>
+      <Footer />
     </>
   );
 };

@@ -1,12 +1,12 @@
 export interface Category {
   id: string;
   name: string;
-  description?: string;
+  imageUrl?: string;
 }
 export interface createCategoryDto {
   id: string;
   name: string;
-  description?: string;
+  imageUrl?: string;
 }
 
 export interface CategoryResponse {

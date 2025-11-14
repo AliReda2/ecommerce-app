@@ -1,7 +1,7 @@
 import { api } from "@/api/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Category, CategoryResponse, SingleCategoryResponse } from "../types";
-import { showSuccess } from "../alert";
+import toast from "react-hot-toast";
 
 interface categoryState {
   categories: Category[];
@@ -56,11 +56,21 @@ export const updateCategory = createAsyncThunk<
   "category/update",
   async ({ categoryId, categoryData }, { rejectWithValue }) => {
     try {
+      const isFormData =
+        typeof FormData !== "undefined" && categoryData instanceof FormData;
+
       const response = await api.patch<SingleCategoryResponse>(
         `/category/${categoryId}`,
-        categoryData
+        categoryData as any,
+        isFormData
+          ? {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          : undefined
       );
-      showSuccess(response.data.msg);
+      toast.success(response.data.msg);
       return response.data.data;
     } catch (err: any) {
       return rejectWithValue(
@@ -69,6 +79,29 @@ export const updateCategory = createAsyncThunk<
     }
   }
 );
+export const createCategory = createAsyncThunk<
+  Category,
+  FormData,
+  { rejectValue: string }
+>("category/create", async (categoryData, { rejectWithValue }) => {
+  try {
+    const response = await api.post<SingleCategoryResponse>(
+      `/category`,
+      categoryData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    toast.success(response.data.msg);
+    return response.data.data;
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Creating category failed"
+    );
+  }
+});
 
 export const categorySlice = createSlice({
   name: "category",
@@ -108,15 +141,33 @@ export const categorySlice = createSlice({
       .addCase(updateCategory.fulfilled, (state, action) => {
         state.isLoading = false;
         const index = state.categories.findIndex(
-          (cat) => cat.id === action.payload.id
+          (category) => category.id === action.payload.id
         );
         if (index !== -1) {
           state.categories[index] = action.payload;
+        }
+        if (
+          state.selectedCategory &&
+          state.selectedCategory.id === action.payload.id
+        ) {
+          state.selectedCategory = action.payload;
         }
       })
       .addCase(updateCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Failed to update category";
+      })
+      .addCase(createCategory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createCategory.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.categories.push(action.payload);
+      })
+      .addCase(createCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Failed to create category";
       });
   },
 });

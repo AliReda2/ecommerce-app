@@ -47,7 +47,7 @@ api.interceptors.response.use(
         // Handle refresh token failure (e.g., logout user)
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/login";
+        window.location.href = "/";
         return Promise.reject(refreshError);
       }
     }

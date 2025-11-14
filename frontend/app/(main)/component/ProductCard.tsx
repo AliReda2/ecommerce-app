@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import Link from "next/link";
 import { Product } from "@/lib/types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { addToCart } from "@/lib/features/cartSlice";
+import toast from "react-hot-toast";
+import { useAppSelector } from "@/lib/hooks";
+import { checkAuth } from "@/lib/features/authSlice";
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +18,12 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const dispatch = useDispatch<AppDispatch>();
+  const { user, authChecked } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
   const [quantity, setQuantity] = useState(1);
 
   const increase = () => setQuantity((q) => q + 1);
@@ -23,6 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = (productId: string, quantity: number) => {
     dispatch(addToCart({ productId, quantity }));
+    toast.success(`${product.name} added to cart!`);
   };
 
   return (
@@ -88,14 +97,37 @@ export default function ProductCard({ product }: ProductCardProps) {
             </button>
           </div>
 
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => handleAddToCart(product.id, quantity)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all"
-          >
-            Add to Cart
-          </Button>
+          {user ? (
+            // Logged in
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => handleAddToCart(product.id, quantity)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all"
+            >
+              Add to Cart
+            </Button>
+          ) : authChecked ? (
+            // Not logged in, but auth check completed
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => toast.error("Login first")}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all"
+            >
+              Add to Cart
+            </Button>
+          ) : (
+            // Auth still loading
+            <Button
+              variant="default"
+              size="sm"
+              disabled
+              className="bg-gray-300 text-gray-500 rounded-lg shadow-sm transition-all"
+            >
+              Loading...
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

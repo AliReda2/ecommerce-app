@@ -16,6 +16,7 @@ import { AppDispatch, RootState } from "@/lib/store";
 import { useEffect } from "react";
 import { fetchAllCategories } from "@/lib/features/categorySlice";
 import type { Category } from "@/lib/types";
+import Image from "next/image";
 
 export default function Category() {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,7 +41,7 @@ export default function Category() {
         <TableRow>
           <TableHead className="w-[100px]">ID</TableHead>
           <TableHead>Category</TableHead>
-          <TableHead>Description</TableHead>
+          <TableHead>Image</TableHead>
           <TableHead className="text-right">Action</TableHead>
         </TableRow>
       </TableHeader>
@@ -50,10 +51,12 @@ export default function Category() {
             <TableRow key={cat.id}>
               <TableCell className="font-medium">{cat.id}</TableCell>
               <TableCell> {cat.name}</TableCell>
-              <TableCell> {cat.description || "Null"}</TableCell>
+              <TableCell> {cat.imageUrl && <Image src={cat.imageUrl} alt={cat.name} width={60} height={60} />}</TableCell>
               <TableCell className="text-right">
-                <Button variant={'success'}>
-                  <Link href={`/admin/categories/${cat.id}/update`}>Update</Link>
+                <Button variant={"success"}>
+                  <Link href={`/admin/categories/${cat.id}/update`}>
+                    Update
+                  </Link>
                 </Button>
               </TableCell>
             </TableRow>

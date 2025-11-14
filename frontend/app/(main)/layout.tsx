@@ -1,10 +1,10 @@
-// src/app/(main)/layout.tsx
 "use client";
 
 import { Provider } from "react-redux";
 import { store } from "@/lib/store";
 import "@/app/globals.css";
 import Navbar from "./component/Navbar";
+import { Toaster } from "react-hot-toast";
 
 export default function MainLayout({
   children,
@@ -13,9 +13,10 @@ export default function MainLayout({
 }) {
   return (
     <Provider store={store}>
-      <main className="bg-[url('/images/pattern-bg.png')] bg-repeat bg-size-[300px_300px]">
+      <main className="pt-26 bg-[url('/images/pattern-bg.png')] bg-repeat bg-size-[300px_300px]">
         <Navbar />
         {children}
+        <Toaster position="top-right" reverseOrder={false} />
       </main>
     </Provider>
   );

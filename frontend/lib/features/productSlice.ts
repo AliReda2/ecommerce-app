@@ -5,7 +5,7 @@ import {
   SingleProductResponse,
 } from "../types/product";
 import { api } from "@/api/axios";
-import { showSuccess } from "../alert";
+import toast from "react-hot-toast";
 
 interface productState {
   products: Product[];
@@ -68,7 +68,7 @@ export const createProduct = createAsyncThunk<
         },
       }
     );
-    showSuccess(response.data.msg);
+    toast.success(response.data.msg);
     return response.data.data;
   } catch (err: any) {
     return rejectWithValue(
@@ -102,7 +102,7 @@ export const updateProduct = createAsyncThunk<
           }
         : undefined
     );
-    showSuccess(response.data.msg);
+    toast.success(response.data.msg);
     return response.data.data;
   } catch (err: any) {
     return rejectWithValue(
@@ -118,7 +118,7 @@ export const deleteProduct = createAsyncThunk<
 >("product/delete", async (productId, { rejectWithValue }) => {
   try {
     const response = await api.delete(`/product/${productId}`);
-    showSuccess(response.data.msg);
+    toast.success(response.data.msg);
   } catch (err: any) {
     return rejectWithValue(
       err.response?.data?.message || "Deleting product failed"

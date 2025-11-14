@@ -8,9 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { AppDispatch, RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
-import { showError, showSuccess } from "@/lib/alert";
 import { login } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function SignInForm() {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,7 +38,7 @@ export default function SignInForm() {
         })
       ).unwrap();
 
-      showSuccess("Logged in successfully!");
+      toast.success("Logged in successfully!");
 
       if (user.user.role === "ADMIN") {
         router.replace("/admin");
@@ -46,7 +46,7 @@ export default function SignInForm() {
         router.replace("/");
       }
     } catch (err: any) {
-      showError(err || "Failed to login");
+      toast.error(err || "Failed to login");
     }
   };
 

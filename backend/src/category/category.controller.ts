@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -15,6 +17,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { AtGuard } from 'src/auth/guard';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('category')
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
@@ -41,8 +44,12 @@ export class CategoryController {
     required: true,
     description: 'Data for creating a new category',
   })
-  async createCategory(@Body() data: CreateCategoryDto) {
-    return this.categoryService.createCategory(data);
+  @UseInterceptors(FileInterceptor('image'))
+  async createCategory(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() data: CreateCategoryDto,
+  ) {
+    return this.categoryService.createCategory(data, file);
   }
 
   @Patch(':id')
@@ -55,11 +62,14 @@ export class CategoryController {
     required: true,
     description: 'Data for updating the category',
   })
+  @UseInterceptors(FileInterceptor('image'))
   async updateCategory(
     @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+
     @Body() data: UpdateCategoryDto,
   ) {
-    return this.categoryService.updateCategory(id, data);
+    return this.categoryService.updateCategory(id, data, file);
   }
 
   @Delete(':id')

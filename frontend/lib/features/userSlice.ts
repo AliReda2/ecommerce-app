@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { SingleUserResponse, User, UserResponse } from "../types";
 import { api } from "@/api/axios";
-import { showSuccess } from "../alert";
+import toast from "react-hot-toast";
 
 interface userState {
   users: User[];
@@ -52,7 +52,7 @@ export const banUser = createAsyncThunk<User, string, { rejectValue: string }>(
       const response = await api.get<SingleUserResponse>(
         `/users/ban/${userId}`
       );
-      showSuccess(response.data.msg);
+      toast.success(response.data.msg);
       return response.data.data;
     } catch (err: any) {
       return rejectWithValue(
@@ -71,7 +71,7 @@ export const unbanUser = createAsyncThunk<
     const response = await api.get<SingleUserResponse>(
       `/users/unban/${userId}`
     );
-    showSuccess(response.data.msg);
+    toast.success(response.data.msg);
     return response.data.data;
   } catch (err: any) {
     return rejectWithValue(

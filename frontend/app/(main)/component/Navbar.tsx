@@ -4,14 +4,63 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { User, Heart, ShoppingCart, Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState, useRef } from "react";
+import LoginModal from "./LoginModal";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks";
+import toast from "react-hot-toast";
+import { checkAuth, logout } from "@/lib/features/authSlice";
+import { getCartItems } from "@/lib/features/cartSlice";
 
 const Navbar = () => {
+  const dispatch = useAppDispatch();
+  const { user, authChecked } = useAppSelector((state) => state.auth);
+  const { cartItems } = useAppSelector((state) => state.cart);
+
+  const [openLogin, setOpenLogin] = useState(false);
+  const [openPanel, setOpenPanel] = useState(false);
+
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+  // Close panel when clicking outside
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setOpenPanel(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  useEffect(() => {
+    if (authChecked && user) {
+      dispatch(getCartItems());
+    }
+  }, [authChecked, user, dispatch]);
+
+  const handleProfileClick = () => {
+    if (!user) {
+      setOpenLogin(true);
+    } else {
+      setOpenPanel((prev) => !prev);
+    }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setOpenPanel(false);
+  };
+
   return (
-    <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-26">
-          {/* Logo */}
-          <div>
+    <>
+      <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-26">
+            {/* Logo */}
             <Image
               src="/images/codart.png"
               alt="logo"
@@ -19,44 +68,98 @@ const Navbar = () => {
               width={100}
               className="object-contain"
             />
-          </div>
 
-          {/* Search */}
-          <div className="flex-1 px-4 max-w-xl relative">
-            <Input
-              type="search"
-              placeholder="Search for products..."
-              className="w-full h-12 rounded-3xl bg-gray-50"
-            />
-            <Search
-              size={20}
-              className="absolute right-7 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-            />
-          </div>
+            {/* Search */}
+            <div className="flex-1 px-4 max-w-xl relative">
+              <Input
+                type="search"
+                placeholder="Search for products..."
+                className="w-full h-12 rounded-3xl bg-gray-50"
+              />
+              <Search
+                size={20}
+                className="absolute right-7 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+            </div>
 
-          {/* Support */}
-          <div className="hidden md:flex flex-col items-center px-4 border-r border-gray-200">
-            <small className="text-gray-400">For Support</small>
-            <strong className="text-gray-800 text-lg">+961 70 031 455</strong>
-          </div>
+            {/* Support */}
+            <div className="hidden md:flex flex-col items-center px-4 border-r border-gray-200">
+              <small className="text-gray-400">For Support</small>
+              <strong className="text-gray-800 text-lg">+961 70 031 455</strong>
+            </div>
 
-          {/* Actions: Profile, Wishlist, Cart */}
-          <div className="flex items-center space-x-6 px-4 text-gray-700">
-            <button className="hover:text-blue-600 hover:scale-110 transition-transform duration-200">
-              <User size={24} />
-            </button>
-            <button className="hover:text-red-600 hover:scale-110 transition-transform duration-200">
-              <Heart size={24} />
-            </button>
-            <button className="hover:text-green-600 hover:scale-110 transition-transform duration-200">
-              <Link href={"/cart"}>
-                <ShoppingCart size={24} />
-              </Link>
-            </button>
+            {/* Actions */}
+            <div className="flex items-center space-x-6 px-4 text-gray-700 relative">
+              {/* Profile */}
+              <button
+                onClick={handleProfileClick}
+                className="hover:text-blue-600 hover:scale-110 transition-transform duration-200"
+              >
+                <User size={24} />
+              </button>
+
+              {/* Dropdown Panel */}
+              {openPanel && (
+                <div
+                  ref={panelRef}
+                  className="absolute right-0 mt-40 w-48 bg-white shadow-lg rounded-lg border border-gray-100 py-2 z-50"
+                >
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                  >
+                    Edit Profile
+                  </Link>
+
+                  <Link
+                    href="/orders"
+                    className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                  >
+                    My Orders
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-50 text-red-600"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+
+              {/* Wishlist */}
+              <button className="hover:text-red-600 hover:scale-110 transition-transform duration-200">
+                <Heart size={24} />
+              </button>
+
+              {/* Cart */}
+              <button className="hover:scale-110 transition-transform duration-200">
+                {user ? (
+                  <Link href="/cart" className="relative">
+                    <ShoppingCart size={24} />
+                    {cartItems.length > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                        {cartItems.length}
+                      </span>
+                    )}
+                  </Link>
+                ) : authChecked ? (
+                  <ShoppingCart
+                    size={24}
+                    onClick={() => toast.error("Login first")}
+                  />
+                ) : (
+                  <ShoppingCart size={24} className="opacity-50" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Login/Register Modal */}
+      <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
+    </>
   );
 };
 

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import useGoBack from "@/hooks/useGoBack";
 import { getCategoryById, updateCategory } from "@/lib/features/categorySlice";
 import { AppDispatch, RootState } from "@/lib/store";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,21 +35,21 @@ const UpdateCategory = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
+    image: null as File | null,
   });
 
   useEffect(() => {
     if (!selectedCategory) return;
     setFormData({
       name: selectedCategory.name,
-      description: selectedCategory.description ?? "",
+      image: null,
     });
   }, [selectedCategory]);
 
   const handleUpdate = () => {
     const form = new FormData();
     form.append("name", formData.name);
-    form.append("description", formData.description);
+    if (formData.image) form.append("image", formData.image);
 
     dispatch(updateCategory({ categoryId, categoryData: form }));
   };
@@ -76,14 +77,24 @@ const UpdateCategory = () => {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="description">Description</FieldLabel>
+            <FieldLabel htmlFor="image">Image</FieldLabel>
             <Input
-              id="description"
-              value={formData.description}
+              type="file"
+              id="image"
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData({ ...formData, image: e.target.files?.[0] || null })
               }
             />
+
+            {selectedCategory?.imageUrl && (
+              <Image
+                src={selectedCategory.imageUrl}
+                alt="Category Image"
+                width={1080}
+                height={1080}
+                className="rounded-md"
+              />
+            )}
           </Field>
         </FieldGroup>
 

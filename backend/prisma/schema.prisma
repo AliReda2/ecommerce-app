@@ -43,10 +43,10 @@ model EmailVerification {
 }
 
 model Category {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  name      String   @unique
+  imageUrl  String?
+  createdAt DateTime @default(now())
 
   products Product[]
 }

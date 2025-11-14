@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 import { api } from "@/api/axios";
 import type { RegisterResponse, RegisterUser, UserRole } from "../types";
-import { showError } from "../alert";
+import toast from "react-hot-toast";
 
 interface JwtPayload {
   sub: string;
@@ -37,18 +37,18 @@ const initialState: AuthState = {
   authChecked: false,
 };
 
-// Helper function to extract user data from token (throws if invalid)
 const getUserFromToken = (token: string): AuthUser => {
   try {
     const decoded = jwtDecode<JwtPayload>(token);
     if (!decoded?.sub) throw new Error("Invalid token payload");
+
     return {
       id: decoded.sub,
       role: decoded.role,
       fullName: decoded.fullName,
     };
   } catch (err: any) {
-    throw new Error("Failed to decode token", err);
+    throw new Error(`Failed to decode token: ${err?.message || err}`);
   }
 };
 
@@ -88,7 +88,7 @@ export const checkAuth = createAsyncThunk<
       user: getUserFromToken(token),
     };
   } catch (err: any) {
-    showError(err?.message || "Failed to check authentication");
+    toast.error(err?.message || "Failed to check authentication");
     // remove only auth keys
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -113,7 +113,6 @@ export const login = createAsyncThunk<
       user: getUserFromToken(data.access_token),
     };
   } catch (err: any) {
-    showError(err?.message || "Failed to login");
     return rejectWithValue(
       err?.response?.data?.message || err?.message || "Login failed"
     );
@@ -129,7 +128,6 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
     } catch (err: any) {
-      showError(err?.message || "Failed to logout");
       return rejectWithValue(
         err?.response?.data?.message || err?.message || "Logout failed"
       );
@@ -150,8 +148,6 @@ export const register = createAsyncThunk<
       userId: data.userId,
     };
   } catch (err: any) {
-    showError(err?.message || "Failed to register");
-
     return rejectWithValue(
       err?.response?.data?.message || err?.message || "Registration failed"
     );
@@ -216,13 +212,12 @@ const authSlice = createSlice({
       })
 
       .addCase(register.pending, handlePending)
-      .addCase(register.fulfilled, (state, { payload }) => {
+      .addCase(register.fulfilled, (state) => {
         state.isLoading = false;
-        state.access_token = payload.access_token;
-        state.user = payload.user;
         state.registrationSuccess = true;
-        state.authChecked = true;
+        state.error = null;
       })
+
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
