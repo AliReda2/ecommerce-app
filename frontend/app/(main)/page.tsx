@@ -1,14 +1,18 @@
-"use client";
+import CategoryCarousel from "./component/CategoryCarousel";
+import Hero from "./component/Hero";
+import Products from "./component/Products";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
-export default function Home() {
-  const router = useRouter();
+const page = () => {
+  return (
+    <>
+      <Hero />
+      <div className="w-full flex flex-col items-center justify-center pt-20 bg-white mx-auto">
+        <CategoryCarousel />
+        <Products />
+      </div>
+    </>
+  );
+};
 
-  useEffect(() => {
-    router.replace("/admin-auth/login");
-  }, [router]);
-
-  return <h1>Hello</h1>;
-}
+export default page;

@@ -70,7 +70,7 @@ const WishListPage = () => {
             <p className="text-lg font-medium">Your WishList is empty</p>
             <Button
               className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.push("/")}
             >
               Continue Shopping
             </Button>

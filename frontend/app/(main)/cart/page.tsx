@@ -97,7 +97,7 @@ const Cart = () => {
               Add items to your cart to see them here.
             </p>
             <Button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg">
-              <Link href="/dashboard">Continue Shopping</Link>
+              <Link href="/">Continue Shopping</Link>
             </Button>
           </div>
         ) : (
@@ -228,7 +228,7 @@ const Cart = () => {
                   variant="outline"
                   className="w-full border-gray-300 text-gray-700 hover:bg-gray-100"
                 >
-                  <Link href="/dashboard">Continue Shopping</Link>
+                  <Link href="/">Continue Shopping</Link>
                 </Button>
               </CardContent>
             </Card>
