@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         rule.test?.test?.("test.svg")
     );
 
+    if (!fileLoaderRule) {
+      return config;
+    }
+
     config.module.rules.push(
       {
         ...fileLoaderRule,
@@ -36,7 +40,7 @@ const nextConfig: NextConfig = {
       {
         test: /\.svg$/i,
         issuer: fileLoaderRule.issuer,
-        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] },
+        resourceQuery: { not: [...(Array.isArray((fileLoaderRule.resourceQuery as any)?.not) ? (fileLoaderRule.resourceQuery as any).not : []), /url/] },
         use: ["@svgr/webpack"],
       }
     );
