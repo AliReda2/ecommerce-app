@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import Link from "next/link";
 import Image from "next/image";
 import { AppDispatch } from "@/lib/store";
 import { useDispatch } from "react-redux";

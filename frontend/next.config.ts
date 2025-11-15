@@ -11,9 +11,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack(config) {
-    const fileLoaderRule = config.module.rules.find((rule: any) =>
-      rule.test?.test?.("test.svg")
+  webpack(config: {module: {rules: Array<{test?: {test?: (s: string) => boolean}; issuer?: unknown; resourceQuery?: unknown; exclude?: RegExp; use?: string[]}>}}) {
+    const fileLoaderRule = config.module.rules.find(
+      (rule: {test?: {test?: (s: string) => boolean}}) => rule.test?.test?.("test.svg")
     );
 
     config.module.rules.push(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
@@ -25,24 +25,26 @@ import toast from "react-hot-toast";
 const Cart = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { cartItems, isLoading, error } = useAppSelector((state) => state.cart);
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [updatingItemId, setUpdatingItemId] = useState<string | null>(null);
+
+  const quantities = useMemo(
+    () =>
+      cartItems.reduce(
+        (acc, item) => {
+          acc[item.id] = item.quantity;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+    [cartItems]
+  );
 
   useEffect(() => {
     dispatch(getCartItems());
   }, [dispatch]);
 
-  useEffect(() => {
-    const initialQuantities: Record<string, number> = {};
-    cartItems.forEach((item) => {
-      initialQuantities[item.id] = item.quantity;
-    });
-    setQuantities(initialQuantities);
-  }, [cartItems]);
-
   const handleIncrease = async (cartItemId: string) => {
     setUpdatingItemId(cartItemId);
-    setQuantities((prev) => ({ ...prev, [cartItemId]: prev[cartItemId] + 1 }));
     await dispatch(
       updateQuantity({ cartItemId, quantity: quantities[cartItemId] + 1 })
     );
@@ -51,8 +53,9 @@ const Cart = () => {
 
   const handleDecrease = async (cartItemId: string) => {
     const newQuantity = Math.max(1, quantities[cartItemId] - 1);
-    setQuantities((prev) => ({ ...prev, [cartItemId]: newQuantity }));
+    setUpdatingItemId(cartItemId);
     await dispatch(updateQuantity({ cartItemId, quantity: newQuantity }));
+    setUpdatingItemId(null);
   };
 
   const handleRemove = (cartItemId: string) =>

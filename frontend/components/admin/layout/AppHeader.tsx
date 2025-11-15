@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
 import { useSidebar } from "../context/SidebarContext";
@@ -83,11 +84,13 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link href="/" className="lg:hidden">
-            <img className="dark:hidden" src="/images/codart.png" alt="Logo" />
-            <img
+            <Image className="dark:hidden" src="/images/codart.png" alt="Logo" width={40} height={40} />
+            <Image
               className="hidden dark:block"
               src="/images/codart.png"
               alt="Logo"
+              width={40}
+              height={40}
             />
           </Link>
 

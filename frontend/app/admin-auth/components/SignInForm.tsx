@@ -45,8 +45,9 @@ export default function SignInForm() {
       } else {
         router.replace("/");
       }
-    } catch (err: any) {
-      toast.error(err || "Failed to login");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to login";
+      toast.error(errorMessage);
     }
   };
 

@@ -62,8 +62,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         await dispatch(addToWishlist({ productId: product.id })).unwrap();
         toast.success(`${product.name} added to wishlist`);
       }
-    } catch (error: any) {
-      toast.error(error || "Failed to update wishlist");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to update wishlist";
+      toast.error(errorMessage);
     }
   };
 

@@ -17,8 +17,13 @@ interface UserProfileMapProps {
   setCoordinates: (coords: string) => void;
 }
 
-if (!(L.Icon.Default.prototype as any)._iconPatched) {
-  delete (L.Icon.Default.prototype as any)._getIconUrl;
+interface IconPrototype {
+  _iconPatched?: boolean;
+  _getIconUrl?: () => string;
+}
+
+if (!(L.Icon.Default.prototype as unknown as IconPrototype)._iconPatched) {
+  delete (L.Icon.Default.prototype as unknown as IconPrototype)._getIconUrl;
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: "/leaflet/marker-icon-2x.png",
@@ -26,7 +31,7 @@ if (!(L.Icon.Default.prototype as any)._iconPatched) {
     shadowUrl: "/leaflet/marker-shadow.png",
   });
 
-  (L.Icon.Default.prototype as any)._iconPatched = true;
+  (L.Icon.Default.prototype as unknown as IconPrototype)._iconPatched = true;
 }
 
 export default function UserProfileMap({

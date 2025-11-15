@@ -29,10 +29,9 @@ export const fetchProducts = createAsyncThunk<
   try {
     const response = await api.get<ProductResponse>("/product");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching products failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching products failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -46,10 +45,9 @@ export const fetchProductById = createAsyncThunk<
       `/product/${productId}`
     );
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching product failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching product failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -70,10 +68,9 @@ export const createProduct = createAsyncThunk<
     );
     toast.success(response.data.msg);
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Creating product failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Creating product failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -93,7 +90,7 @@ export const updateProduct = createAsyncThunk<
 
     const response = await api.patch<SingleProductResponse>(
       `/product/${productId}`,
-      productData as any,
+      productData as unknown,
       isFormData
         ? {
             headers: {
@@ -104,10 +101,9 @@ export const updateProduct = createAsyncThunk<
     );
     toast.success(response.data.msg);
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Updating product failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Updating product failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -119,10 +115,9 @@ export const deleteProduct = createAsyncThunk<
   try {
     const response = await api.delete(`/product/${productId}`);
     toast.success(response.data.msg);
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Deleting product failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Deleting product failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -136,10 +131,9 @@ export const fetchProductsByCategory = createAsyncThunk<
       `/product/category/${category}`
     );
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching products by category failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching products by category failed";
+    return rejectWithValue(errorMsg);
   }
 });
 

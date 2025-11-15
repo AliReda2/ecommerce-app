@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 import { useSidebar } from "../context/SidebarContext";
 import {
@@ -73,7 +74,6 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     // Use requestAnimationFrame to defer state update
     const updateOpenSubmenu = () => {
-      let submenuMatched = false;
       let matchedSubmenu: { type: "main" | "others"; index: number } | null =
         null;
 
@@ -87,7 +87,6 @@ const AppSidebar: React.FC = () => {
                   type: menuType as "main" | "others",
                   index,
                 };
-                submenuMatched = true;
               }
             });
           }
@@ -285,14 +284,14 @@ const AppSidebar: React.FC = () => {
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
-              <img
+              <Image
                 className="dark:hidden"
                 src="/images/codart.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
-              <img
+              <Image
                 className="hidden dark:block"
                 src="/images/codart.png"
                 alt="Logo"
@@ -301,7 +300,7 @@ const AppSidebar: React.FC = () => {
               />
             </>
           ) : (
-            <img src="/images/codart.png" alt="Logo" width={32} height={32} />
+            <Image src="/images/codart.png" alt="Logo" width={32} height={32} />
           )}
         </Link>
       </div>

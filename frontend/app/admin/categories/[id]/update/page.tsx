@@ -15,7 +15,7 @@ import { getCategoryById, updateCategory } from "@/lib/features/categorySlice";
 import { AppDispatch, RootState } from "@/lib/store";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const UpdateCategory = () => {
@@ -34,17 +34,9 @@ const UpdateCategory = () => {
   }, [dispatch, categoryId]);
 
   const [formData, setFormData] = useState({
-    name: "",
+    name: selectedCategory?.name ?? "",
     image: null as File | null,
   });
-
-  useEffect(() => {
-    if (!selectedCategory) return;
-    setFormData({
-      name: selectedCategory.name,
-      image: null,
-    });
-  }, [selectedCategory]);
 
   const handleUpdate = () => {
     const form = new FormData();

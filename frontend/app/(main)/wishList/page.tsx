@@ -145,7 +145,16 @@ const WishListPage = () => {
                       <Button
                         variant="default"
                         size="sm"
-                        onClick={() => handleAddToCart(item.product, quantity)}
+                        onClick={() =>
+                          handleAddToCart(
+                            {
+                              ...item.product,
+                              imageUrl: item.product?.imageUrl ?? undefined,
+                              category: item.product?.category ?? undefined,
+                            },
+                            quantity
+                          )
+                        }
                         className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all"
                       >
                         Add to Cart

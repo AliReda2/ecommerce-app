@@ -23,7 +23,7 @@ import { fetchProductById, updateProduct } from "@/lib/features/productSlice";
 import { AppDispatch, RootState } from "@/lib/store";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const UpdateProduct = () => {
@@ -44,25 +44,13 @@ const UpdateProduct = () => {
   }, [dispatch, productId]);
 
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    categoryId: "",
-    price: 0,
-    stock: 0,
+    name: product?.name ?? "",
+    description: product?.description ?? "",
+    categoryId: product?.categoryId ?? "",
+    price: product?.price ?? 0,
+    stock: product?.stock ?? 0,
     image: null as File | null,
   });
-
-  useEffect(() => {
-    if (!product) return;
-    setFormData({
-      name: product.name,
-      description: product.description ?? "",
-      categoryId: product.categoryId,
-      price: product.price,
-      stock: product.stock,
-      image: null,
-    });
-  }, [product]);
 
   const handleUpdate = () => {
     const form = new FormData();

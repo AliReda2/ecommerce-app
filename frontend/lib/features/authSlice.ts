@@ -47,8 +47,9 @@ const getUserFromToken = (token: string): AuthUser => {
       role: decoded.role,
       fullName: decoded.fullName,
     };
-  } catch (err: any) {
-    throw new Error(`Failed to decode token: ${err?.message || err}`);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to decode token: ${message}`);
   }
 };
 
@@ -87,12 +88,13 @@ export const checkAuth = createAsyncThunk<
       access_token: token,
       user: getUserFromToken(token),
     };
-  } catch (err: any) {
-    toast.error(err?.message || "Failed to check authentication");
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : "Token invalid";
+    toast.error(errorMessage || "Failed to check authentication");
     // remove only auth keys
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    return rejectWithValue(err?.message || "Token invalid");
+    return rejectWithValue(errorMessage);
   }
 });
 
@@ -112,10 +114,9 @@ export const login = createAsyncThunk<
       access_token: data.access_token,
       user: getUserFromToken(data.access_token),
     };
-  } catch (err: any) {
-    return rejectWithValue(
-      err?.response?.data?.message || err?.message || "Login failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Login failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -127,10 +128,9 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
       // remove only the auth keys
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
-    } catch (err: any) {
-      return rejectWithValue(
-        err?.response?.data?.message || err?.message || "Logout failed"
-      );
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Logout failed";
+      return rejectWithValue(errorMsg);
     }
   }
 );
@@ -147,10 +147,9 @@ export const register = createAsyncThunk<
       message: data.message,
       userId: data.userId,
     };
-  } catch (err: any) {
-    return rejectWithValue(
-      err?.response?.data?.message || err?.message || "Registration failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Registration failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -169,9 +168,9 @@ const authSlice = createSlice({
       state.error = null;
     };
 
-    const handleRejected = (state: AuthState, action: any) => {
+    const handleRejected = (state: AuthState, action: {payload?: string}) => {
       state.isLoading = false;
-      state.error = action.payload as string;
+      state.error = action.payload || null;
     };
 
     builder

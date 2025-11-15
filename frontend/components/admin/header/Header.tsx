@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import { ThemeToggleButton } from "../common/ThemeToggleButton";
 import NotificationDropdown from "./NotificationDropdown";
 import UserDropdown from "./UserDropdown";
@@ -79,15 +80,19 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
           </button>
 
           <Link href="/" className="lg:hidden">
-            <img
+            <Image
               className="dark:hidden"
-              src="images/logo/logo.svg"
+              src="/images/logo/logo.svg"
               alt="Logo"
+              width={40}
+              height={40}
             />
-            <img
+            <Image
               className="hidden dark:block"
-              src="images/logo/logo-dark.svg"
+              src="/images/logo/logo-dark.svg"
               alt="Logo"
+              width={40}
+              height={40}
             />
           </Link>
 

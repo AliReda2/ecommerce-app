@@ -23,10 +23,9 @@ export const getCartItems = createAsyncThunk<
   try {
     const { data } = await api.get<CartResponse>("/cart");
     return data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.msg || err.message || "Fetching cart items failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching cart items failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -45,10 +44,9 @@ export const addToCart = createAsyncThunk<
       }
     );
     return response.data.data; // unwrap here
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.msg || err.message || "Adding to cart failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Adding to cart failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -63,10 +61,9 @@ export const removeFromCart = createAsyncThunk<
       data: { cartItemId },
     });
     return cartItemId;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.msg || err.message || "Removing from cart failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Removing from cart failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -82,10 +79,9 @@ export const updateCartItemQuantity = createAsyncThunk<
       quantity,
     });
     return data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.msg || err.message || "Updating cart item failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Updating cart item failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -95,10 +91,9 @@ export const clearCart = createAsyncThunk<void, void, { rejectValue: string }>(
   async (_, { rejectWithValue }) => {
     try {
       await api.delete("/cart/clear");
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.msg || err.message || "Clearing cart failed"
-      );
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Clearing cart failed";
+      return rejectWithValue(errorMsg);
     }
   }
 );

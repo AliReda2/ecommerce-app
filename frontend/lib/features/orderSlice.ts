@@ -32,10 +32,9 @@ export const fetchAllOrders = createAsyncThunk<
   try {
     const response = await api.get<OrderResponse>("/order");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching orders failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching orders failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -47,10 +46,9 @@ export const fetchOrderById = createAsyncThunk<
   try {
     const response = await api.get<SingleOrderResponse>(`/order/${id}`);
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching order failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching order failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -62,10 +60,9 @@ export const fetchMyOrders = createAsyncThunk<
   try {
     const response = await api.get<UserOrderResponse>("/order/me");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching orders failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching orders failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -77,10 +74,9 @@ export const updateOrderStatus = createAsyncThunk<
   try {
     await api.patch(`/order/${orderId}/status`, { status });
     // nothing to return
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Updating order status failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Updating order status failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -92,10 +88,9 @@ export const createOrder = createAsyncThunk<
   try {
     const response = await api.post<CreateOrderResponse>("/order/create");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "creating orders failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Creating orders failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -107,10 +102,9 @@ export const cancelOrder = createAsyncThunk<
   try {
     await api.patch(`/order/${orderId}/cancel`);
     // nothing to return
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Cancelling order failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Cancelling order failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -183,12 +177,10 @@ const orderSlice = createSlice({
         state.isLoading = false;
         const { orderId } = action.meta.arg;
 
-        const apply = (list: any[]) => {
-          const i = list.findIndex((o) => o.id === orderId);
-          if (i !== -1) list[i] = { ...list[i], status: "CANCELLED" };
-        };
-
-        apply(state.userOrders);
+      const apply = (list: Array<{id: string; status: string}>) => {
+        const i = list.findIndex((o) => o.id === orderId);
+        if (i !== -1) list[i] = { ...list[i], status: "CANCELLED" };
+      };        apply(state.userOrders);
         apply(state.orders);
 
         if (state.currentOrder?.id === orderId) {

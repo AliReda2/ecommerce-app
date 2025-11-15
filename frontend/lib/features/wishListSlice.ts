@@ -23,10 +23,9 @@ export const fetchWishlist = createAsyncThunk<
   try {
     const response = await api.get<WishListResponse>("/wishlist");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching wishlist failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching wishlist failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -39,10 +38,9 @@ export const removeFromWishlist = createAsyncThunk<
   try {
     await api.delete(`/wishlist/${wishlistId}`);
     return wishlistId;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Removing from wishlist failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Removing from wishlist failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -54,10 +52,9 @@ export const clearWishlist = createAsyncThunk<
 >("wishlist/clear", async (_, { rejectWithValue }) => {
   try {
     await api.delete(`/wishlist/clear`);
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Clearing wishlist failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Clearing wishlist failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -72,10 +69,9 @@ export const addToWishlist = createAsyncThunk<
       `/wishlist/${productId}`
     );
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Adding to wishlist failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Adding to wishlist failed";
+    return rejectWithValue(errorMsg);
   }
 });
 

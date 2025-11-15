@@ -24,10 +24,9 @@ export const fetchAllUsers = createAsyncThunk<
   try {
     const response = await api.get<UserResponse>("/users");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching users failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching users failed";
+    return rejectWithValue(errorMsg);
   }
 });
 export const fetchCurrentUser = createAsyncThunk<
@@ -38,10 +37,9 @@ export const fetchCurrentUser = createAsyncThunk<
   try {
     const response = await api.get<SingleUserResponse>("/users/me");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Fetching current user failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Fetching current user failed";
+    return rejectWithValue(errorMsg);
   }
 });
 export const updateCurrentUser = createAsyncThunk<
@@ -53,10 +51,9 @@ export const updateCurrentUser = createAsyncThunk<
     const response = await api.patch<SingleUserResponse>("/users/me", userData);
     toast.success("Profile updated successfully");
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Updating current user failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Updating current user failed";
+    return rejectWithValue(errorMsg);
   }
 });
 
@@ -69,10 +66,9 @@ export const banUser = createAsyncThunk<User, string, { rejectValue: string }>(
       );
       toast.success(response.data.msg);
       return response.data.data;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || "Banning user failed"
-      );
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Banning user failed";
+      return rejectWithValue(errorMsg);
     }
   }
 );
@@ -88,10 +84,9 @@ export const unbanUser = createAsyncThunk<
     );
     toast.success(response.data.msg);
     return response.data.data;
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Unbanning user failed"
-    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Unbanning user failed";
+    return rejectWithValue(errorMsg);
   }
 });
 

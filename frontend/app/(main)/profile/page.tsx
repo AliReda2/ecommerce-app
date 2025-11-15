@@ -81,7 +81,7 @@ export default function UserProfilePage() {
     try {
       await dispatch(updateCurrentUser(form)).unwrap();
       toast.success("Profile updated successfully");
-    } catch (err) {
+    } catch {
       toast.error("Failed to update profile");
     }
   };

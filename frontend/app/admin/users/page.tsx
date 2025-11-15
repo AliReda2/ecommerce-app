@@ -18,7 +18,7 @@ import {
 
 const Users = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error, users } = useSelector(
+  const { users } = useSelector(
     (state: RootState) => state.user
   );
 
