@@ -19,11 +19,20 @@ import { GetUser } from './decorator';
 import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
 import { GoogleAuthGuard } from './guard/google-auth/google-auth.guard';
 import type { Request, Response } from 'express'; // ✅ add this
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  private readonly FRONTEND_URL: string;
+
+  constructor(
+    private readonly authService: AuthService,
+    private readonly config: ConfigService,
+  ) {
+    this.FRONTEND_URL =
+      this.config.get<string>('FRONTEND_URL') ?? 'http://localhost:3001';
+  }
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -80,7 +89,7 @@ export class AuthController {
     const response = await this.authService.googleLogin(req?.user?.id);
 
     res.redirect(
-      `http://localhost:3001/auth/google/callback?access_token=${response.access_token}&refresh_token=${response.refresh_token}`,
+      `${this.FRONTEND_URL}/auth/google/callback?access_token=${response.access_token}&refresh_token=${response.refresh_token}`,
     );
   }
 }
