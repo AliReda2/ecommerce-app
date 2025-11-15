@@ -2,6 +2,7 @@
 
 import { Provider } from "react-redux";
 import { store } from "@/lib/store";
+import "leaflet/dist/leaflet.css";
 import "@/app/globals.css";
 import Navbar from "./component/Navbar";
 import { Toaster } from "react-hot-toast";
