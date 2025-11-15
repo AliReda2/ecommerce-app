@@ -75,7 +75,7 @@ const Navbar = () => {
             </Link>
 
             {/* Search */}
-            <div className="flex-1 px-4 max-w-xl relative">
+            <div className="flex-1 px-4 max-w-xl relative sm:block hidden">
               <Input
                 type="search"
                 placeholder="Search for products..."

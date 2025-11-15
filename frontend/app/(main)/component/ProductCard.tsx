@@ -35,6 +35,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
   const handleAddToCart = (productId: string, quantity: number) => {
+    if (!user || !authChecked) {
+      return toast.error("Login first");
+    }
     dispatch(addToCart({ productId, quantity }));
     toast.success(`${product.name} added to cart!`);
   };
