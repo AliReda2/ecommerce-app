@@ -30,7 +30,8 @@ export const fetchProducts = createAsyncThunk<
     const response = await api.get<ProductResponse>("/product");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching products failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Fetching products failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -46,7 +47,8 @@ export const fetchProductById = createAsyncThunk<
     );
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching product failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Fetching product failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -69,7 +71,8 @@ export const createProduct = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Creating product failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Creating product failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -102,7 +105,8 @@ export const updateProduct = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Updating product failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Updating product failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -116,7 +120,8 @@ export const deleteProduct = createAsyncThunk<
     const response = await api.delete(`/product/${productId}`);
     toast.success(response.data.msg);
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Deleting product failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Deleting product failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -132,7 +137,10 @@ export const fetchProductsByCategory = createAsyncThunk<
     );
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching products by category failed";
+    const errorMsg =
+      err instanceof Error
+        ? err.message
+        : "Fetching products by category failed";
     return rejectWithValue(errorMsg);
   }
 });

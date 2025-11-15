@@ -28,7 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const UpdateProduct = () => {
   const goBack = useGoBack();
-  
+
   const params = useParams();
   const productId = params.id as string;
   const dispatch = useDispatch<AppDispatch>();

@@ -25,7 +25,8 @@ export const fetchAllCategories = createAsyncThunk<
     const response = await api.get<CategoryResponse>("/category");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching categories failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Fetching categories failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -41,7 +42,8 @@ export const getCategoryById = createAsyncThunk<
     );
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching category failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Fetching category failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -71,7 +73,8 @@ export const updateCategory = createAsyncThunk<
       toast.success(response.data.msg);
       return response.data.data;
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : "Updating category failed";
+      const errorMsg =
+        err instanceof Error ? err.message : "Updating category failed";
       return rejectWithValue(errorMsg);
     }
   }
@@ -94,7 +97,8 @@ export const createCategory = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Updating category failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Updating category failed";
     return rejectWithValue(errorMsg);
   }
 });

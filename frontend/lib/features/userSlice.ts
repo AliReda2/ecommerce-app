@@ -25,7 +25,8 @@ export const fetchAllUsers = createAsyncThunk<
     const response = await api.get<UserResponse>("/users");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching users failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Fetching users failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -38,7 +39,8 @@ export const fetchCurrentUser = createAsyncThunk<
     const response = await api.get<SingleUserResponse>("/users/me");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching current user failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Fetching current user failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -52,7 +54,8 @@ export const updateCurrentUser = createAsyncThunk<
     toast.success("Profile updated successfully");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Updating current user failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Updating current user failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -67,7 +70,8 @@ export const banUser = createAsyncThunk<User, string, { rejectValue: string }>(
       toast.success(response.data.msg);
       return response.data.data;
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : "Banning user failed";
+      const errorMsg =
+        err instanceof Error ? err.message : "Banning user failed";
       return rejectWithValue(errorMsg);
     }
   }
@@ -85,7 +89,8 @@ export const unbanUser = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Unbanning user failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Unbanning user failed";
     return rejectWithValue(errorMsg);
   }
 });

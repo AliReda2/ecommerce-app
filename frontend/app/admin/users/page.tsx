@@ -18,9 +18,7 @@ import {
 
 const Users = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { users } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { users } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     dispatch(fetchAllUsers());

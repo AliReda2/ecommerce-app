@@ -58,7 +58,8 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
 
       toast.success("Logged in successfully");
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to login";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to login";
       toast.error(errorMessage);
     }
   };
@@ -101,7 +102,8 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
       toast.success("Account created successfully");
       setMode("login");
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to register";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to register";
       toast.error(errorMessage);
     }
   };

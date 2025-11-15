@@ -24,7 +24,8 @@ export const fetchWishlist = createAsyncThunk<
     const response = await api.get<WishListResponse>("/wishlist");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Fetching wishlist failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Fetching wishlist failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -39,7 +40,8 @@ export const removeFromWishlist = createAsyncThunk<
     await api.delete(`/wishlist/${wishlistId}`);
     return wishlistId;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Removing from wishlist failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Removing from wishlist failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -53,7 +55,8 @@ export const clearWishlist = createAsyncThunk<
   try {
     await api.delete(`/wishlist/clear`);
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Clearing wishlist failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Clearing wishlist failed";
     return rejectWithValue(errorMsg);
   }
 });
@@ -70,7 +73,8 @@ export const addToWishlist = createAsyncThunk<
     );
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Adding to wishlist failed";
+    const errorMsg =
+      err instanceof Error ? err.message : "Adding to wishlist failed";
     return rejectWithValue(errorMsg);
   }
 });

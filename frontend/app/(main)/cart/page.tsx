@@ -29,13 +29,10 @@ const Cart = () => {
 
   const quantities = useMemo(
     () =>
-      cartItems.reduce(
-        (acc, item) => {
-          acc[item.id] = item.quantity;
-          return acc;
-        },
-        {} as Record<string, number>
-      ),
+      cartItems.reduce((acc, item) => {
+        acc[item.id] = item.quantity;
+        return acc;
+      }, {} as Record<string, number>),
     [cartItems]
   );
 

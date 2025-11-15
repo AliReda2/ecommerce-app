@@ -168,7 +168,7 @@ const authSlice = createSlice({
       state.error = null;
     };
 
-    const handleRejected = (state: AuthState, action: {payload?: string}) => {
+    const handleRejected = (state: AuthState, action: { payload?: string }) => {
       state.isLoading = false;
       state.error = action.payload || null;
     };

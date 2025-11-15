@@ -63,7 +63,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         toast.success(`${product.name} added to wishlist`);
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to update wishlist";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update wishlist";
       toast.error(errorMessage);
     }
   };
