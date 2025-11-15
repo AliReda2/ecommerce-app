@@ -24,7 +24,9 @@ interface ProfileForm {
 
 export default function UserProfilePage() {
   const dispatch = useAppDispatch();
-  const { currentUser: user, isLoading } = useAppSelector((state) => state.user);
+  const { currentUser: user, isLoading } = useAppSelector(
+    (state) => state.user
+  );
 
   const [form, setForm] = useState<ProfileForm>({
     firstName: "",
@@ -47,19 +49,25 @@ export default function UserProfilePage() {
   useEffect(() => {
     if (!user) return;
 
-    const initialCoords = user.coordinates
-      ? (user.coordinates.split(",").map(Number) as [number, number])
-      : [33.8938, 35.5018];
+    if (user.coordinates) {
+      const initialCoords = user.coordinates
+        .split(",")
+        .map((n) => parseFloat(n.trim())) as [number, number];
 
-    setForm({
-      firstName: user.firstName || "",
-      lastName: user.lastName || "",
-      address: user.address || "",
-      coordinates: user.coordinates || "",
-      phone: user.phone || "",
-    });
+      // Defer the state update to avoid synchronous setState inside the effect
+      setTimeout(() => setMarkerPos(initialCoords), 0);
+    }
 
-    setMarkerPos(initialCoords);
+    // Defer the state update to avoid synchronous setState inside the effect
+    setTimeout(() => {
+      setForm({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        address: user.address || "",
+        coordinates: user.coordinates || "",
+        phone: user.phone || "",
+      });
+    }, 0);
   }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -199,7 +207,7 @@ export default function UserProfilePage() {
           </div>
 
           <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            {isLoading? 'Updating':'Update Profile'}
+            {isLoading ? "Updating" : "Update Profile"}
           </Button>
         </form>
       </div>
