@@ -57,7 +57,11 @@ import ErrorHexaIconUrl from "./info-hexa.svg";
 const make = (src: string, name?: string) =>
   function Icon(props: React.ImgHTMLAttributes<HTMLImageElement>) {
     const { alt, ...rest } = props;
-    return <img src={src} alt={alt ?? name ?? "icon"} {...rest} />;
+    return React.createElement("img", {
+      src,
+      alt: alt ?? name ?? "icon",
+      ...rest,
+    });
   };
 
 export const ErrorHexaIcon = make(ErrorHexaIconUrl, "ErrorHexaIcon");
