@@ -16,7 +16,7 @@ const Products = () => {
   }, [dispatch]);
 
   return (
-    <div className="px-6 py-10 max-w-[76%] mb-20">
+    <div className="px-6 py-0 max-w-[76%] mb-20">
       <h1 className="text-3xl font-bold mb-8">Products</h1>
 
       {isLoading ? (

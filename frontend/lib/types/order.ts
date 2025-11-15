@@ -13,6 +13,32 @@ export interface Order {
     orderId: string;
   }[];
 }
+export interface SingleOrder {
+  id: string;
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+  userId: string;
+
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    address: string;
+    coordinates: string;
+  };
+
+  orderItems: {
+    id: string;
+    quantity: number;
+    price: number;
+    product: {
+      name: string;
+      imageUrl: string;
+    };
+  }[];
+}
+
 export interface UserOrder {
   id: string;
   totalPrice: number;
@@ -48,12 +74,16 @@ export interface OrderResponse {
   data: Order[];
   msg: string;
 }
+export interface CreateOrderResponse {
+  data: Order;
+  msg: string;
+}
 export interface UserOrderResponse {
   data: UserOrder[];
   msg: string;
 }
 export interface SingleOrderResponse {
-  data: Order;
+  data: SingleOrder;
   msg: string;
 }
 

@@ -14,12 +14,12 @@ export default function MainLayout({
 }) {
   return (
     <Provider store={store}>
-      <main className="pt-26 bg-[url('/images/pattern-bg.png')] bg-repeat bg-size-[300px_300px]">
+      <div className="flex flex-col min-h-screen bg-[url('/images/pattern-bg.png')] bg-repeat bg-size-[300px_300px]">
         <Navbar />
-        {children}
-        <Toaster position="top-right" reverseOrder={false} />
+        <main className="flex-1">{children}</main>
         <Footer />
-      </main>
+        <Toaster position="top-right" reverseOrder={false} />
+      </div>
     </Provider>
   );
 }

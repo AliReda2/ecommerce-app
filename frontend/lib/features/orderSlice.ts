@@ -1,11 +1,19 @@
 import { api } from "@/api/axios";
-import { Order, OrderResponse, UserOrder, UserOrderResponse } from "../types";
+import {
+  CreateOrderResponse,
+  Order,
+  OrderResponse,
+  SingleOrder,
+  SingleOrderResponse,
+  UserOrder,
+  UserOrderResponse,
+} from "../types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface orderState {
   orders: Order[];
   userOrders: UserOrder[];
-  currentOrder: Order | null;
+  currentOrder: SingleOrder | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -30,6 +38,22 @@ export const fetchAllOrders = createAsyncThunk<
     );
   }
 });
+
+export const fetchOrderById = createAsyncThunk<
+  SingleOrder,
+  { id: string },
+  { rejectValue: string }
+>("order/fetchById", async ({ id }, { rejectWithValue }) => {
+  try {
+    const response = await api.get<SingleOrderResponse>(`/order/${id}`);
+    return response.data.data;
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Fetching order failed"
+    );
+  }
+});
+
 export const fetchMyOrders = createAsyncThunk<
   UserOrder[],
   void,
@@ -61,12 +85,12 @@ export const updateOrderStatus = createAsyncThunk<
 });
 
 export const createOrder = createAsyncThunk<
-  Order[],
+  Order,
   void,
   { rejectValue: string }
 >("order/createOrder", async (_, { rejectWithValue }) => {
   try {
-    const response = await api.post<OrderResponse>("/order/create");
+    const response = await api.post<CreateOrderResponse>("/order/create");
     return response.data.data;
   } catch (err: any) {
     return rejectWithValue(
@@ -145,7 +169,7 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.orders = action.payload;
+        state.orders.push(action.payload); // append the created order
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.isLoading = false;
@@ -158,17 +182,34 @@ const orderSlice = createSlice({
       .addCase(cancelOrder.fulfilled, (state, action) => {
         state.isLoading = false;
         const { orderId } = action.meta.arg;
-        const idx = state.userOrders.findIndex((o) => o.id === orderId);
-        if (idx !== -1) {
-          state.userOrders[idx] = {
-            ...state.userOrders[idx],
-            status: "CANCELLED",
-          };
+
+        const apply = (list: any[]) => {
+          const i = list.findIndex((o) => o.id === orderId);
+          if (i !== -1) list[i] = { ...list[i], status: "CANCELLED" };
+        };
+
+        apply(state.userOrders);
+        apply(state.orders);
+
+        if (state.currentOrder?.id === orderId) {
+          state.currentOrder.status = "CANCELLED";
         }
       })
       .addCase(cancelOrder.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Failed to cancel order";
+      })
+      .addCase(fetchOrderById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchOrderById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentOrder = action.payload;
+      })
+      .addCase(fetchOrderById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Failed to fetch order";
       });
   },
 });
