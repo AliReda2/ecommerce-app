@@ -1,33 +1,37 @@
-import { Product } from "@/lib/types";
+"use client";
+
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import ProductCard from "./ProductCard";
+import { fetchProducts } from "@/lib/features/productSlice";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 
-const Products = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product`, {
-    cache: "no-store",
-  });
+const Products = () => {
+  const dispatch = useAppDispatch();
+  const { products, isLoading } = useAppSelector((state) => state.product);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
-  }
-
-  const response = await res.json();
-  const products: Product[] = response.data;
-
-  if (!products || products.length === 0) {
-    return (
-      <h1 className="text-center mt-10 text-lg">No Products To Display</h1>
-    );
-  }
+  // Initial fetch of all products
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   return (
     <div className="px-6 py-10 max-w-[76%] mb-20">
       <h1 className="text-3xl font-bold mb-8">Products</h1>
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

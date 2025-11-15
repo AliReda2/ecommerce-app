@@ -34,13 +34,13 @@ export class WishlistController {
     return this.wishlistService.addToWishlist(user, productId);
   }
 
-  @Delete(':productId')
-  @ApiOperation({ summary: 'Remove a product from wishlist' })
+  @Delete(':wishlistId')
+  @ApiOperation({ summary: 'Remove a wishlist item by ID' })
   async removeFromWishlist(
     @GetUser() user: User,
-    @Param('productId') productId: string,
+    @Param('wishlistId') wishlistId: string,
   ) {
-    return this.wishlistService.removeFromWishlist(user, productId);
+    return this.wishlistService.removeFromWishlist(user, wishlistId);
   }
 
   @Delete()

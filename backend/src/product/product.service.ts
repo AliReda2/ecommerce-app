@@ -273,19 +273,4 @@ export class ProductService {
     };
   }
 
-  // private async generateUniqueSlug(name: string): Promise<string> {
-  //   const baseSlug = slugify(name);
-  //   let slug = baseSlug;
-  //   let counter = 1;
-
-  //   while (true) {
-  //     const exists = await this.prisma.product.findUnique({ where: { slug } });
-  //     if (!exists) break;
-
-  //     slug = `${baseSlug}-${counter}`;
-  //     counter++;
-  //   }
-
-  //   return slug;
-  // }
 }

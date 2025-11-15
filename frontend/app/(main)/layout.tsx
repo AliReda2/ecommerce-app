@@ -5,6 +5,7 @@ import { store } from "@/lib/store";
 import "@/app/globals.css";
 import Navbar from "./component/Navbar";
 import { Toaster } from "react-hot-toast";
+import Footer from "./component/Footer";
 
 export default function MainLayout({
   children,
@@ -17,6 +18,7 @@ export default function MainLayout({
         <Navbar />
         {children}
         <Toaster position="top-right" reverseOrder={false} />
+        <Footer />
       </main>
     </Provider>
   );

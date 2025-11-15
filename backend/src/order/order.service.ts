@@ -13,16 +13,28 @@ export class OrderService {
   constructor(private prisma: PrismaService) {}
 
   async createOrder(userId: string) {
+    // 1. Fetch user and validate address & coordinates
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || user.address == null || user.coordinates == null) {
+      throw new BadRequestException(
+        'User must have a valid address and coordinates',
+      );
+    }
+
+    // 2. Fetch cart items
     const cartItems: CartItem[] = await this.prisma.cartItem.findMany({
       where: { userId },
     });
-    if (!cartItems || cartItems.length === 0) {
+
+    if (!cartItems.length) {
       throw new BadRequestException('Cart is empty');
     }
 
-    // Create order and items atomically
+    // 3. Create order and order items atomically
     const order = await this.prisma.$transaction(async (tx) => {
-      // 1. Create order
       const totalPrice = cartItems.reduce(
         (sum, item) => sum + item.productPrice * item.quantity,
         0,
@@ -36,7 +48,6 @@ export class OrderService {
         },
       });
 
-      // 2. Create order items
       const orderItems = await Promise.all(
         cartItems.map((item) =>
           tx.orderItem.create({
@@ -50,7 +61,6 @@ export class OrderService {
         ),
       );
 
-      // 3. Clear cart after order creation
       await tx.cartItem.deleteMany({ where: { userId } });
 
       return { ...newOrder, orderItems };
@@ -92,7 +102,25 @@ export class OrderService {
   async getUserOrders(userId: string) {
     const orders = await this.prisma.order.findMany({
       where: { userId },
-      include: { orderItems: true },
+      select: {
+        id: true,
+        totalPrice: true,
+        status: true,
+        createdAt: true,
+        orderItems: {
+          select: {
+            id: true,
+            quantity: true,
+            price: true,
+            product: {
+              select: {
+                name: true,
+                imageUrl: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
 

@@ -1,8 +1,8 @@
 export interface Order {
   id: string;
   totalPrice: number;
-  status: OrderStatus; // adjust to your statuses
-  createdAt: string; // or Date if you convert later
+  status: OrderStatus;
+  createdAt: string;
   userId: string;
 
   orderItems: {
@@ -13,10 +13,26 @@ export interface Order {
     orderId: string;
   }[];
 }
+export interface UserOrder {
+  id: string;
+  totalPrice: number;
+  status: OrderStatus;
+  createdAt: string;
+
+  orderItems: {
+    id: string;
+    quantity: number;
+    price: number;
+    product: {
+      name: string;
+      imageUrl: string;
+    };
+  }[];
+}
 
 export interface createOrderDto {
   totalPrice: number;
-  status: OrderStatus; // adjust to your statuses
+  status: OrderStatus;
   userId: string;
 
   orderItems: {
@@ -30,6 +46,10 @@ export interface createOrderDto {
 
 export interface OrderResponse {
   data: Order[];
+  msg: string;
+}
+export interface UserOrderResponse {
+  data: UserOrder[];
   msg: string;
 }
 export interface SingleOrderResponse {

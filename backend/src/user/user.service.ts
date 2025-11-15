@@ -18,6 +18,7 @@ export class UserService {
         lastName: true,
         email: true,
         address: true,
+        coordinates: true,
         phone: true,
       },
     });
@@ -40,6 +41,7 @@ export class UserService {
         ...(data.lastName && { lastName: data.lastName }),
         ...(data.address && { address: data.address }),
         ...(data.phone && { phone: data.phone }),
+        ...(data.coordinates && { coordinates: data.coordinates }),
       },
       select: {
         id: true,
@@ -48,6 +50,7 @@ export class UserService {
         email: true,
         address: true,
         phone: true,
+        coordinates: true,
       },
     });
 

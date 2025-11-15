@@ -37,11 +37,14 @@ export const addToCart = createAsyncThunk<
   { rejectValue: string }
 >("cart/addItem", async ({ productId, quantity }, { rejectWithValue }) => {
   try {
-    const { data } = await api.post<CartItem>("/cart/add", {
-      productId,
-      quantity,
-    });
-    return data;
+    const response = await api.post<{ data: CartItem; msg: string }>(
+      "/cart/add",
+      {
+        productId,
+        quantity,
+      }
+    );
+    return response.data.data; // unwrap here
   } catch (err: any) {
     return rejectWithValue(
       err.response?.data?.msg || err.message || "Adding to cart failed"
@@ -127,7 +130,16 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.cartItems.push(action.payload);
+
+        const index = state.cartItems.findIndex(
+          (item) => item.productId === action.payload.productId
+        );
+
+        if (index >= 0) {
+          state.cartItems[index] = action.payload; // update quantity
+        } else {
+          state.cartItems.push(action.payload);
+        }
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.isLoading = false;

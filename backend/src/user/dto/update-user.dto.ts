@@ -16,6 +16,11 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   address?: string;
+  
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  coordinates?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

@@ -10,11 +10,13 @@ import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import toast from "react-hot-toast";
 import { checkAuth, logout } from "@/lib/features/authSlice";
 import { getCartItems } from "@/lib/features/cartSlice";
+import { fetchWishlist } from "@/lib/features/wishListSlice";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const { user, authChecked } = useAppSelector((state) => state.auth);
   const { cartItems } = useAppSelector((state) => state.cart);
+  const { wishListItems } = useAppSelector((state) => state.wishList);
 
   const [openLogin, setOpenLogin] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
@@ -39,6 +41,7 @@ const Navbar = () => {
   useEffect(() => {
     if (authChecked && user) {
       dispatch(getCartItems());
+      dispatch(fetchWishlist());
     }
   }, [authChecked, user, dispatch]);
 
@@ -61,13 +64,15 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-26">
             {/* Logo */}
-            <Image
-              src="/images/codart.png"
-              alt="logo"
-              height={100}
-              width={100}
-              className="object-contain"
-            />
+            <Link href={"/dashboard"}>
+              <Image
+                src="/images/codart.png"
+                alt="logo"
+                height={100}
+                width={100}
+                className="object-contain"
+              />
+            </Link>
 
             {/* Search */}
             <div className="flex-1 px-4 max-w-xl relative">
@@ -129,7 +134,20 @@ const Navbar = () => {
 
               {/* Wishlist */}
               <button className="hover:text-red-600 hover:scale-110 transition-transform duration-200">
-                <Heart size={24} />
+                {user ? (
+                  <Link href={"/wishList"} className="relative">
+                    <Heart size={24} />
+                    {wishListItems.length > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                        {wishListItems.length}
+                      </span>
+                    )}
+                  </Link>
+                ) : authChecked ? (
+                  <Heart size={24} onClick={() => toast.error("Login first")} />
+                ) : (
+                  <Heart size={24} className="opacity-50" />
+                )}
               </button>
 
               {/* Cart */}

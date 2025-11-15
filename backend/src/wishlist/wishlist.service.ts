@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -7,12 +7,33 @@ export class WishlistService {
   constructor(private prisma: PrismaService) {}
 
   async getWishlist(user: User) {
-    const products = await this.prisma.wishlist.findMany({
+    const wishList = await this.prisma.wishlist.findMany({
       where: { userId: user.id },
-      include: { product: true },
+      select: {
+        id: true,
+        userId: true,
+        productId: true,
+        // createdAt: true,
+        product: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            description: true,
+            imageUrl: true,
+            categoryId: true,
+            category: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
+
     return {
-      data: products.map((item) => item.product),
+      data: wishList,
       msg: 'Wishlist fetched successfully',
     };
   }
@@ -22,26 +43,63 @@ export class WishlistService {
       where: { userId: user.id },
     });
     return {
+      data: null,
       msg: 'Wishlist cleared successfully',
     };
   }
 
   async addToWishlist(user: User, productId: string) {
+    const exists = await this.prisma.wishlist.findFirst({
+      where: { userId: user.id, productId },
+    });
+
+    if (exists) {
+      return { data: exists, msg: 'Product already in wishlist' };
+    }
+
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
     const wishlistItem = await this.prisma.wishlist.create({
       data: { userId: user.id, productId },
-      include: { product: true },
+      select: {
+        id: true,
+        userId: true,
+        productId: true,
+        product: {
+          select: {
+            name: true,
+            price: true,
+            description: true,
+            imageUrl: true,
+            categoryId: true,
+            category: {
+              select: { name: true },
+            },
+          },
+        },
+      },
     });
+
     return {
-      data: wishlistItem.product,
+      data: wishlistItem, // ✔ Return the complete wishlist item
       msg: 'Product added to wishlist successfully',
     };
   }
-  async removeFromWishlist(user: User, productId: string) {
-    await this.prisma.wishlist.deleteMany({
-      where: { userId: user.id, productId },
+
+  async removeFromWishlist(user: User, wishlistId: string) {
+    const deleted = await this.prisma.wishlist.deleteMany({
+      where: { id: wishlistId, userId: user.id },
     });
-    return {
-      msg: 'Product removed from wishlist successfully',
-    };
+
+    if (deleted.count === 0) {
+      throw new NotFoundException('Wishlist item not found');
+    }
+
+    return { data: null, msg: 'Product removed from wishlist successfully' };
   }
 }

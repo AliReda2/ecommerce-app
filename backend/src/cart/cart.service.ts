@@ -27,6 +27,7 @@ export class CartService {
       select: {
         id: true,
         quantity: true,
+        productId: true,
         product: {
           select: {
             id: true,

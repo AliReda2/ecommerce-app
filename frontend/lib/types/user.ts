@@ -20,9 +20,19 @@ export interface User {
   lastName: string;
   email: string;
   isActive: boolean;
+  address?: string;
+  coordinates?: string;
+  phone?: string;
   isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+export interface UpdateUser {
+  firstName: string;
+  lastName: string;
+  address: string;
+  coordinates: string;
+  phone: string;
 }
 export interface UserResponse {
   data: User[];

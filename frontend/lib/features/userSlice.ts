@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { SingleUserResponse, User, UserResponse } from "../types";
+import { SingleUserResponse, UpdateUser, User, UserResponse } from "../types";
 import { api } from "@/api/axios";
 import toast from "react-hot-toast";
 
@@ -41,6 +41,21 @@ export const fetchCurrentUser = createAsyncThunk<
   } catch (err: any) {
     return rejectWithValue(
       err.response?.data?.message || "Fetching current user failed"
+    );
+  }
+});
+export const updateCurrentUser = createAsyncThunk<
+  User,
+  UpdateUser,
+  { rejectValue: string }
+>("user/updateCurrent", async (userData, { rejectWithValue }) => {
+  try {
+    const response = await api.patch<SingleUserResponse>("/users/me", userData);
+    toast.success("Profile updated successfully");
+    return response.data.data;
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Updating current user failed"
     );
   }
 });
@@ -158,6 +173,18 @@ const userSlice = createSlice({
       .addCase(unbanUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Failed to unban user";
+      })
+      .addCase(updateCurrentUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateCurrentUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(updateCurrentUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Failed to update current user";
       });
   },
 });

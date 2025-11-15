@@ -6,6 +6,7 @@ import productReducer from "./features/productSlice";
 import categoryReducer from "./features/categorySlice";
 import orderReducer from "./features/orderSlice";
 import cartReducer from "./features/cartSlice";
+import wishListReducer from "./features/wishListSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     product: productReducer,
     category: categoryReducer,
     cart: cartReducer,
+    wishList: wishListReducer,
   },
 });
 
