@@ -13,7 +13,7 @@ export class WishlistService {
         id: true,
         userId: true,
         productId: true,
-        // createdAt: true,
+        createdAt: true,
         product: {
           select: {
             id: true,
@@ -30,6 +30,7 @@ export class WishlistService {
           },
         },
       },
+      orderBy: { createdAt: 'desc' },
     });
 
     return {
