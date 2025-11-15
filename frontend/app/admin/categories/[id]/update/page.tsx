@@ -15,7 +15,7 @@ import { getCategoryById, updateCategory } from "@/lib/features/categorySlice";
 import { AppDispatch, RootState } from "@/lib/store";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const UpdateCategory = () => {

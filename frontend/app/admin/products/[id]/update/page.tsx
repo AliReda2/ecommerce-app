@@ -23,7 +23,7 @@ import { fetchProductById, updateProduct } from "@/lib/features/productSlice";
 import { AppDispatch, RootState } from "@/lib/store";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const UpdateProduct = () => {
