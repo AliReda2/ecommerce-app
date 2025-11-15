@@ -17,7 +17,7 @@ export default function MainLayout({
     <Provider store={store}>
       <div className="flex flex-col min-h-screen bg-[url('/images/pattern-bg.png')] bg-repeat bg-size-[300px_300px]">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 mt-24">{children}</main>
         <Footer />
         <Toaster position="top-right" reverseOrder={false} />
       </div>
