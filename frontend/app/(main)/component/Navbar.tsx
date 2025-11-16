@@ -12,9 +12,11 @@ import { checkAuth, logout } from "@/lib/features/authSlice";
 import { getCartItems } from "@/lib/features/cartSlice";
 import { fetchWishlist } from "@/lib/features/wishListSlice";
 import VerifyModal from "./VerifyModal";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { user, authChecked } = useAppSelector((state) => state.auth);
   const { cartItems } = useAppSelector((state) => state.cart);
   const { wishListItems } = useAppSelector((state) => state.wishList);
@@ -63,6 +65,8 @@ const Navbar = () => {
       .unwrap()
       .then(() => toast.success("Logout succesful"))
       .catch((error) => toast.error(error));
+
+    router.replace("/");
 
     setOpenPanel(false);
   };
