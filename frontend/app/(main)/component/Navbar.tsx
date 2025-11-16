@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { checkAuth, logout } from "@/lib/features/authSlice";
 import { getCartItems } from "@/lib/features/cartSlice";
 import { fetchWishlist } from "@/lib/features/wishListSlice";
+import VerifyModal from "./VerifyModal";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ const Navbar = () => {
   const { wishListItems } = useAppSelector((state) => state.wishList);
 
   const [openLogin, setOpenLogin] = useState(false);
+  const [openVerify, setOpenVerify] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -51,6 +53,9 @@ const Navbar = () => {
     } else {
       setOpenPanel((prev) => !prev);
     }
+  };
+  const handleVerifyClick = () => {
+    setOpenVerify(true);
   };
 
   const handleLogout = () => {
@@ -151,6 +156,13 @@ const Navbar = () => {
                   </Link>
 
                   <button
+                    onClick={handleVerifyClick}
+                    className="block px-4 py-2 hover:bg-gray-50 text-gray-700 w-full text-left"
+                  >
+                    Verify Email
+                  </button>
+
+                  <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 hover:bg-gray-50 text-red-600"
                   >
@@ -204,6 +216,7 @@ const Navbar = () => {
 
       {/* Login/Register Modal */}
       <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
+      <VerifyModal open={openVerify} onClose={() => setOpenVerify(false)} />
     </>
   );
 };

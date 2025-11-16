@@ -4,6 +4,20 @@ import { jwtDecode } from "jwt-decode";
 import { api } from "@/api/axios";
 import type { RegisterResponse, RegisterUser, UserRole } from "../types";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
+
+interface VerifyOtpPayload {
+  email: string;
+  otp: string;
+}
+
+interface VerifyOtpResponse {
+  message: string;
+  tokens: {
+    access_token: string;
+    refresh_token: string;
+  };
+}
 
 interface JwtPayload {
   sub: string;
@@ -21,6 +35,7 @@ interface AuthUser {
 
 interface AuthState {
   access_token: string | null;
+  refresh_token: string | null;
   user: AuthUser | null;
   isLoading: boolean;
   error: string | null;
@@ -30,6 +45,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   access_token: null,
+  refresh_token: null,
   user: null,
   isLoading: false,
   error: null,
@@ -153,6 +169,25 @@ export const register = createAsyncThunk<
   }
 });
 
+export const verifyOtp = createAsyncThunk<
+  VerifyOtpResponse,
+  VerifyOtpPayload,
+  { rejectValue: string }
+>("auth/verifyOtp", async (data, { rejectWithValue }) => {
+  try {
+    const response = await api.post<VerifyOtpResponse>(
+      "/auth/verify-email",
+      data
+    );
+    return response.data; // contains message + tokens
+  } catch (err: unknown) {
+    const axiosError = err as AxiosError<{ message: string }>;
+    return rejectWithValue(
+      axiosError.response?.data?.message || "OTP verification failed"
+    );
+  }
+});
+
 // Slice
 const authSlice = createSlice({
   name: "auth",
@@ -160,6 +195,12 @@ const authSlice = createSlice({
   reducers: {
     resetRegistrationStatus: (state) => {
       state.registrationSuccess = false;
+    },
+    logout: (state) => {
+      state.access_token = null;
+      state.refresh_token = null;
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
     },
   },
   extraReducers: (builder) => {
@@ -221,6 +262,29 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
         state.registrationSuccess = false;
+      })
+      .addCase(verifyOtp.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.access_token = action.payload.tokens.access_token;
+        state.refresh_token = action.payload.tokens.refresh_token;
+        state.user = getUserFromToken(action.payload.tokens.access_token); // <--- add this
+        localStorage.setItem(
+          "access_token",
+          action.payload.tokens.access_token
+        );
+        localStorage.setItem(
+          "refresh_token",
+          action.payload.tokens.refresh_token
+        );
+        state.error = null;
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "OTP verification failed";
       });
   },
 });

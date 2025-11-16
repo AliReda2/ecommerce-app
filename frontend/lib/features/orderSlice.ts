@@ -9,6 +9,7 @@ import {
   UserOrderResponse,
 } from "../types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { AxiosError } from "axios";
 
 interface orderState {
   orders: Order[];
@@ -91,11 +92,13 @@ export const createOrder = createAsyncThunk<
 >("order/createOrder", async (_, { rejectWithValue }) => {
   try {
     const response = await api.post<CreateOrderResponse>("/order/create");
-    return response.data.data;
+    return response.data.data; // success
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Creating orders failed";
-    return rejectWithValue(errorMsg);
+    const axiosError = err as AxiosError<{ message: string }>;
+    // return backend message if exists, otherwise generic
+    return rejectWithValue(
+      axiosError.response?.data?.message || "Creating order failed"
+    );
   }
 });
 
