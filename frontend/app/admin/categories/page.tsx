@@ -39,8 +39,7 @@ export default function Category() {
       <TableCaption>A list of Categories</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">ID</TableHead>
-          <TableHead>Category</TableHead>
+          <TableHead className="w-[100px]">Category</TableHead>
           <TableHead>Image</TableHead>
           <TableHead className="text-right">Action</TableHead>
         </TableRow>
@@ -49,8 +48,7 @@ export default function Category() {
         {categories &&
           categories.map((cat: Category) => (
             <TableRow key={cat.id}>
-              <TableCell className="font-medium">{cat.id}</TableCell>
-              <TableCell> {cat.name}</TableCell>
+              <TableCell className="font-medium"> {cat.name}</TableCell>
               <TableCell> {cat.imageUrl && <Image src={cat.imageUrl} alt={cat.name} width={60} height={60} />}</TableCell>
               <TableCell className="text-right">
                 <Button variant={"success"}>

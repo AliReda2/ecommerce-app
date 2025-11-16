@@ -55,7 +55,6 @@ const OrdersPage = () => {
       <TableCaption>A list of Orders</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="">Order ID</TableHead>
           <TableHead className="">User ID</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Total Price</TableHead>
@@ -67,7 +66,6 @@ const OrdersPage = () => {
         {orders &&
           orders.map((order: Order) => (
             <TableRow key={order.id} onClick={() => handleViewOrder(order.id)}>
-              <TableCell> {order.id}</TableCell>
               <TableCell> {order.userId}</TableCell>
               <TableCell>
                 <Badge variant={getVariant(order.status)}>{order.status}</Badge>

@@ -74,7 +74,7 @@ const Hero = () => {
         {/* Hero Card */}
         <div
           id="card-carousel"
-          className="relative 2xl:col-span-3 2xl:row-span-2 xl:col-span-3 xl:row-span-2 lg:col-span-3 lg:row-span-2 md:col-span-1 md:row-span-2 sm:col-span-1 sm:row-span-2 row-span-2 pt-0 "
+          className="relative 2xl:col-span-3 2xl:row-span-2 xl:col-span-3 xl:row-span-2 lg:col-span-3 lg:row-span-2 md:col-span-1 md:row-span-2 sm:col-span-1 sm:row-span-[3/2] row-span-1 pt-0 "
           data-carousel="slide"
         >
           {/* Carousel wrapper */}
@@ -106,7 +106,7 @@ const Hero = () => {
 
                   {/* Image */}
                   <div className="mt-8 md:mt-0 flex justify-center md:justify-end">
-                    <div className="relative xl:w-96 xl:h-96 lg:w-64 lg:h-64 md:w-96 md:h-96 sm:w-100 sm:h-100 w-100 h-100">
+                    <div className="relative xl:w-96 xl:h-96 lg:w-64 lg:h-64 md:w-96 md:h-96 sm:w-50 sm:h-50 w-50 h-50">
                       <Image
                         src={card.image}
                         alt={card.title}
