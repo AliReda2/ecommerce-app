@@ -150,4 +150,22 @@ export class UserService {
       data,
     });
   }
+
+  async deleteUser(userId: string) {
+    try {
+      // Delete email verification record first
+      await this.prisma.emailVerification.deleteMany({
+        where: { userId },
+      });
+
+      // Now delete the user
+      await this.prisma.user.delete({
+        where: { id: userId },
+      });
+
+      return { message: 'User deleted successfully' };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

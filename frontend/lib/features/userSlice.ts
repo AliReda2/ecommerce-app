@@ -95,6 +95,23 @@ export const unbanUser = createAsyncThunk<
   }
 });
 
+export const deleteUser = createAsyncThunk<
+  string, // return userId
+  string,
+  { rejectValue: string }
+>("user/delete", async (userId, { rejectWithValue }) => {
+  try {
+    await api.delete(`/users/${userId}`);
+    toast.success("User deleted successfully");
+    return userId; // return deleted id
+  } catch (err: unknown) {
+    toast.error(`Failed to delete user, ${err}`);
+    const errorMsg =
+      err instanceof Error ? err.message : "Deleting user failed";
+    return rejectWithValue(errorMsg);
+  }
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -185,6 +202,19 @@ const userSlice = createSlice({
       .addCase(updateCurrentUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Failed to update current user";
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.users = state.users.filter((u) => u.id !== action.payload);
+      })
+
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Failed to delete user";
       });
   },
 });

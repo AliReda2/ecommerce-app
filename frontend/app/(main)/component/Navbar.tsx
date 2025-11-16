@@ -58,9 +58,36 @@ const Navbar = () => {
     setOpenPanel(false);
   };
 
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > lastScrollY.current && currentScroll > 80) {
+        // scrolling down
+        setIsVisible(false);
+      } else {
+        // scrolling up
+        setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScroll;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
-      <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+      <nav
+        className={`bg-white shadow-md fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
+          isVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-26">
             {/* Logo */}
