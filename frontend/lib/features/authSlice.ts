@@ -23,6 +23,7 @@ interface JwtPayload {
   sub: string;
   role: UserRole;
   fullName: string;
+  email: string;
   iat: number;
   exp: number;
 }
@@ -31,6 +32,7 @@ interface AuthUser {
   id: string;
   role: UserRole;
   fullName: string;
+  email: string;
 }
 
 interface AuthState {
@@ -62,6 +64,7 @@ const getUserFromToken = (token: string): AuthUser => {
       id: decoded.sub,
       role: decoded.role,
       fullName: decoded.fullName,
+      email: decoded.email,
     };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
@@ -271,7 +274,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.access_token = action.payload.tokens.access_token;
         state.refresh_token = action.payload.tokens.refresh_token;
-        state.user = getUserFromToken(action.payload.tokens.access_token); // <--- add this
+        state.user = getUserFromToken(action.payload.tokens.access_token); 
         localStorage.setItem(
           "access_token",
           action.payload.tokens.access_token

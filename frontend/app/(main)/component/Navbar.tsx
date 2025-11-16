@@ -216,7 +216,11 @@ const Navbar = () => {
 
       {/* Login/Register Modal */}
       <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />
-      <VerifyModal open={openVerify} onClose={() => setOpenVerify(false)} />
+      <VerifyModal
+        open={openVerify}
+        onClose={() => setOpenVerify(false)}
+        email={user?.email}
+      />
     </>
   );
 };

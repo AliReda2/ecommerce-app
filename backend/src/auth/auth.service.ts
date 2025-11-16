@@ -65,6 +65,13 @@ export class AuthService {
       where: {
         email: dto.email,
       },
+      select: {
+        id: true,
+        role: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+      },
     });
 
     if (!user) {
@@ -72,7 +79,12 @@ export class AuthService {
     }
     const fullName = `${user.firstName} ${user.lastName}`;
 
-    const tokens = await this.signToken(user.id, user.role, fullName);
+    const tokens = await this.signToken(
+      user.id,
+      user.role,
+      fullName,
+      user.email,
+    );
     await this.updateRtHash(user.id, tokens.refresh_token);
 
     return {
@@ -91,6 +103,7 @@ export class AuthService {
         id: true,
         role: true,
         password: true,
+        email: true,
         firstName: true,
         lastName: true,
         isActive: true,
@@ -109,7 +122,12 @@ export class AuthService {
     const fullName = user.firstName + ' ' + user.lastName;
 
     // Return the new tokens
-    const tokens = await this.signToken(user.id, user.role, fullName);
+    const tokens = await this.signToken(
+      user.id,
+      user.role,
+      fullName,
+      user.email,
+    );
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
     // Return the tokens
@@ -124,6 +142,7 @@ export class AuthService {
       select: {
         id: true,
         role: true,
+        email: true,
         password: true,
         firstName: true,
         lastName: true,
@@ -139,7 +158,12 @@ export class AuthService {
     const fullName = user.firstName + ' ' + user.lastName;
 
     // Return the new tokens
-    const tokens = await this.signToken(user.id, user.role, fullName);
+    const tokens = await this.signToken(
+      user.id,
+      user.role,
+      fullName,
+      user.email,
+    );
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
     // Return the tokens
@@ -173,6 +197,7 @@ export class AuthService {
       select: {
         id: true,
         role: true,
+        email: true,
         hashedRtoken: true,
         firstName: true,
         lastName: true,
@@ -189,19 +214,30 @@ export class AuthService {
     const fullName = user.firstName + ' ' + user.lastName;
 
     // Generate new tokens
-    const tokens = await this.signToken(user.id, user.role, fullName);
+    const tokens = await this.signToken(
+      user.id,
+      user.role,
+      fullName,
+      user.email,
+    );
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
     // Return the tokens
     return tokens;
   }
 
-  async signToken(userId: string, role: string, fullName: string) {
+  async signToken(
+    userId: string,
+    role: string,
+    fullName: string,
+    email: string,
+  ) {
     // Create a JWT token
     const payload = {
       sub: userId,
       role,
       fullName,
+      email,
     };
     const [access_token, refresh_token] = await Promise.all([
       await this.jwt.signAsync(payload, {

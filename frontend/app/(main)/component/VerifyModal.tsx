@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 interface VerifyOtpModalProps {
   open: boolean;
   onClose: () => void;
-  email: string; // the email or phone to verify
+  email: string | null;
 }
 
 const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
@@ -35,7 +35,7 @@ const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
     e.preventDefault();
 
     try {
-      await dispatch(verifyOtp({ email, otp })).unwrap();
+      if (email) await dispatch(verifyOtp({ email, otp })).unwrap();
       toast.success("OTP verified successfully");
       onClose(); // close modal
     } catch (err: unknown) {
