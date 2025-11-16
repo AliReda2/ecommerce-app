@@ -73,9 +73,17 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="flex flex-col justify-between border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300 rounded-2xl bg-white">
+    <Card
+      className="
+    flex flex-col justify-between 
+    border border-gray-200 shadow-md hover:shadow-lg 
+    transition-shadow duration-300 
+    rounded-xl bg-white
+    p-3 sm:p-4 h-full
+  "
+    >
       <CardHeader className="flex items-center justify-center p-5 bg-gray-50 rounded-t-2xl relative">
-        <div className="relative w-40 h-40">
+        <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto">
           <Image
             src={product.imageUrl || "/images/codart.png"}
             alt={product.name}
@@ -99,47 +107,52 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <CardContent className="flex flex-col grow justify-between px-5 pb-6 space-y-3">
         <div>
-          <CardTitle className="text-lg font-semibold text-gray-800 line-clamp-1">
+          <CardTitle className="text-sm sm:text-base font-semibold text-gray-800 line-clamp-1">
             {product.name}
           </CardTitle>
-          <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 sm:block hidden">
             {product.description}
           </p>
-          <p className="text-xs text-gray-500 mt-2 uppercase tracking-wide">
+
+          <p className="text-xs sm:text-sm text-gray-500 sm:block hidden">
             {product?.category?.name ?? "Uncategorized"}
           </p>
         </div>
 
-        <div className="flex justify-between items-center mt-2">
-          <span className="text-xl font-bold text-blue-700">
+        <div className="flex justify-between items-center sm:mt-2 m-0">
+          <span className="text-sm sm:text-xl font-bold text-blue-700">
             ${product.price.toFixed(2)}
           </span>
         </div>
 
         {/* Quantity & Add to Cart */}
-        <div className="flex items-center justify-between mt-5 space-x-3">
-          <div className="flex items-center border rounded-lg overflow-hidden shadow-sm">
+        <div className="flex items-center sm:flex-row  flex-col gap-1 justify-between mt-3 space-x-2 text-xs sm:text-sm">
+          <div className="flex items-center border rounded-md overflow-hidden h-8 sm:h-9">
             <button
               onClick={decrease}
-              className="px-3 py-1 text-lg font-semibold text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition"
+              className="w-7 sm:w-8 flex items-center justify-center text-lg font-bold text-gray-700"
             >
               −
             </button>
+
             <input
               type="number"
               value={quantity}
               onChange={(e) =>
                 setQuantity(Math.max(1, Number(e.target.value) || 1))
               }
-              className="w-12 text-center outline-none border-x bg-white text-gray-800 font-medium
-                appearance-none
-                [&::-webkit-outer-spin-button]:appearance-none
-                [&::-webkit-inner-spin-button]:appearance-none
-                [-moz-appearance:textfield]"
+              className="
+      w-10 sm:w-12 text-center bg-white border-x outline-none
+      text-sm font-medium
+      [-moz-appearance:textfield]
+      [&::-webkit-inner-spin-button]:appearance-none
+      [&::-webkit-outer-spin-button]:appearance-none
+    "
             />
+
             <button
               onClick={increase}
-              className="px-3 py-1 text-lg font-semibold text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition"
+              className="w-7 sm:w-8 flex items-center justify-center text-lg font-bold text-gray-700"
             >
               +
             </button>
@@ -149,7 +162,13 @@ export default function ProductCard({ product }: ProductCardProps) {
             variant="default"
             size="sm"
             onClick={() => handleAddToCart(product.id, quantity)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all"
+            className="
+    bg-blue-600 hover:bg-blue-700 
+    text-white font-medium rounded-lg 
+    shadow-sm hover:shadow-md 
+    transition-all 
+    w-full sm:w-auto
+  "
           >
             Add to Cart
           </Button>

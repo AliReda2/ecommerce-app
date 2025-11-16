@@ -16,17 +16,33 @@ const Products = () => {
   }, [dispatch]);
 
   return (
-    <div className="px-6 py-0 max-w-[76%] mb-20">
+    <div className="px-3 py-0 w-full sm:max-w-[76%] mx-auto mb-20">
       <h1 className="text-3xl font-bold mb-8">Products</h1>
 
       {isLoading ? (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div
+          className="
+    grid gap-4 
+    grid-cols-2 
+    sm:grid-cols-2 
+    md:grid-cols-3 
+    lg:grid-cols-4 
+  "
+        >
           {Array.from({ length: 8 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))}
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div
+          className="
+    grid gap-4 
+    grid-cols-2 
+    sm:grid-cols-2 
+    md:grid-cols-3 
+    lg:grid-cols-4 
+  "
+        >
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
