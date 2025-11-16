@@ -40,7 +40,7 @@ model EmailVerification {
   otp       String
   expiresAt DateTime
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -78,7 +78,7 @@ model CartItem {
   userId    String
   productId String
 
-  user    User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
 }
 
@@ -89,7 +89,7 @@ model Order {
   createdAt  DateTime    @default(now())
 
   userId     String
-  user       User        @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderItems OrderItem[]
   payment    Payment?
 }
@@ -108,7 +108,7 @@ model OrderItem {
   orderId   String
 
   product Product @relation(fields: [productId], references: [id])
-  order   Order   @relation(fields: [orderId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model Payment {
@@ -120,7 +120,7 @@ model Payment {
   createdAt     DateTime      @default(now())
 
   orderId String @unique
-  order   Order  @relation(fields: [orderId], references: [id])
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 enum PaymentStatus {
@@ -138,7 +138,7 @@ model Review {
   userId    String
   productId String
 
-  user    User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
 }
 
@@ -148,7 +148,7 @@ model Wishlist {
   productId String
   createdAt DateTime @default(now())
 
-  user    User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
 
   @@unique([userId, productId]) // prevent duplicate wishlist entries

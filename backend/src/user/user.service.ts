@@ -152,37 +152,10 @@ export class UserService {
   }
 
   async deleteUser(userId: string) {
-    try {
-      // Delete email verification records associated with the user
-      await this.prisma.emailVerification.deleteMany({
-        where: { userId },
-      });
-      // Delete Cart records associated with the user
-      await this.prisma.cartItem.deleteMany({
-        where: { userId },
-      });
+    await this.prisma.user.delete({
+      where: { id: userId },
+    });
 
-      // Delete Orders associated with the user
-      await this.prisma.order.deleteMany({
-        where: { userId },
-      });
-      // Delete Reviews associated with the user
-      await this.prisma.review.deleteMany({
-        where: { userId },
-      });
-      // Delete Wishlists associated with the user
-      await this.prisma.wishlist.deleteMany({
-        where: { userId },
-      });
-
-      // Now delete the user
-      await this.prisma.user.delete({
-        where: { id: userId },
-      });
-
-      return { message: 'User deleted successfully' };
-    } catch (error) {
-      throw error;
-    }
+    return { message: 'User deleted successfully' };
   }
 }
