@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 interface VerifyOtpModalProps {
   open: boolean;
   onClose: () => void;
-  email: string | null;
+  email: string | undefined;
 }
 
 const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
