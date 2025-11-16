@@ -155,12 +155,14 @@ const Navbar = () => {
                     My Orders
                   </Link>
 
-                  <button
-                    onClick={handleVerifyClick}
-                    className="block px-4 py-2 hover:bg-gray-50 text-gray-700 w-full text-left"
-                  >
-                    Verify Email
-                  </button>
+                  {!user?.isVerified && (
+                    <button
+                      onClick={handleVerifyClick}
+                      className="block px-4 py-2 hover:bg-gray-50 text-gray-700 w-full text-left"
+                    >
+                      Verify Email
+                    </button>
+                  )}
 
                   <button
                     onClick={handleLogout}

@@ -238,6 +238,7 @@ export class AuthService {
       role,
       fullName,
       email,
+      isVerified: true,
     };
     const [access_token, refresh_token] = await Promise.all([
       await this.jwt.signAsync(payload, {
