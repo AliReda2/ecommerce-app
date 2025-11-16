@@ -235,7 +235,7 @@ export class AuthService {
     email: string;
     firstName: string;
     lastName: string;
-    picture?: string;
+    // picture?: string;
     isVerified: true;
   }) {
     const existingUser = await this.userService.findUserByEmail(

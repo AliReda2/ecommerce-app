@@ -23,6 +23,11 @@ export class OrderService {
         'User must have a valid address and coordinates',
       );
     }
+    if (user.isVerified === false) {
+      throw new ForbiddenException(
+        'Please verify your account to add items to cart',
+      );
+    }
 
     // 2. Fetch cart items
     const cartItems: CartItem[] = await this.prisma.cartItem.findMany({

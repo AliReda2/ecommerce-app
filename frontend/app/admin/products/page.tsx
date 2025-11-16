@@ -65,7 +65,7 @@ export default function Product() {
                     />
                   </AvatarFallback>
                 </Avatar>
-              <TableCell> {product.name}</TableCell>
+                <span> {product.name}</span>
               </TableCell>
               <TableCell> {product.description}</TableCell>
               <TableCell> {product?.category?.name ?? "null"}</TableCell>
@@ -77,7 +77,7 @@ export default function Product() {
               <TableCell> {product.price}</TableCell>
               <TableCell className="text-right">
                 <DeleteProduct productId={product.id} />
-                <Button variant={'success'}>
+                <Button variant={"success"}>
                   <Link href={`/admin/products/${product.id}/update`}>
                     Update
                   </Link>
