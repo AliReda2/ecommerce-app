@@ -107,10 +107,11 @@ const Cart = () => {
               <Swiper
                 direction="vertical"
                 spaceBetween={20}
-                slidesPerView="auto" // better for dynamic height cards
+                slidesPerView="auto"
                 navigation
                 scrollbar={{ draggable: true }}
-                mousewheel={{ forceToAxis: true }} // enable vertical scroll only
+                mousewheel={{ forceToAxis: true, releaseOnEdges: true }}
+                cssMode={true}
                 modules={[Navigation, Scrollbar, Mousewheel]}
                 className="h-full"
               >
