@@ -53,11 +53,6 @@ export class CartService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (user.isVerified === false) {
-      throw new ForbiddenException(
-        'Please verify your account to add items to cart',
-      );
-    }
     const existingCartItem = await this.prisma.cartItem.findFirst({
       where: { userId, productId: data.productId },
     });

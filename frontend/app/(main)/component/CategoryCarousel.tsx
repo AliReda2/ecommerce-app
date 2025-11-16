@@ -13,6 +13,7 @@ import {
   fetchProductsByCategory,
 } from "@/lib/features/productSlice";
 import { Skeleton } from "@/components/ui/skeleton";
+import toast from "react-hot-toast";
 
 const getOptimalSlides = (count: number) => ({
   320: { slidesPerView: Math.min(2, count) },
@@ -32,10 +33,14 @@ const CategoryCarousel = () => {
   }, [dispatch]);
 
   const handleCategoryClick = (categoryId: string) => {
-    dispatch(fetchProductsByCategory(categoryId));
+    dispatch(fetchProductsByCategory(categoryId))
+      .unwrap()
+      .catch((error) => toast.error(error));
   };
   const handleFetchAll = () => {
-    dispatch(fetchProducts());
+    dispatch(fetchProducts())
+      .unwrap()
+      .catch((error) => toast.error(error));
   };
 
   // Show 6 skeleton slides as placeholder

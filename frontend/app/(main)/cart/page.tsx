@@ -55,8 +55,11 @@ const Cart = () => {
     setUpdatingItemId(null);
   };
 
-  const handleRemove = (cartItemId: string) =>
-    dispatch(removeFromCart({ cartItemId }));
+  const handleRemove = async (cartItemId: string) =>
+    await dispatch(removeFromCart({ cartItemId }))
+      .unwrap()
+      .then(() => toast.success("order created"))
+      .catch((error) => toast.error(error));
 
   const handleOrder = async () => {
     await dispatch(createOrder())

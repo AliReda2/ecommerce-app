@@ -34,12 +34,14 @@ export default function ProductCard({ product }: ProductCardProps) {
   const increase = () => setQuantity((q) => q + 1);
   const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
-  const handleAddToCart = (productId: string, quantity: number) => {
+  const handleAddToCart = async (productId: string, quantity: number) => {
     if (!user || !authChecked) {
       return toast.error("Login first");
     }
-    dispatch(addToCart({ productId, quantity }));
-    toast.success(`${product.name} added to cart!`);
+    await dispatch(addToCart({ productId, quantity }))
+      .unwrap()
+      .then(() => toast.success(`${product.name} added to cart!`))
+      .catch((error) => toast.error(error));
   };
 
   // Check if product is already in wishlist
@@ -53,22 +55,18 @@ export default function ProductCard({ product }: ProductCardProps) {
       return toast.error("Login first");
     }
 
-    try {
-      if (wishlistItem) {
-        // Product is in wishlist, remove it
-        await dispatch(
-          removeFromWishlist({ wishlistId: wishlistItem.id })
-        ).unwrap();
-        toast.success(`${product.name} removed from wishlist`);
-      } else {
-        // Product not in wishlist, add it
-        await dispatch(addToWishlist({ productId: product.id })).unwrap();
-        toast.success(`${product.name} added to wishlist`);
-      }
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to update wishlist";
-      toast.error(errorMessage);
+    if (wishlistItem) {
+      // Product is in wishlist, remove it
+      await dispatch(removeFromWishlist({ wishlistId: wishlistItem.id }))
+        .unwrap()
+        .then(() => toast.success(`${product.name} removed from wishlist`))
+        .catch((error) => toast.error(error));
+    } else {
+      // Product not in wishlist, add it
+      await dispatch(addToWishlist({ productId: product.id }))
+        .unwrap()
+        .then(() => toast.success(`${product.name} added to wishlist`))
+        .catch((error) => toast.error(error));
     }
   };
 

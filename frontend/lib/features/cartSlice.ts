@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "@/api/axios";
 import { CartItem, CartResponse } from "../types";
+import { getErrorMessage } from "../getErrorMessage";
 
 interface CartState {
   cartItems: CartItem[];
@@ -24,9 +25,7 @@ export const getCartItems = createAsyncThunk<
     const { data } = await api.get<CartResponse>("/cart");
     return data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching cart items failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -46,9 +45,7 @@ export const addToCart = createAsyncThunk<
     );
     return response.data.data; // unwrap here
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Adding to cart failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -64,9 +61,7 @@ export const removeFromCart = createAsyncThunk<
     });
     return cartItemId;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Removing from cart failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -83,9 +78,7 @@ export const updateCartItemQuantity = createAsyncThunk<
     });
     return data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Updating cart item failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -96,9 +89,7 @@ export const clearCart = createAsyncThunk<void, void, { rejectValue: string }>(
     try {
       await api.delete("/cart/clear");
     } catch (err: unknown) {
-      const errorMsg =
-        err instanceof Error ? err.message : "Clearing cart failed";
-      return rejectWithValue(errorMsg);
+      return rejectWithValue(getErrorMessage(err));
     }
   }
 );

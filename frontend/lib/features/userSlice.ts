@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { SingleUserResponse, UpdateUser, User, UserResponse } from "../types";
 import { api } from "@/api/axios";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../getErrorMessage";
 
 interface userState {
   users: User[];
@@ -25,9 +26,7 @@ export const fetchAllUsers = createAsyncThunk<
     const response = await api.get<UserResponse>("/users");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching users failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 export const fetchCurrentUser = createAsyncThunk<
@@ -39,9 +38,7 @@ export const fetchCurrentUser = createAsyncThunk<
     const response = await api.get<SingleUserResponse>("/users/me");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching current user failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 export const updateCurrentUser = createAsyncThunk<
@@ -54,9 +51,7 @@ export const updateCurrentUser = createAsyncThunk<
     toast.success("Profile updated successfully");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Updating current user failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -70,9 +65,7 @@ export const banUser = createAsyncThunk<User, string, { rejectValue: string }>(
       toast.success(response.data.msg);
       return response.data.data;
     } catch (err: unknown) {
-      const errorMsg =
-        err instanceof Error ? err.message : "Banning user failed";
-      return rejectWithValue(errorMsg);
+      return rejectWithValue(getErrorMessage(err));
     }
   }
 );
@@ -89,9 +82,7 @@ export const unbanUser = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Unbanning user failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -105,10 +96,7 @@ export const deleteUser = createAsyncThunk<
     toast.success("User deleted successfully");
     return userId; // return deleted id
   } catch (err: unknown) {
-    toast.error(`Failed to delete user, ${err}`);
-    const errorMsg =
-      err instanceof Error ? err.message : "Deleting user failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 

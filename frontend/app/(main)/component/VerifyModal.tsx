@@ -34,15 +34,12 @@ const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
   const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      if (email) await dispatch(verifyOtp({ email, otp })).unwrap();
-      toast.success("OTP verified successfully");
-      onClose(); // close modal
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "OTP verification failed";
-      toast.error(errorMessage);
-    }
+    if (email)
+      await dispatch(verifyOtp({ email, otp }))
+        .unwrap()
+        .then(() => toast.success("OTP verified successfully"))
+        .catch((error) => toast.error(error));
+    onClose(); // close modal
   };
 
   return (

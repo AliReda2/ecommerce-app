@@ -23,7 +23,7 @@ export default function UserOrdersPage() {
     await dispatch(cancelOrder({ orderId }))
       .unwrap()
       .then(() => toast.success("order cancelled"))
-      .catch(() => toast.error("Failed to cancel order"));
+      .catch((error) => toast.error(error));
   };
 
   if (isLoading) {

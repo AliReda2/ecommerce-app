@@ -9,7 +9,7 @@ import {
   UserOrderResponse,
 } from "../types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { AxiosError } from "axios";
+import { getErrorMessage } from "../getErrorMessage";
 
 interface orderState {
   orders: Order[];
@@ -34,9 +34,7 @@ export const fetchAllOrders = createAsyncThunk<
     const response = await api.get<OrderResponse>("/order");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching orders failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -49,9 +47,7 @@ export const fetchOrderById = createAsyncThunk<
     const response = await api.get<SingleOrderResponse>(`/order/${id}`);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching order failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -64,9 +60,7 @@ export const fetchMyOrders = createAsyncThunk<
     const response = await api.get<UserOrderResponse>("/order/me");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching orders failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -79,9 +73,7 @@ export const updateOrderStatus = createAsyncThunk<
     await api.patch(`/order/${orderId}/status`, { status });
     // nothing to return
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Updating order status failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -94,11 +86,7 @@ export const createOrder = createAsyncThunk<
     const response = await api.post<CreateOrderResponse>("/order/create");
     return response.data.data; // success
   } catch (err: unknown) {
-    const axiosError = err as AxiosError<{ message: string }>;
-    // return backend message if exists, otherwise generic
-    return rejectWithValue(
-      axiosError.response?.data?.message || "Creating order failed"
-    );
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -111,9 +99,7 @@ export const cancelOrder = createAsyncThunk<
     await api.patch(`/order/${orderId}/cancel`);
     // nothing to return
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Cancelling order failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 

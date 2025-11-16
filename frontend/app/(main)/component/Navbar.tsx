@@ -58,8 +58,12 @@ const Navbar = () => {
     setOpenVerify(true);
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logout())
+      .unwrap()
+      .then(() => toast.success("Logout succesful"))
+      .catch((error) => toast.error(error));
+
     setOpenPanel(false);
   };
 

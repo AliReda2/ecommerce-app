@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { api } from "@/api/axios";
 import type { RegisterResponse, RegisterUser, UserRole } from "../types";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import { getErrorMessage } from "../getErrorMessage";
 
 interface VerifyOtpPayload {
   email: string;
@@ -111,12 +111,11 @@ export const checkAuth = createAsyncThunk<
       user: getUserFromToken(token),
     };
   } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : "Token invalid";
-    toast.error(errorMessage || "Failed to check authentication");
+    toast.error(getErrorMessage(err) || "Failed to check authentication");
     // remove only auth keys
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    return rejectWithValue(errorMessage);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -137,8 +136,7 @@ export const login = createAsyncThunk<
       user: getUserFromToken(data.access_token),
     };
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Login failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -151,8 +149,7 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : "Logout failed";
-      return rejectWithValue(errorMsg);
+      return rejectWithValue(getErrorMessage(err));
     }
   }
 );
@@ -170,8 +167,7 @@ export const register = createAsyncThunk<
       userId: data.userId,
     };
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Registration failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -187,10 +183,7 @@ export const verifyOtp = createAsyncThunk<
     );
     return response.data; // contains message + tokens
   } catch (err: unknown) {
-    const axiosError = err as AxiosError<{ message: string }>;
-    return rejectWithValue(
-      axiosError.response?.data?.message || "OTP verification failed"
-    );
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 

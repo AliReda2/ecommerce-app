@@ -6,6 +6,7 @@ import {
 } from "../types/product";
 import { api } from "@/api/axios";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../getErrorMessage";
 
 interface productState {
   products: Product[];
@@ -30,9 +31,7 @@ export const fetchProducts = createAsyncThunk<
     const response = await api.get<ProductResponse>("/product");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching products failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -47,9 +46,7 @@ export const fetchProductById = createAsyncThunk<
     );
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching product failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -71,9 +68,7 @@ export const createProduct = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Creating product failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -105,9 +100,7 @@ export const updateProduct = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Updating product failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -120,9 +113,7 @@ export const deleteProduct = createAsyncThunk<
     const response = await api.delete(`/product/${productId}`);
     toast.success(response.data.msg);
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Deleting product failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -137,11 +128,7 @@ export const fetchProductsByCategory = createAsyncThunk<
     );
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error
-        ? err.message
-        : "Fetching products by category failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 

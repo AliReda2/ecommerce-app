@@ -33,19 +33,21 @@ const WishListPage = () => {
     dispatch(fetchWishlist());
   }, [dispatch]);
 
-  const handleRemove = (wishlistId: string) => {
-    dispatch(removeFromWishlist({ wishlistId }))
+  const handleRemove = async (wishlistId: string) => {
+    await dispatch(removeFromWishlist({ wishlistId }))
       .unwrap()
       .then(() => toast.success("Removed from wishlist"))
-      .catch(() => toast.error("Failed to remove from wishlist"));
+      .catch((error) => toast.error(error));
   };
 
   const handleAddToCart = (product: Partial<Product>, quantity: number) => {
     if (!product.id) {
       return toast.error("Product ID is missing");
     }
-    dispatch(addToCart({ productId: product.id, quantity }));
-    toast.success(`${product.name} added to cart!`);
+    dispatch(addToCart({ productId: product.id, quantity }))
+      .unwrap()
+      .then(() => toast.success(`${product.name} added to cart!`))
+      .catch((error) => toast.error(error));
   };
 
   // Render skeleton placeholders

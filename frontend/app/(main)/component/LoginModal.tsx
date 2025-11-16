@@ -47,20 +47,15 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      await dispatch(
-        login({
-          email: loginData.email,
-          password: loginData.password,
-        })
-      ).unwrap();
-
-      toast.success("Logged in successfully");
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to login";
-      toast.error(errorMessage);
-    }
+    await dispatch(
+      login({
+        email: loginData.email,
+        password: loginData.password,
+      })
+    )
+      .unwrap()
+      .then(() => toast.success("Logged in successfully"))
+      .catch((error) => toast.error(error));
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -88,23 +83,19 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
       return;
     }
 
-    try {
-      await dispatch(
-        register({
-          firstName: registerData.firstName,
-          lastName: registerData.lastName,
-          email: registerData.email,
-          password: registerData.password,
-        })
-      ).unwrap();
+    await dispatch(
+      register({
+        firstName: registerData.firstName,
+        lastName: registerData.lastName,
+        email: registerData.email,
+        password: registerData.password,
+      })
+    )
+      .unwrap()
+      .then(() => toast.success("Account created successfully"))
+      .catch((error) => toast.error(error));
 
-      toast.success("Account created successfully");
-      setMode("login");
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to register";
-      toast.error(errorMessage);
-    }
+    setMode("login");
   };
 
   return (

@@ -2,6 +2,7 @@ import { api } from "@/api/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Category, CategoryResponse, SingleCategoryResponse } from "../types";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../getErrorMessage";
 
 interface categoryState {
   categories: Category[];
@@ -25,9 +26,7 @@ export const fetchAllCategories = createAsyncThunk<
     const response = await api.get<CategoryResponse>("/category");
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching categories failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -42,9 +41,7 @@ export const getCategoryById = createAsyncThunk<
     );
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Fetching category failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 
@@ -73,9 +70,7 @@ export const updateCategory = createAsyncThunk<
       toast.success(response.data.msg);
       return response.data.data;
     } catch (err: unknown) {
-      const errorMsg =
-        err instanceof Error ? err.message : "Updating category failed";
-      return rejectWithValue(errorMsg);
+      return rejectWithValue(getErrorMessage(err));
     }
   }
 );
@@ -97,9 +92,7 @@ export const createCategory = createAsyncThunk<
     toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
-    const errorMsg =
-      err instanceof Error ? err.message : "Updating category failed";
-    return rejectWithValue(errorMsg);
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 

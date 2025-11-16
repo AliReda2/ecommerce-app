@@ -79,8 +79,10 @@ export default function UserProfilePage() {
     e.preventDefault();
 
     try {
-      await dispatch(updateCurrentUser(form)).unwrap();
-      toast.success("Profile updated successfully");
+      await dispatch(updateCurrentUser(form))
+        .unwrap()
+        .then(() => toast.success("Profile updated successfully"))
+        .catch((error) => toast.error(error));
     } catch {
       toast.error("Failed to update profile");
     }
