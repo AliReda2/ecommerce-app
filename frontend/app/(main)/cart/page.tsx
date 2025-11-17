@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
@@ -21,9 +21,12 @@ import "swiper/css/navigation";
 import { Mousewheel, Navigation, Scrollbar } from "swiper/modules";
 import { createOrder } from "@/lib/features/orderSlice";
 import toast from "react-hot-toast";
+import useGoBack from "@/hooks/useGoBack";
 
 const Cart = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const goBack = useGoBack();
+
   const { cartItems, isLoading, error } = useAppSelector((state) => state.cart);
   const [updatingItemId, setUpdatingItemId] = useState<string | null>(null);
 
@@ -180,8 +183,23 @@ const Cart = () => {
   return (
     <div className="w-full bg-white min-h-[80vh]">
       <div className="max-w-6xl mx-auto py-12 px-4 md:px-8">
-        <h1 className="text-3xl font-bold mb-10 text-gray-800">Your Cart</h1>
-
+        <button className="flex" onClick={goBack}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
+          Back
+        </button>
         {isLoading ? (
           <div className="flex justify-center items-center h-[60vh]">
             <Loader2 className="animate-spin w-8 h-8 text-blue-600" />

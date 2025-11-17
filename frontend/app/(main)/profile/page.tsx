@@ -90,14 +90,29 @@ export default function UserProfilePage() {
     }
 
     setLoadingLocation(true);
+
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const pos: [number, number] = [
           position.coords.latitude,
           position.coords.longitude,
         ];
+
         setMarkerPos(pos);
-        setForm((prev) => ({ ...prev, coordinates: `${pos[0]},${pos[1]}` }));
+
+        // coordinates
+        const coordsStr = `${pos[0]},${pos[1]}`;
+        setForm((prev) => ({ ...prev, coordinates: coordsStr }));
+
+        // reverse geocode → address
+        const address = await reverseGeocode(pos[0], pos[1]);
+
+        if (address) {
+          setForm((prev) => ({ ...prev, address }));
+        } else {
+          toast.error("Unable to get address from coordinates.");
+        }
+
         setLoadingLocation(false);
       },
       () => {
@@ -209,4 +224,23 @@ export default function UserProfilePage() {
       </div>
     </div>
   );
+}
+
+async function reverseGeocode(lat: number, lon: number): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+      {
+        headers: {
+          "User-Agent": "YourAppName/1.0 (your@email.com)",
+        },
+      }
+    );
+
+    if (!res.ok) return "";
+    const data = await res.json();
+    return data.display_name || "";
+  } catch {
+    return "";
+  }
 }

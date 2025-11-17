@@ -68,13 +68,27 @@ const Hero = () => {
   };
 
   return (
-    <div className="w-full h-[80vh] flex justify-center py-5">
+    <div className="w-full sm:h-[80vh] h-[90vh] flex justify-center py-5">
       {/* Centered container */}
-      <div className="grid 2xl:max-w-[95%] xl:max-w-[90%] lg:max-w-full md:w-full sm:w-full w-full  2xl:grid-cols-5 2xl:grid-rows-2 xl:grid-cols-5 xl:grid-rows-2 lg:grid-cols-5 lg:grid-rows-2 md:grid-cols-1 md:grid-rows-4 sm:grid-cols-1 sm:grid-rows-4 grid-cols-1 grid-rows-3 gap-2 lg:gap-4 mx-auto px-5">
+      <div
+        className="grid 
+      2xl:max-w-[95%] 2xl:grid-cols-5 2xl:grid-rows-2
+      xl:max-w-[90%] xl:grid-cols-5 xl:grid-rows-2
+      lg:max-w-full lg:grid-cols-5 lg:grid-rows-2 lg:gap-4
+      md:w-full md:grid-cols-1 md:grid-rows-4
+      sm:w-full sm:grid-cols-1 sm:grid-rows-4
+      w-full grid-cols-1 grid-rows-4 gap-2 mx-auto px-5"
+      >
         {/* Hero Card */}
         <div
           id="card-carousel"
-          className="relative 2xl:col-span-3 2xl:row-span-2 xl:col-span-3 xl:row-span-2 lg:col-span-3 lg:row-span-2 md:col-span-1 md:row-span-2 sm:col-span-1 sm:row-span-[3/2] row-span-1 pt-0 "
+          className="relative
+          2xl:col-span-3 2xl:row-span-2
+          xl:col-span-3 xl:row-span-2 
+          lg:col-span-3 lg:row-span-2
+          md:col-span-1 md:row-span-2 
+          sm:col-span-1 sm:row-span-2
+          row-span-2 pt-0"
           data-carousel="slide"
         >
           {/* Carousel wrapper */}
@@ -87,16 +101,44 @@ const Hero = () => {
                 )}`}
                 data-carousel-item
               >
-                <section className="bg-blue-100 grid grid-cols-1 md:grid-cols-2 2xl:grid-rows-[92%_auto] xl:grid-rows-[92%_auto] lg:grid-rows-[92%_auto] items-center py-8 md:py-0 2xl:px-10 2xl:gap-0 sm:py-0 lg:px-4 px-6 h-full overflow-hidden sm:grid-cols-1 sm:grid-rows-[47%_47%_5%] grid-rows-[49%_49%_2%] md:grid-rows-[95%_5%] pt-0">
+                <section
+                  className="bg-blue-100 grid pt-0 items-center h-full overflow-hidden
+                  2xl:grid-rows-[92%_auto] 2xl:px-10 2xl:gap-0 
+                  xl:grid-rows-[92%_auto] xl:px-6
+                  lg:grid-rows-[92%_auto] lg:px-4 lg:py-8
+                  md:grid-cols-2 md:grid-rows-[95%_5%] md:py-0
+                  sm:grid-cols-2 sm:grid-rows-[95%_5%] sm:py-0
+                  grid-cols-2 grid-rows-[85%_15%] py-0
+                  "
+                >
                   {/* Text Content */}
-                  <div className="flex flex-col justify-center space-y-4 md:space-y-6 md:w-10/12 lg:w-9/12 2xl:pl-10">
-                    <span className="text-blue-700 font-semibold uppercase tracking-wide text-sm md:text-base">
+                  <div
+                    className="flex flex-col justify-center space-y-4 
+                  2xl:pl-10
+                  lg:w-9/12 
+                  md:space-y-6 md:w-10/12 
+                  px-2
+                  "
+                  >
+                    <span
+                      className="text-blue-700 font-semibold uppercase tracking-wide text-sm 
+                    md:text-base
+                    "
+                    >
                       {card.subtitle}
                     </span>
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight transition-all duration-300">
+                    <h1
+                      className=" 
+                    font-extrabold text-gray-900 leading-tight transition-all duration-300
+                    lg:text-6xl 
+                    md:text-5xl 
+                    sm:text-3xl
+                    text-xs
+                    "
+                    >
                       {card.title}
                     </h1>
-                    <p className="text-gray-700 text-base md:text-lg">
+                    <p className="text-gray-700 text-base md:text-lg sm:block hidden">
                       {card.description}
                     </p>
                     <Button className="mt-4 md:mt-6 px-6 py-3 bg-blue-700 text-white font-medium rounded-lg hover:bg-blue-600 shadow-md transition-all duration-300 transform hover:scale-105">
@@ -141,10 +183,23 @@ const Hero = () => {
         </div>
 
         {/* SECOND section */}
-        <section className="bg-green-100 flex flex-col md:flex-row justify-between items-center py-6 px-8 rounded-xl shadow-lg overflow-hidden 2xl:col-span-2 xl:col-span-2 lg:col-span-2">
+        <section
+          className="bg-green-100 flex
+        justify-evenly items-center py-6 px-8 rounded-xl shadow-lg overflow-hidden 
+        2xl:col-span-2 
+        xl:col-span-2 
+        lg:col-span-2
+        "
+        >
           <div className="flex flex-col space-y-4">
             <div className="flex items-center space-x-3">
-              <span className="text-2xl font-semibold text-gray-900">
+              <span
+                className="
+              font-semibold text-gray-900
+              sm:text-2xl
+              text-xs 
+              "
+              >
                 20% Off
               </span>
               <span className="text-xs tracking-wider text-gray-500 uppercase">
@@ -152,16 +207,37 @@ const Hero = () => {
               </span>
             </div>
             <hr className="border-gray-300 w-16" />
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h1
+              className="
+            font-bold text-gray-900
+            md:text-4xl 
+            sm:text-3xl
+            text-xs 
+            "
+            >
               Wireless Audio
             </h1>
-            <Button className="mt-4 md:mt-6 px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-200">
+            <Button
+              className="
+            sm:mt-4 sm:px-6 sm:py-3
+            md:mt-6 
+            bg-gray-900 text-white rounded-lg font-medium
+            hover:bg-gray-800 transition duration-200
+            "
+            >
               Shop Collection
             </Button>
           </div>
 
-          <div className="mt-6 md:mt-0 flex justify-end">
-            <div className="relative w-56 lg:w-56 h-56 lg:h-56 md:w-70 md:h-70 sm:w-70 sm:h-70">
+          <div className="flex">
+            <div
+              className="relative 
+            lg:w-56 lg:h-56 
+            md:w-50 md:h-50 
+            sm:w-44 sm:h-44
+            w-32 h-32 
+            "
+            >
               <Image
                 src="/images/powerbank.png"
                 alt="Powerbank"
@@ -174,10 +250,23 @@ const Hero = () => {
         </section>
 
         {/* THIRD section */}
-        <section className="bg-orange-100 flex flex-col md:flex-row justify-between items-center py-6 px-8 rounded-xl shadow-lg overflow-hidden 2xl:col-span-2 xl:col-span-2 lg:col-span-2">
+        <section
+          className="bg-orange-100 flex
+        justify-evenly items-center py-6 px-8 rounded-xl shadow-lg overflow-hidden 
+        2xl:col-span-2 
+        xl:col-span-2 
+        lg:col-span-2
+        "
+        >
           <div className="flex flex-col space-y-4">
             <div className="flex items-center space-x-3">
-              <span className="text-2xl font-semibold text-gray-900">
+              <span
+                className="
+              font-semibold text-gray-900
+              sm:text-2xl
+              text-xs 
+              "
+              >
                 20% Off
               </span>
               <span className="text-xs tracking-wider text-gray-500 uppercase">
@@ -186,16 +275,37 @@ const Hero = () => {
             </div>
             <hr className="border-gray-300 w-16" />
 
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h1
+              className="
+            font-bold text-gray-900
+            md:text-4xl 
+            sm:text-3xl
+            text-xs 
+            "
+            >
               Power & Charging
             </h1>
-            <Button className="mt-4 md:mt-6 px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition duration-200">
+            <Button
+              className="
+            sm:mt-4 sm:font-medium sm:px-6 sm:py-3
+            md:mt-6 
+            bg-gray-900 text-white rounded-lg font-light
+            hover:bg-gray-800 transition duration-200
+            "
+            >
               Shop Collection
             </Button>
           </div>
 
-          <div className="mt-6 md:mt-0 flex justify-end">
-            <div className="relative lg:w-56 lg:h-56 md:w-70 md:h-70 sm:w-70 sm:h-70 w-70 h-70">
+          <div className="flex">
+            <div
+              className="relative 
+            lg:w-56 lg:h-56 
+            md:w-50 md:h-50 
+            sm:w-44 sm:h-44
+            w-32 h-32 
+            "
+            >
               <Image
                 src="/images/wireless.png"
                 alt="Wireless"

@@ -94,7 +94,7 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  console.log(user?.isVerified)
+  console.log(user?.isVerified);
 
   return (
     <>
@@ -103,7 +103,7 @@ const Navbar = () => {
           isVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-26">
             {/* Logo */}
             <Link href={"/"}>
@@ -129,98 +129,105 @@ const Navbar = () => {
               />
             </div>
 
-            {/* Support */}
-            <div className="hidden md:flex flex-col items-center px-4 border-r border-gray-200">
-              <small className="text-gray-400">For Support</small>
-              <strong className="text-gray-800 text-lg">+961 70 031 455</strong>
-            </div>
+            <div className="flex ">
+              {/* Support */}
+              <div className="hidden md:flex flex-col items-center px-4 border-r border-gray-200">
+                <small className="text-gray-400">For Support</small>
+                <strong className="text-gray-800 text-lg">
+                  +961 70 031 455
+                </strong>
+              </div>
 
-            {/* Actions */}
-            <div className="flex items-center space-x-6 px-4 text-gray-700 relative">
-              {/* Profile */}
-              <button
-                onClick={handleProfileClick}
-                className="hover:text-blue-600 hover:scale-110 transition-transform duration-200"
-              >
-                <User size={24} />
-              </button>
-
-              {/* Dropdown Panel */}
-              {openPanel && (
-                <div
-                  ref={panelRef}
-                  className="absolute right-0 mt-40 w-48 bg-white shadow-lg rounded-lg border border-gray-100 py-2 z-50"
+              {/* Actions */}
+              <div className="flex items-center space-x-6 px-4 text-gray-700 relative">
+                {/* Profile */}
+                <button
+                  onClick={handleProfileClick}
+                  className="hover:text-blue-600 hover:scale-110 transition-transform duration-200"
                 >
-                  <Link
-                    href="/profile"
-                    className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
-                  >
-                    Edit Profile
-                  </Link>
+                  <User size={24} />
+                </button>
 
-                  <Link
-                    href="/orders"
-                    className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                {/* Dropdown Panel */}
+                {openPanel && (
+                  <div
+                    ref={panelRef}
+                    className="absolute right-0 mt-40 w-48 bg-white shadow-lg rounded-lg border border-gray-100 py-2 z-50"
                   >
-                    My Orders
-                  </Link>
-
-                  {!user?.isVerified && (
-                    <button
-                      onClick={handleVerifyClick}
-                      className="block px-4 py-2 hover:bg-gray-50 text-gray-700 w-full text-left"
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
                     >
-                      Verify Email
+                      Edit Profile
+                    </Link>
+
+                    <Link
+                      href="/orders"
+                      className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                    >
+                      My Orders
+                    </Link>
+
+                    {!user?.isVerified && (
+                      <button
+                        onClick={handleVerifyClick}
+                        className="block px-4 py-2 hover:bg-gray-50 text-gray-700 w-full text-left"
+                      >
+                        Verify Email
+                      </button>
+                    )}
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-50 text-red-600"
+                    >
+                      Logout
                     </button>
+                  </div>
+                )}
+
+                {/* Wishlist */}
+                <button className="hover:text-red-600 hover:scale-110 transition-transform duration-200">
+                  {user ? (
+                    <Link href={"/wishList"} className="relative">
+                      <Heart size={24} />
+                      {wishListItems.length > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                          {wishListItems.length}
+                        </span>
+                      )}
+                    </Link>
+                  ) : authChecked ? (
+                    <Heart
+                      size={24}
+                      onClick={() => toast.error("Login first")}
+                    />
+                  ) : (
+                    <Heart size={24} className="opacity-50" />
                   )}
+                </button>
 
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-50 text-red-600"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-
-              {/* Wishlist */}
-              <button className="hover:text-red-600 hover:scale-110 transition-transform duration-200">
-                {user ? (
-                  <Link href={"/wishList"} className="relative">
-                    <Heart size={24} />
-                    {wishListItems.length > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-                        {wishListItems.length}
-                      </span>
-                    )}
-                  </Link>
-                ) : authChecked ? (
-                  <Heart size={24} onClick={() => toast.error("Login first")} />
-                ) : (
-                  <Heart size={24} className="opacity-50" />
-                )}
-              </button>
-
-              {/* Cart */}
-              <button className="hover:scale-110 transition-transform duration-200">
-                {user ? (
-                  <Link href="/cart" className="relative">
-                    <ShoppingCart size={24} />
-                    {cartItems.length > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-                        {cartItems.length}
-                      </span>
-                    )}
-                  </Link>
-                ) : authChecked ? (
-                  <ShoppingCart
-                    size={24}
-                    onClick={() => toast.error("Login first")}
-                  />
-                ) : (
-                  <ShoppingCart size={24} className="opacity-50" />
-                )}
-              </button>
+                {/* Cart */}
+                <button className="hover:scale-110 transition-transform duration-200">
+                  {user ? (
+                    <Link href="/cart" className="relative">
+                      <ShoppingCart size={24} />
+                      {cartItems.length > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                          {cartItems.length}
+                        </span>
+                      )}
+                    </Link>
+                  ) : authChecked ? (
+                    <ShoppingCart
+                      size={24}
+                      onClick={() => toast.error("Login first")}
+                    />
+                  ) : (
+                    <ShoppingCart size={24} className="opacity-50" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
