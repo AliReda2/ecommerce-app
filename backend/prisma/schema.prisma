@@ -28,19 +28,19 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  orders            Order[]
-  cartItems         CartItem[]
-  reviews           Review[]
-  Wishlist          Wishlist[]
-  emailVerification EmailVerification?
+  orders    Order[]
+  cartItems CartItem[]
+  reviews   Review[]
+  Wishlist  Wishlist[]
 }
 
 model EmailVerification {
-  id        String   @id @default(uuid())
-  otp       String
-  expiresAt DateTime
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String   @id @default(uuid())
+  otp           String
+  expiresAt     DateTime
+  email         String   @unique
+  requestCount  Int      @default(0)
+  lastRequestAt DateTime @default(now())
 }
 
 model Category {

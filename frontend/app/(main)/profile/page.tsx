@@ -37,7 +37,6 @@ export default function UserProfilePage() {
   });
 
   const [loadingLocation, setLoadingLocation] = useState(false);
-
   const [markerPos, setMarkerPos] = useState<[number, number] | null>([
     33.8938, 35.5018,
   ]);
@@ -53,12 +52,9 @@ export default function UserProfilePage() {
       const initialCoords = user.coordinates
         .split(",")
         .map((n) => parseFloat(n.trim())) as [number, number];
-
-      // Defer the state update to avoid synchronous setState inside the effect
       setTimeout(() => setMarkerPos(initialCoords), 0);
     }
 
-    // Defer the state update to avoid synchronous setState inside the effect
     setTimeout(() => {
       setForm({
         firstName: user.firstName || "",
@@ -77,7 +73,6 @@ export default function UserProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       await dispatch(updateCurrentUser(form))
         .unwrap()
@@ -95,7 +90,6 @@ export default function UserProfilePage() {
     }
 
     setLoadingLocation(true);
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const pos: [number, number] = [
@@ -103,10 +97,7 @@ export default function UserProfilePage() {
           position.coords.longitude,
         ];
         setMarkerPos(pos);
-        setForm((prev) => ({
-          ...prev,
-          coordinates: `${pos[0]},${pos[1]}`,
-        }));
+        setForm((prev) => ({ ...prev, coordinates: `${pos[0]},${pos[1]}` }));
         setLoadingLocation(false);
       },
       () => {
@@ -122,23 +113,25 @@ export default function UserProfilePage() {
   };
 
   return (
-    <div className="w-full bg-white">
-      <div className="p-10 max-w-3xl mx-auto space-y-6">
-        <h1 className="text-2xl font-semibold">Update Profile</h1>
+    <div className="min-h-screen bg-gray-50 py-10">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-8 space-y-6">
+        <h1 className="text-3xl font-bold text-gray-800">Update Profile</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               placeholder="First Name"
               name="firstName"
               value={form.firstName}
               onChange={handleChange}
+              className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             />
             <Input
               placeholder="Last Name"
               name="lastName"
               value={form.lastName}
               onChange={handleChange}
+              className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -147,6 +140,7 @@ export default function UserProfilePage() {
             name="address"
             value={form.address}
             onChange={handleChange}
+            className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
           />
 
           <Input
@@ -154,44 +148,41 @@ export default function UserProfilePage() {
             name="phone"
             value={form.phone}
             onChange={handleChange}
+            className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
           />
 
-          <div className="h-80">
-            <Label className="form-label fw-semibold">
-              Mark Your Location on Map
+          <div className="space-y-2">
+            <Label className="text-gray-700 font-medium">
+              Mark Your Location
             </Label>
-            <p className="text-sm mb-2">
+            <p className="text-sm text-gray-500">
               Click on the map to mark your delivery location.
             </p>
-
-            <UserProfileMap
-              markerPos={markerPos}
-              setMarkerPos={setMarkerPos}
-              setCoordinates={(coords) =>
-                setForm((prev) => ({ ...prev, coordinates: coords }))
-              }
-            />
-
-            <p className="mt-2 text-sm text-gray-500">
-              Click on the map to set coordinates.
-            </p>
+            <div className="h-80 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+              <UserProfileMap
+                markerPos={markerPos}
+                setMarkerPos={setMarkerPos}
+                setCoordinates={(coords) =>
+                  setForm((prev) => ({ ...prev, coordinates: coords }))
+                }
+              />
+            </div>
           </div>
 
-          <br />
           <Input
             placeholder="Coordinates"
             name="coordinates"
             value={form.coordinates}
             readOnly
-            className="border-0 shadow-none focus:ring-0 pointer-events-none text-black bg-white"
+            className="border-gray-300 bg-gray-100 text-gray-700 cursor-not-allowed"
           />
 
-          <div className="flex gap-2 justify-end mb-2">
+          <div className="flex flex-wrap justify-center gap-12 mt-4">
             <Button
               type="button"
-              className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
               onClick={handleUseMyLocation}
               disabled={loadingLocation}
+              className="flex items-center gap-2 px-6 py-3 rounded-full bg-green-500 hover:bg-green-600 shadow-md transition-colors duration-200 text-white font-medium"
             >
               {loadingLocation && (
                 <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
@@ -201,16 +192,19 @@ export default function UserProfilePage() {
 
             <Button
               type="button"
-              className="bg-red-600 hover:bg-red-700"
               onClick={handleClearMarker}
+              className="px-6 py-3 rounded-full bg-red-500 hover:bg-red-600 shadow-md transition-colors duration-200 text-white font-medium"
             >
               Clear Marker
             </Button>
-          </div>
 
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            {isLoading ? "Updating" : "Update Profile"}
-          </Button>
+            <Button
+              type="submit"
+              className="w-full md:w-auto px-6 py-3 rounded-full bg-blue-500 hover:bg-blue-600 shadow-md transition-colors duration-200 text-white font-semibold"
+            >
+              {isLoading ? "Updating..." : "Update Profile"}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

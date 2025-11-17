@@ -131,19 +131,36 @@ export class CartService {
     const cartItem = await this.prisma.cartItem.findUnique({
       where: { id: cartItemId },
     });
+
     if (!cartItem) {
       throw new NotFoundException('Cart item not found');
     }
+
     if (cartItem.userId !== userId) {
       throw new ForbiddenException('You are not allowed to update this item');
     }
-    const updatedCartItem = await this.prisma.cartItem.update({
+
+    const updated = await this.prisma.cartItem.update({
       where: { id: cartItemId },
       data: { quantity },
+      select: {
+        id: true,
+        quantity: true,
+        productId: true,
+        product: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            imageUrl: true,
+          },
+        },
+      },
     });
 
     return {
-      data: updatedCartItem,
+      data: updated,
       msg: 'Cart item quantity updated successfully',
     };
   }

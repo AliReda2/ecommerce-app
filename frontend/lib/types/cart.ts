@@ -15,3 +15,7 @@ export interface CartResponse {
   data: CartItem[];
   msg: string;
 }
+export interface SingleCartResponse {
+  data: CartItem;
+  msg: string;
+}

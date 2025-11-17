@@ -94,6 +94,8 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  console.log(user?.isVerified)
+
   return (
     <>
       <nav

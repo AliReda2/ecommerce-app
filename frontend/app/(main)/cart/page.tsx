@@ -27,14 +27,16 @@ const Cart = () => {
   const { cartItems, isLoading, error } = useAppSelector((state) => state.cart);
   const [updatingItemId, setUpdatingItemId] = useState<string | null>(null);
 
-  const quantities = useMemo(
-    () =>
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    setQuantities(
       cartItems.reduce((acc, item) => {
         acc[item.id] = item.quantity;
         return acc;
-      }, {} as Record<string, number>),
-    [cartItems]
-  );
+      }, {} as Record<string, number>)
+    );
+  }, [cartItems]);
 
   useEffect(() => {
     dispatch(getCartItems());
@@ -42,16 +44,35 @@ const Cart = () => {
 
   const handleIncrease = async (cartItemId: string) => {
     setUpdatingItemId(cartItemId);
-    await dispatch(
-      updateQuantity({ cartItemId, quantity: quantities[cartItemId] + 1 })
-    );
+    setQuantities((prev) => ({ ...prev, [cartItemId]: prev[cartItemId] + 1 }));
+
+    try {
+      await dispatch(
+        updateQuantity({ cartItemId, quantity: quantities[cartItemId] + 1 })
+      ).unwrap();
+    } catch {
+      // rollback on error
+      setQuantities((prev) => ({
+        ...prev,
+        [cartItemId]: prev[cartItemId] - 1,
+      }));
+    }
     setUpdatingItemId(null);
   };
 
   const handleDecrease = async (cartItemId: string) => {
-    const newQuantity = Math.max(1, quantities[cartItemId] - 1);
+    const newQty = Math.max(1, quantities[cartItemId] - 1);
     setUpdatingItemId(cartItemId);
-    await dispatch(updateQuantity({ cartItemId, quantity: newQuantity }));
+    setQuantities((prev) => ({ ...prev, [cartItemId]: newQty }));
+
+    try {
+      await dispatch(updateQuantity({ cartItemId, quantity: newQty })).unwrap();
+    } catch {
+      setQuantities((prev) => ({
+        ...prev,
+        [cartItemId]: prev[cartItemId] + 1,
+      }));
+    }
     setUpdatingItemId(null);
   };
 
@@ -75,6 +96,79 @@ const Cart = () => {
     (sum, item) => sum + (item.product?.price ?? 0) * item.quantity,
     0
   );
+
+  const slides = cartItems.map((item) => (
+    <SwiperSlide key={item.id} style={{ height: "auto" }} className="mb-2">
+      <Card className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 rounded-lg">
+        {/* Product Info */}
+        <div className="flex items-center space-x-4 sm:space-x-5 w-full sm:w-auto">
+          <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
+            <Image
+              src={item.product?.imageUrl || "/images/codart.png"}
+              alt={item.product?.name || "product name"}
+              fill
+              className="object-contain rounded-md bg-gray-50"
+            />
+          </div>
+
+          <div className="flex flex-col flex-1 mt-2 sm:mt-0">
+            <h2 className="font-semibold text-gray-800 text-lg">
+              {item.product?.name}
+            </h2>
+            <p className="text-sm text-gray-500 line-clamp-2 max-w-sm mt-1">
+              {item.product?.description}
+            </p>
+            <p className="text-base font-semibold text-blue-700 mt-2">
+              ${item.product?.price.toFixed(2)}
+            </p>
+          </div>
+        </div>
+
+        {/* Quantity & Remove */}
+        <div className="flex items-center space-x-3 mt-3 sm:mt-0">
+          <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <button
+              onClick={() => handleDecrease(item.id)}
+              className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
+              disabled={updatingItemId === item.id}
+            >
+              {updatingItemId === item.id ? (
+                <Loader2 className="animate-spin w-4 h-4 mx-auto" />
+              ) : (
+                "−"
+              )}
+            </button>
+
+            <div className="px-3 py-1 text-center text-gray-800 font-medium min-w-10">
+              {quantities[item.id] ?? item.quantity}
+            </div>
+
+            <button
+              onClick={() => handleIncrease(item.id)}
+              className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
+              disabled={updatingItemId === item.id}
+            >
+              {updatingItemId === item.id ? (
+                <Loader2 className="animate-spin w-4 h-4 mx-auto" />
+              ) : (
+                "+"
+              )}
+            </button>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleRemove(item.id)}
+            className="text-red-500 hover:text-red-600"
+            title="Remove item"
+          >
+            <Trash2 className="w-5 h-5" />
+          </Button>
+        </div>
+      </Card>
+    </SwiperSlide>
+  ));
 
   if (error)
     return (
@@ -114,86 +208,12 @@ const Cart = () => {
                 navigation
                 scrollbar={{ draggable: true }}
                 mousewheel={{ forceToAxis: true, releaseOnEdges: true }}
-                cssMode={true}
+                observer={true}
+                observeParents={true}
                 modules={[Navigation, Scrollbar, Mousewheel]}
                 className="h-full"
               >
-                {cartItems.map((item) => (
-                  <SwiperSlide
-                    key={item.id}
-                    style={{ height: "auto" }}
-                    className="mb-2"
-                  >
-                    <Card className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 rounded-lg">
-                      {/* Product Info */}
-                      <div className="flex items-center space-x-4 sm:space-x-5 w-full sm:w-auto">
-                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
-                          <Image
-                            src={item.product?.imageUrl || "/images/codart.png"}
-                            alt={item.product?.name || "product name"}
-                            fill
-                            className="object-contain rounded-md bg-gray-50"
-                          />
-                        </div>
-
-                        <div className="flex flex-col flex-1 mt-2 sm:mt-0">
-                          <h2 className="font-semibold text-gray-800 text-lg">
-                            {item.product?.name}
-                          </h2>
-                          <p className="text-sm text-gray-500 line-clamp-2 max-w-sm mt-1">
-                            {item.product?.description}
-                          </p>
-                          <p className="text-base font-semibold text-blue-700 mt-2">
-                            ${item.product?.price.toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Quantity & Remove */}
-                      <div className="flex items-center space-x-3 mt-3 sm:mt-0">
-                        <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                          <button
-                            onClick={() => handleDecrease(item.id)}
-                            className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
-                            disabled={updatingItemId === item.id}
-                          >
-                            {updatingItemId === item.id ? (
-                              <Loader2 className="animate-spin w-4 h-4 mx-auto" />
-                            ) : (
-                              "−"
-                            )}
-                          </button>
-
-                          <div className="px-3 py-1 text-center text-gray-800 font-medium min-w-10">
-                            {quantities[item.id] || item.quantity}
-                          </div>
-
-                          <button
-                            onClick={() => handleIncrease(item.id)}
-                            className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
-                            disabled={updatingItemId === item.id}
-                          >
-                            {updatingItemId === item.id ? (
-                              <Loader2 className="animate-spin w-4 h-4 mx-auto" />
-                            ) : (
-                              "+"
-                            )}
-                          </button>
-                        </div>
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleRemove(item.id)}
-                          className="text-red-500 hover:text-red-600"
-                          title="Remove item"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    </Card>
-                  </SwiperSlide>
-                ))}
+                {slides}
               </Swiper>
             </div>
 

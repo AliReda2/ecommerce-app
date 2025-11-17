@@ -68,9 +68,9 @@ const Hero = () => {
   };
 
   return (
-    <div className="w-full flex justify-center py-5">
+    <div className="w-full h-[80vh] flex justify-center py-5">
       {/* Centered container */}
-      <div className="grid 2xl:max-w-[76%] xl:max-w-[90%] lg:max-w-full md:w-full sm:w-full w-full  2xl:grid-cols-5 2xl:grid-rows-2 xl:grid-cols-5 xl:grid-rows-2 lg:grid-cols-5 lg:grid-rows-2 md:grid-cols-1 md:grid-rows-4 sm:grid-cols-1 sm:grid-rows-4 grid-cols-1 grid-rows-3 gap-2 lg:gap-4 mx-auto px-5">
+      <div className="grid 2xl:max-w-[95%] xl:max-w-[90%] lg:max-w-full md:w-full sm:w-full w-full  2xl:grid-cols-5 2xl:grid-rows-2 xl:grid-cols-5 xl:grid-rows-2 lg:grid-cols-5 lg:grid-rows-2 md:grid-cols-1 md:grid-rows-4 sm:grid-cols-1 sm:grid-rows-4 grid-cols-1 grid-rows-3 gap-2 lg:gap-4 mx-auto px-5">
         {/* Hero Card */}
         <div
           id="card-carousel"
@@ -87,9 +87,9 @@ const Hero = () => {
                 )}`}
                 data-carousel-item
               >
-                <section className="bg-blue-100 grid grid-cols-1 md:grid-cols-2 2xl:grid-rows-[92%_auto] xl:grid-rows-[92%_auto] lg:grid-rows-[92%_auto] items-center py-8 md:py-0 sm:py-0 lg:px-4 px-6 h-full overflow-hidden sm:grid-cols-1 sm:grid-rows-[47%_47%_5%] grid-rows-[49%_49%_2%] md:grid-rows-[95%_5%] pt-0">
+                <section className="bg-blue-100 grid grid-cols-1 md:grid-cols-2 2xl:grid-rows-[92%_auto] xl:grid-rows-[92%_auto] lg:grid-rows-[92%_auto] items-center py-8 md:py-0 2xl:px-10 2xl:gap-0 sm:py-0 lg:px-4 px-6 h-full overflow-hidden sm:grid-cols-1 sm:grid-rows-[47%_47%_5%] grid-rows-[49%_49%_2%] md:grid-rows-[95%_5%] pt-0">
                   {/* Text Content */}
-                  <div className="flex flex-col justify-center space-y-4 md:space-y-6 md:w-10/12 lg:w-9/12">
+                  <div className="flex flex-col justify-center space-y-4 md:space-y-6 md:w-10/12 lg:w-9/12 2xl:pl-10">
                     <span className="text-blue-700 font-semibold uppercase tracking-wide text-sm md:text-base">
                       {card.subtitle}
                     </span>
@@ -105,8 +105,8 @@ const Hero = () => {
                   </div>
 
                   {/* Image */}
-                  <div className="mt-8 md:mt-0 flex justify-center md:justify-end">
-                    <div className="relative xl:w-96 xl:h-96 lg:w-64 lg:h-64 md:w-96 md:h-96 sm:w-50 sm:h-50 w-50 h-50">
+                  <div className="mt-8 md:mt-0 flex justify-center md:justify-end 2xl:pr-10">
+                    <div className="relative 2xl:w-96 2xl:h-96 xl:w-96 xl:h-96 lg:w-64 lg:h-64 md:w-96 md:h-96 sm:w-50 sm:h-50 w-50 h-50">
                       <Image
                         src={card.image}
                         alt={card.title}

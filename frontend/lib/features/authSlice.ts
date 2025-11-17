@@ -187,6 +187,21 @@ export const verifyOtp = createAsyncThunk<
   }
 });
 
+export const resendOtp = createAsyncThunk<
+  { message: string },
+  { email: string },
+  { rejectValue: string }
+>("auth/resendOtp", async ({ email }, { rejectWithValue }) => {
+  try {
+    const response = await api.post<{ message: string }>("/mail/otp", {
+      email,
+    });
+    return response.data;
+  } catch (err: unknown) {
+    return rejectWithValue(getErrorMessage(err));
+  }
+});
+
 // Slice
 const authSlice = createSlice({
   name: "auth",

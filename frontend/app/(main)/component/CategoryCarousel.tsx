@@ -63,7 +63,7 @@ const CategoryCarousel = () => {
       <Swiper
         modules={[Navigation, Autoplay]}
         autoplay={{ delay: 2000, disableOnInteraction: false }}
-        spaceBetween={20}
+        spaceBetween={10}
         breakpoints={getOptimalSlides(categories.length || 6)}
         className="py-6 h-72"
       >

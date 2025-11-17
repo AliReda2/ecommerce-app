@@ -33,6 +33,7 @@ export class ProductController {
   async getAllProducts() {
     return this.productService.getAllProducts();
   }
+  
   @Get('admin')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN')

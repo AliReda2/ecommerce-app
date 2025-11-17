@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +12,12 @@ import { Input } from "@/components/ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/store";
 import toast from "react-hot-toast";
-import { login, register, verifyOtp } from "@/lib/features/authSlice";
+import {
+  login,
+  register,
+  resendOtp,
+  verifyOtp,
+} from "@/lib/features/authSlice";
 import { Label } from "@/components/ui/label";
 
 interface LoginModalProps {
@@ -28,7 +33,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading } = useSelector((state: RootState) => state.auth);
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   // -------------------------
   // LOGIN STATE + HANDLERS
@@ -98,6 +103,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         toast.success("Account created successfully");
         setEmail(registerData.email); // <-- SAVE EMAIL HERE
         setMode("verify"); // <-- Switch to verify
+        setOtpExpiresIn(600); // reset OTP validity
       })
       .catch((error) => toast.error(error));
   };
@@ -116,8 +122,42 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         .unwrap()
         .then(() => toast.success("OTP verified successfully"))
         .catch((error) => toast.error(error));
-    onClose(); 
+    onClose();
   };
+
+  const handleResendOtp = () => {
+    dispatch(resendOtp({ email }))
+      .unwrap()
+      .then(() => {
+        toast.success("OTP sent");
+        setResendCooldown(90); // start cooldown again
+        setOtpExpiresIn(600); // new OTP validity
+      })
+      .catch((error) => toast.error(error));
+  };
+
+  const [resendCooldown, setResendCooldown] = useState(0); // seconds
+  const [otpExpiresIn, setOtpExpiresIn] = useState(600); // 10 minutes
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+
+    const interval = setInterval(() => {
+      setResendCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [resendCooldown]);
+
+  useEffect(() => {
+    if (otpExpiresIn <= 0) return;
+
+    const interval = setInterval(() => {
+      setOtpExpiresIn((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [otpExpiresIn]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -127,7 +167,6 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             {mode}
           </DialogTitle>
         </DialogHeader>
-
         {/* Switcher */}
         <div className="flex justify-center gap-4 mt-2 mb-4">
           <button
@@ -161,7 +200,6 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             Verify
           </button>
         </div>
-
         {(mode === "login" || mode === "register") && (
           <div className="grid">
             <Button
@@ -196,7 +234,6 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </Button>
           </div>
         )}
-
         {/* LOGIN FORM */}
         {mode === "login" && (
           <form className="space-y-6 mt-6" onSubmit={handleLogin}>
@@ -274,7 +311,6 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </Button>
           </form>
         )}
-
         {/* REGISTER FORM */}
         {mode === "register" && (
           <form className="space-y-6 mt-6" onSubmit={handleRegister}>
@@ -341,24 +377,54 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </Button>
           </form>
         )}
+
         {mode === "verify" && (
-          <form className="space-y-6 mt-6" onSubmit={handleVerifyOtp}>
-            <div>
-              <Label>Enter OTP sent to {email}</Label>
-              <Input
-                className="mt-1 text-center tracking-widest"
-                placeholder="123456"
-                type="text"
-                value={otp}
-                onChange={handleOtpChange}
-                required
-              />
+          <div>
+            {/* RESEND + TIMER */}
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                onClick={handleResendOtp}
+                disabled={resendCooldown > 0}
+                className="text-sm"
+              >
+                {resendCooldown > 0
+                  ? `Resend in ${resendCooldown}s`
+                  : "Resend OTP"}
+              </Button>
+
+              <span className="text-xs text-gray-500">
+                OTP expires in {otpExpiresIn}s
+              </span>
             </div>
 
-            <Button className="w-full" size="sm" disabled={isLoading}>
-              {isLoading ? "Verifying..." : "Verify OTP"}
-            </Button>
-          </form>
+            <form className="space-y-6 mt-6" onSubmit={handleVerifyOtp}>
+              <div>
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="email@email.com"
+                />
+              </div>
+
+              <div>
+                <Label>Enter OTP sent to {email}</Label>
+                <Input
+                  className="mt-1 text-center tracking-widest"
+                  placeholder="123456"
+                  type="text"
+                  value={otp}
+                  onChange={handleOtpChange}
+                  required
+                />
+              </div>
+
+              <Button className="w-full" size="sm" disabled={isLoading}>
+                {isLoading ? "Verifying..." : "Verify OTP"}
+              </Button>
+            </form>
+          </div>
         )}
       </DialogContent>
     </Dialog>

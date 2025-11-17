@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "@/api/axios";
-import { CartItem, CartResponse } from "../types";
+import { CartItem, CartResponse, SingleCartResponse } from "../types";
 import { getErrorMessage } from "../getErrorMessage";
 
 interface CartState {
@@ -72,11 +72,11 @@ export const updateCartItemQuantity = createAsyncThunk<
   { rejectValue: string }
 >("cart/updateItem", async ({ cartItemId, quantity }, { rejectWithValue }) => {
   try {
-    const { data } = await api.patch<CartItem>("/cart/update", {
+    const response = await api.patch<SingleCartResponse>("/cart/update", {
       cartItemId,
       quantity,
     });
-    return data;
+    return response.data.data;
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
   }
@@ -160,13 +160,11 @@ const cartSlice = createSlice({
       })
       .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
         state.isLoading = false;
-        const index = state.cartItems.findIndex(
-          (item) => item.id === action.payload.id
+        state.cartItems = state.cartItems.map((item) =>
+          item.id === action.payload.id ? { ...item, ...action.payload } : item
         );
-        if (index !== -1) {
-          state.cartItems[index] = action.payload;
-        }
       })
+
       .addCase(updateCartItemQuantity.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Failed to update cart item";

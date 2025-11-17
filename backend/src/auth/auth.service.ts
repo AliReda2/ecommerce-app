@@ -39,7 +39,7 @@ export class AuthService {
       });
 
       // Send OTP to the user
-      await this.mailService.sendOtp(user.id, user.email);
+      await this.mailService.sendOtp(user.email);
 
       return {
         message: 'Registration successful. Please verify your email.',
@@ -71,6 +71,7 @@ export class AuthService {
         firstName: true,
         lastName: true,
         email: true,
+        isVerified: true,
       },
     });
 
@@ -84,6 +85,7 @@ export class AuthService {
       user.role,
       fullName,
       user.email,
+      user.isVerified,
     );
     await this.updateRtHash(user.id, tokens.refresh_token);
 
@@ -107,6 +109,7 @@ export class AuthService {
         firstName: true,
         lastName: true,
         isActive: true,
+        isVerified: true,
       },
     });
     // If user not found, throw an error
@@ -127,6 +130,7 @@ export class AuthService {
       user.role,
       fullName,
       user.email,
+      user.isVerified,
     );
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
@@ -147,6 +151,7 @@ export class AuthService {
         firstName: true,
         lastName: true,
         isActive: true,
+        isVerified: true,
       },
     });
     // If user not found, throw an error
@@ -163,6 +168,7 @@ export class AuthService {
       user.role,
       fullName,
       user.email,
+      user.isVerified,
     );
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
@@ -201,6 +207,7 @@ export class AuthService {
         hashedRtoken: true,
         firstName: true,
         lastName: true,
+        isVerified: true,
       },
     });
     // If user not found, throw an error
@@ -219,6 +226,7 @@ export class AuthService {
       user.role,
       fullName,
       user.email,
+      user.isVerified,
     );
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
@@ -231,6 +239,7 @@ export class AuthService {
     role: string,
     fullName: string,
     email: string,
+    isVerified: boolean,
   ) {
     // Create a JWT token
     const payload = {
@@ -238,7 +247,7 @@ export class AuthService {
       role,
       fullName,
       email,
-      isVerified: true,
+      isVerified,
     };
     const [access_token, refresh_token] = await Promise.all([
       await this.jwt.signAsync(payload, {
