@@ -12,7 +12,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-gray-700 shadow-[0_-2px_8px_rgba(0,0,0,0.1)]">
+    <footer className="bg-gray-100 text-gray-700 shadow-[0_-2px_8px_rgba(0,0,0,0.1)] z-50">
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 justify-items-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
         {/* Logo & Socials */}
         <div className="flex flex-col items-center">

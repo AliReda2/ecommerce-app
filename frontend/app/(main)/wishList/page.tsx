@@ -16,9 +16,11 @@ import { Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/features/cartSlice";
 import { Product } from "@/lib/types";
+import useGoBack from "@/hooks/useGoBack";
 
 const WishListPage = () => {
   const router = useRouter();
+  const goBack = useGoBack();
   const [quantity, setQuantity] = useState(1);
 
   const increase = () => setQuantity((q) => q + 1);
@@ -60,8 +62,26 @@ const WishListPage = () => {
   return (
     <div className="w-full bg-white">
       <div className="px-6 py-10 max-w-[90%] mx-auto">
-        <h1 className="text-3xl font-bold mb-8">My Wishlist</h1>
-
+        <button
+          onClick={goBack}
+          className="flex items-center gap-2 text-gray-700 mb-6 hover:text-gray-900 transition hover:cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
+          <span className="font-medium">Back</span>
+        </button>
         {isLoading ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {skeletonCards}

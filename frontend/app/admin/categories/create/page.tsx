@@ -29,18 +29,20 @@ const CreateCategory = () => {
     form.append("name", formData.name);
     if (formData.image) form.append("image", formData.image);
 
-    dispatch(createCategory(form));
-    toast.success("Category created succesfuly");
+    dispatch(createCategory(form))
+      .unwrap()
+      .then(() => toast.success("Category created succesfuly"))
+      .catch((error) => toast.error(error));
   };
 
   return (
     <FieldSet>
-      <FieldLegend>Product</FieldLegend>
-      <FieldDescription>Update Product Details</FieldDescription>
+      <FieldLegend>Category</FieldLegend>
+      <FieldDescription>Category Details</FieldDescription>
 
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="name">Product name</FieldLabel>
+          <FieldLabel htmlFor="name">Category name</FieldLabel>
           <Input
             id="name"
             value={formData.name}

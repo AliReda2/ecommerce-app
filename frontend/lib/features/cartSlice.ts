@@ -6,12 +6,14 @@ import { getErrorMessage } from "../getErrorMessage";
 interface CartState {
   cartItems: CartItem[];
   isLoading: boolean;
+  isUpdating: boolean;
   error: string | null;
 }
 
 const initialState: CartState = {
   cartItems: [],
   isLoading: false,
+  isUpdating: false,
   error: null,
 };
 
@@ -76,6 +78,7 @@ export const updateCartItemQuantity = createAsyncThunk<
       cartItemId,
       quantity,
     });
+
     return response.data.data;
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
@@ -116,11 +119,11 @@ const cartSlice = createSlice({
 
       // ADD
       .addCase(addToCart.pending, (state) => {
-        state.isLoading = true;
+        state.isUpdating = true;
         state.error = null;
       })
       .addCase(addToCart.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isUpdating = false;
 
         const index = state.cartItems.findIndex(
           (item) => item.productId === action.payload.productId
@@ -133,54 +136,54 @@ const cartSlice = createSlice({
         }
       })
       .addCase(addToCart.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isUpdating = false;
         state.error = action.payload || "Failed to add item to cart";
       })
 
       // REMOVE
       .addCase(removeFromCart.pending, (state) => {
-        state.isLoading = true;
+        state.isUpdating = true;
         state.error = null;
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isUpdating = false;
         state.cartItems = state.cartItems.filter(
           (item) => item.id !== action.payload
         );
       })
       .addCase(removeFromCart.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isUpdating = false;
         state.error = action.payload || "Failed to remove item from cart";
       })
 
       // UPDATE
       .addCase(updateCartItemQuantity.pending, (state) => {
-        state.isLoading = true;
+        state.isUpdating = true;
         state.error = null;
       })
       .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isUpdating = false;
         state.cartItems = state.cartItems.map((item) =>
           item.id === action.payload.id ? { ...item, ...action.payload } : item
         );
       })
 
       .addCase(updateCartItemQuantity.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isUpdating = false;
         state.error = action.payload || "Failed to update cart item";
       })
 
       // CLEAR
       .addCase(clearCart.pending, (state) => {
-        state.isLoading = true;
+        state.isUpdating = true;
         state.error = null;
       })
       .addCase(clearCart.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isUpdating = false;
         state.cartItems = [];
       })
       .addCase(clearCart.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isUpdating = false;
         state.error = action.payload || "Failed to clear cart";
       });
   },

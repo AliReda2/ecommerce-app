@@ -22,6 +22,7 @@ import { createProduct } from "@/lib/features/productSlice";
 import { AppDispatch, RootState } from "@/lib/store";
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 const CreateProduct = () => {
@@ -52,7 +53,10 @@ const CreateProduct = () => {
     form.append("stock", String(formData.stock));
     if (formData.image) form.append("image", formData.image);
 
-    dispatch(createProduct(form));
+    dispatch(createProduct(form))
+      .unwrap()
+      .then(() => toast.success("product created succesfuly"))
+      .catch((error) => toast.error(error));
   };
 
   return (

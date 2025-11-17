@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import dynamic from "next/dynamic";
 import { Label } from "@/components/ui/label";
+import useGoBack from "@/hooks/useGoBack";
 
 const UserProfileMap = dynamic(
   () => import("@/app/(main)/component/UserProfileMap"),
@@ -24,6 +25,8 @@ interface ProfileForm {
 
 export default function UserProfilePage() {
   const dispatch = useAppDispatch();
+  const goBack = useGoBack();
+
   const { currentUser: user, isLoading } = useAppSelector(
     (state) => state.user
   );
@@ -129,6 +132,34 @@ export default function UserProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10">
+      <div
+        className="w-full flex
+      lg:ml-10
+      xl:ml-10
+      2xl:ml-20
+      "
+      >
+        <button
+          onClick={goBack}
+          className="flex items-center gap-2 text-gray-700 mb-6 hover:text-gray-900 transition hover:cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
+          <span className="font-medium">Back</span>
+        </button>
+      </div>
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-8 space-y-6">
         <h1 className="text-3xl font-bold text-gray-800">Update Profile</h1>
 

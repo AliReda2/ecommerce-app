@@ -68,7 +68,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="w-full sm:h-[80vh] h-[90vh] flex justify-center py-5">
+    <div className="w-full sm:h-[85vh] h-[90vh] flex justify-center py-5">
       {/* Centered container */}
       <div
         className="grid 

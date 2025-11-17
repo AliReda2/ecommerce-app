@@ -80,7 +80,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     p-3 sm:p-4 h-full
   "
     >
-      <CardHeader className="flex items-center justify-center p-5 bg-gray-50 rounded-t-2xl relative">
+      <CardHeader className="flex items-center justify-center p-5 rounded-t-2xl relative">
         <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto">
           <Image
             src={product.imageUrl || "/images/codart.png"}
@@ -93,12 +93,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Wishlist Toggle Button */}
         <button
           onClick={handleWishlistToggle}
-          className="absolute right-2 top-2 p-2 rounded-lg border transition shadow-sm hover:shadow-md"
+          className="absolute right-2 top-2 p-2 rounded-lg border-none transition"
         >
           <Heart
             size={24}
             fill={wishlistItem ? "red" : "none"}
-            className={"hover:text-red-500"}
+            className={`${
+              wishlistItem ? "text-red-500" : ""
+            } hover:text-red-500`}
           />
         </button>
       </CardHeader>
