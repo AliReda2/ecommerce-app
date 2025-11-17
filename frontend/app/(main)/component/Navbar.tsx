@@ -14,10 +14,12 @@ import { fetchWishlist } from "@/lib/features/wishListSlice";
 import VerifyModal from "./VerifyModal";
 import { useRouter } from "next/navigation";
 import { setHighlightedProduct } from "@/lib/features/uiSlice";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const { products } = useAppSelector((s) => s.product);
   const { user, authChecked } = useAppSelector((state) => state.auth);
@@ -29,15 +31,10 @@ const Navbar: React.FC = () => {
   const [openPanel, setOpenPanel] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<typeof products>([]);
 
-  useEffect(() => {
-    setFilteredProducts(
-      (products || []).filter((p) =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [searchTerm, products]);
+  const filteredProducts = (products || []).filter((p) =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -115,8 +112,8 @@ const Navbar: React.FC = () => {
           isVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-26">
+        <div className="mx-auto px-0 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-evenly h-26">
             {/* Logo */}
             <Link href={"/"}>
               <Image
@@ -129,14 +126,15 @@ const Navbar: React.FC = () => {
             </Link>
 
             {/* Search */}
-            <div className="flex-1 px-4 max-w-xl relative sm:block hidden">
+            <div className="flex-1 px-0 sm:px-4 max-w-xl relative">
               <Input
                 type="search"
-                placeholder="Search for products..."
+                placeholder={isMobile ? "Search..." : "Search for products..."}
                 className="w-full h-12 rounded-3xl bg-gray-50"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+
               <Search
                 size={20}
                 className="absolute right-7 top-1/2 -translate-y-1/2 text-gray-400"
