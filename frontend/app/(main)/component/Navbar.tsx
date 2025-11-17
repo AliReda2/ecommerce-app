@@ -13,10 +13,13 @@ import { getCartItems } from "@/lib/features/cartSlice";
 import { fetchWishlist } from "@/lib/features/wishListSlice";
 import VerifyModal from "./VerifyModal";
 import { useRouter } from "next/navigation";
+import { setHighlightedProduct } from "@/lib/features/uiSlice";
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const { products } = useAppSelector((s) => s.product);
   const { user, authChecked } = useAppSelector((state) => state.auth);
   const { cartItems } = useAppSelector((state) => state.cart);
   const { wishListItems } = useAppSelector((state) => state.wishList);
@@ -24,6 +27,17 @@ const Navbar = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [openVerify, setOpenVerify] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState<typeof products>([]);
+
+  useEffect(() => {
+    setFilteredProducts(
+      (products || []).filter((p) =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, products]);
 
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -120,11 +134,38 @@ const Navbar = () => {
                 type="search"
                 placeholder="Search for products..."
                 className="w-full h-12 rounded-3xl bg-gray-50"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
               <Search
                 size={20}
                 className="absolute right-7 top-1/2 -translate-y-1/2 text-gray-400"
               />
+
+              {searchTerm && filteredProducts.length > 0 && (
+                <div className="absolute bg-white border w-full max-h-64 overflow-auto z-50 mt-1 rounded-lg shadow-lg">
+                  {filteredProducts.map((p) => (
+                    <div
+                      key={p.id}
+                      className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() => {
+                        dispatch(setHighlightedProduct(p.id));
+                        setSearchTerm("");
+                      }}
+                    >
+                      <div className="w-10 h-10 relative shrink-0">
+                        <Image
+                          src={p.imageUrl || "/images/codart.png"}
+                          alt={p.name}
+                          fill
+                          className="object-contain rounded-md"
+                        />
+                      </div>
+                      <span className="text-gray-800">{p.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="flex ">

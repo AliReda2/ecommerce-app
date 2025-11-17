@@ -19,9 +19,15 @@ import {
 
 interface ProductCardProps {
   product: Product;
+  highlight?: boolean;
+  innerRef?: React.Ref<HTMLDivElement>;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  highlight,
+  innerRef,
+}: ProductCardProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { user, authChecked } = useAppSelector((state) => state.auth);
   const { wishListItems } = useAppSelector((state) => state.wishList);
@@ -72,16 +78,18 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card
-      className="
-    flex flex-col justify-between 
-    border border-gray-200 shadow-md hover:shadow-lg 
-    transition-shadow duration-300 
-    rounded-xl bg-white
-    p-3 sm:p-4 h-full
-  "
+      ref={innerRef}
+      className={`flex flex-col justify-between border border-gray-200 shadow-md rounded-xl bg-white p-3 sm:p-4 h-full transition-all duration-300 ${
+        highlight ? "ring-4 ring-yellow-400" : ""
+      }`}
     >
-      <CardHeader className="flex items-center justify-center p-5 rounded-t-2xl relative">
-        <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto">
+      <CardHeader className="flex items-center justify-center p-0 rounded-t-2xl relative">
+        <div className="relative mx-auto
+        lg:w-48 lg:h-48
+        md:w-40 md:h-40 
+        sm:w-32 sm:h-32 
+        w-24 h-24
+        ">
           <Image
             src={product.imageUrl || "/images/codart.png"}
             alt={product.name}
@@ -119,14 +127,20 @@ export default function ProductCard({ product }: ProductCardProps) {
           </p>
         </div>
 
-        <div className="flex justify-between items-center sm:mt-2 m-0">
-          <span className="text-sm sm:text-xl font-bold text-blue-700">
-            ${product.price.toFixed(2)}
-          </span>
-        </div>
-
-        {/* Quantity & Add to Cart */}
-        <div className="flex items-center sm:flex-row  flex-col gap-1 justify-between mt-3 space-x-2 text-xs sm:text-sm">
+        {/* Quantity & Add to Cart & Price */}
+        <div
+          className="grid
+          gap-1 justify-items-center mt-3 text-xs 
+          2xl:grid-cols-2 2xl:grid-rows-2 2xl:gap-2
+          grid-cols-1 grid-rows-3
+          sm:text-sm
+        "
+        >
+          <div className="flex justify-between items-center sm:mt-2 m-0">
+            <span className="text-sm sm:text-xl font-bold text-blue-700">
+              ${product.price.toFixed(2)}
+            </span>
+          </div>
           <div className="flex items-center border rounded-md overflow-hidden h-8 sm:h-9">
             <button
               onClick={decrease}
@@ -168,6 +182,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     shadow-sm hover:shadow-md 
     transition-all 
     w-full sm:w-auto
+    2xl:col-span-2
   "
           >
             Add to Cart
