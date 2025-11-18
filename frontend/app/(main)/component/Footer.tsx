@@ -120,8 +120,6 @@ const Footer = () => {
                   { href: "/privacy-policy", label: "Privacy Policy" },
                   { href: "/terms-conditions", label: "Terms & Conditions" },
                   { href: "/returns-refunds", label: "Returns & Refunds" },
-                  { href: "/wishlist", label: "Wishlist" },
-                  { href: "/orders", label: "My Orders" },
                 ].map((link, index) => (
                   <li key={index}>
                     <Link

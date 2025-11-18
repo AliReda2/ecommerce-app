@@ -21,7 +21,7 @@ export default function FAQHeader() {
                 d="M9 12l6-6-1.41-1.41L6 12l7.59 7.59L15 18l-6-6z"
               />
             </svg>
-            <span>Back to Home</span>
+            <span>Back</span>
           </Link>
           <h4 className="text-gray-900 font-semibold text-lg">FAQ</h4>
           <div className="w-24"></div>

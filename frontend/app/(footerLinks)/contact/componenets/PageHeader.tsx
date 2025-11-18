@@ -21,7 +21,7 @@ const PageHeader = () => {
                 d="M9 12l6-6-1.41-1.41L6 12l7.59 7.59L15 18l-6-6z"
               />
             </svg>
-            <span>Back to Home</span>
+            <span>Back</span>
           </Link>
           <h4 className="mb-0 text-foreground font-bold">Contact Us</h4>
           <div style={{ width: "100px" }}></div>

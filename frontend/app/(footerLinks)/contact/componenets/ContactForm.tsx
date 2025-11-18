@@ -32,7 +32,7 @@ const ContactForm = () => {
         <h3 className="mb-2 text-foreground font-bold text-2xl">
           Send us a Message
         </h3>
-        <p className="text-muted">
+        <p className="text-muted-foreground">
           Fill out the form below and we&apos;ll get back to you as soon as
           possible.
         </p>
