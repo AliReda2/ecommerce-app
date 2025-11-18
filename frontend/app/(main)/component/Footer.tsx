@@ -53,9 +53,13 @@ const Footer = () => {
                 </p>
                 <div className="flex gap-3">
                   {[
-                    { icon: Facebook, href: "#", color: "hover:bg-blue-600" },
-                    { icon: Twitter, href: "#", color: "hover:bg-sky-500" },
-                    { icon: Instagram, href: "#", color: "hover:bg-pink-500" },
+                    // { icon: Facebook, href: "#", color: "hover:bg-blue-600" },
+                    // { icon: Twitter, href: "#", color: "hover:bg-sky-500" },
+                    {
+                      icon: Instagram,
+                      href: "https://www.instagram.com/codartlb/",
+                      color: "hover:bg-pink-500",
+                    },
                     {
                       icon: MessageCircle,
                       href: "https://wa.me/96170031455",
