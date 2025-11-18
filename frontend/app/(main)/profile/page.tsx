@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import useGoBack from "@/hooks/useGoBack";
 
 const UserProfileMap = dynamic(
-  () => import("@/app/(main)/component/UserProfileMap"),
+  () => import("@/app/(main)/profile/components/UserProfileMap"),
   { ssr: false }
 );
 
