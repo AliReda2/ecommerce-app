@@ -21,9 +21,19 @@ export default function GoogleCallback() {
 
       router.replace("/");
     } else {
-      router.replace("/login");
+      router.replace("/");
     }
   }, [router]);
 
-  return <h3>Signing you in with Google...</h3>;
+  return (
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-gray-900 text-white">
+      {/* Animated Bouncing Dots */}
+      <div className="flex space-x-2 mb-4">
+        <span className="w-4 h-4 bg-blue-500 rounded-full animate-bounce"></span>
+        <span className="w-4 h-4 bg-blue-400 rounded-full animate-bounce animation-delay-200"></span>
+        <span className="w-4 h-4 bg-blue-300 rounded-full animate-bounce animation-delay-400"></span>
+      </div>
+      <p className="text-lg font-medium">Signing you in with Google...</p>
+    </div>
+  );
 }
