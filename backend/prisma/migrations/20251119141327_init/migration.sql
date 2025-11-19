@@ -33,6 +33,8 @@ CREATE TABLE "EmailVerification" (
     "otp" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "email" TEXT NOT NULL,
+    "requestCount" INTEGER NOT NULL DEFAULT 0,
+    "lastRequestAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "EmailVerification_pkey" PRIMARY KEY ("id")
 );
@@ -134,7 +136,13 @@ CREATE TABLE "Wishlist" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "EmailVerification_email_key" ON "EmailVerification"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Product_name_key" ON "Product"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Payment_orderId_key" ON "Payment"("orderId");

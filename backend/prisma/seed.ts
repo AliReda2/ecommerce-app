@@ -1,14 +1,13 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
 import * as argon from 'argon2';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 async function main() {
-  // Create Users
+  // Seed Users
   await Promise.all([
     prisma.user.upsert({
-      where: {
-        email: 'admin@example.com',
-      },
+      where: { email: 'admin@example.com' },
       update: {},
       create: {
         firstName: 'Admin',
@@ -19,9 +18,7 @@ async function main() {
       },
     }),
     prisma.user.upsert({
-      where: {
-        email: 'customer@example.com',
-      },
+      where: { email: 'customer@example.com' },
       update: {},
       create: {
         firstName: 'Customer',
@@ -31,14 +28,100 @@ async function main() {
       },
     }),
   ]);
+
+  // Categories to insert
+  const categories = [
+    'Car Accessories',
+    'Phone Accessories',
+    'Phone Cases',
+    'Watches',
+    'Chargers',
+    'Headphones',
+  ];
+
+  const categoryRecords = {};
+
+  // Seed Categories
+  for (const name of categories) {
+    const category = await prisma.category.upsert({
+      where: { name },
+      update: {},
+      create: { name },
+    });
+    categoryRecords[name] = category.id;
+  }
+
+  // Products to insert (2 per category)
+  const products = [
+    {
+      category: 'Car Accessories',
+      items: [
+        { name: 'Car Air Freshener', price: 5.99 },
+        { name: 'Car Phone Holder', price: 12.99 },
+      ],
+    },
+    {
+      category: 'Phone Accessories',
+      items: [
+        { name: 'Screen Protector', price: 7.99 },
+        { name: 'Bluetooth Earbuds', price: 19.99 },
+      ],
+    },
+    {
+      category: 'Phone Cases',
+      items: [
+        { name: 'Silicone Case', price: 9.99 },
+        { name: 'Shockproof Case', price: 14.99 },
+      ],
+    },
+    {
+      category: 'Watches',
+      items: [
+        { name: 'Digital Watch', price: 29.99 },
+        { name: 'Smartwatch Classic', price: 89.99 },
+      ],
+    },
+    {
+      category: 'Chargers',
+      items: [
+        { name: 'Fast Charger 20W', price: 15.99 },
+        { name: 'Wireless Charger', price: 25.99 },
+      ],
+    },
+    {
+      category: 'Headphones',
+      items: [
+        { name: 'Wired Headphones', price: 11.99 },
+        { name: 'Noise Cancelling Headset', price: 49.99 },
+      ],
+    },
+  ];
+
+  // Seed Products
+  for (const group of products) {
+    const categoryId = categoryRecords[group.category];
+
+    for (const product of group.items) {
+      await prisma.product.upsert({
+        where: { name: product.name },
+        update: {},
+        create: {
+          name: product.name,
+          price: product.price,
+          stock: 50,
+          description: `${product.name} description`,
+          categoryId,
+        },
+      });
+    }
+  }
+
+  console.log('Seed successful');
 }
 
 main()
-  .then(() => {
-    console.log('Seed successful');
-    return prisma.$disconnect();
-  })
+  .then(() => prisma.$disconnect())
   .catch((e) => {
     console.error(e);
-    return prisma.$disconnect().then(() => process.exit(1));
+    prisma.$disconnect().then(() => process.exit(1));
   });

@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "EmailVerification" ADD COLUMN     "lastRequestAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "requestCount" INTEGER NOT NULL DEFAULT 0;
