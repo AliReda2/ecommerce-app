@@ -7,23 +7,13 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-// Add request interceptor to attach token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// Single-flight refresh promise to prevent multiple refresh requests when many
+// requests receive 401 simultaneously.
+let refreshPromise: Promise<any> | null = null;
 
-// Add response interceptor to handle token refresh
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -31,22 +21,41 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      console.log(
+        "[Axios] 401 received, attempting refresh...",
+        originalRequest.url
+      );
 
       try {
-        const refreshToken = localStorage.getItem("refresh_token");
-        const response = await axios.post(`${API_URL}/auth/refresh`, {
-          refreshToken,
-        });
+        if (!refreshPromise) {
+          console.log("[Axios] Creating new refresh promise");
+          refreshPromise = axios
+            .post(`${API_URL}/auth/refresh`, {}, { withCredentials: true })
+            .then((res) => {
+              console.log("[Axios] Refresh successful");
+              refreshPromise = null;
+              return res;
+            })
+            .catch((err) => {
+              console.error("[Axios] Refresh failed:", err);
+              refreshPromise = null;
+              throw err;
+            });
+        } else {
+          console.log("[Axios] Reusing existing refresh promise");
+        }
 
-        const { access_token } = response.data;
-        localStorage.setItem("access_token", access_token);
+        await refreshPromise;
+        console.log("[Axios] Retrying original request:", originalRequest.url);
 
-        originalRequest.headers.Authorization = `Bearer ${access_token}`;
+        // retry original request after refresh completes
         return api(originalRequest);
       } catch (refreshError) {
-        // Handle refresh token failure (e.g., logout user)
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
+        // failed to refresh, redirect to home/login
+        console.error(
+          "[Axios] Refresh failed, redirecting to home",
+          refreshError
+        );
         window.location.href = "/";
         return Promise.reject(refreshError);
       }

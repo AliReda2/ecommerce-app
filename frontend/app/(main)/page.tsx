@@ -1,6 +1,6 @@
-import CategoryCarousel from "./component/CategoryCarousel";
-import Hero from "./component/Hero";
-import Products from "./component/Products";
+import CategoryCarousel from "./components/categories/CategoryCarousel";
+import Hero from "./components/Hero";
+import Products from "./components/products/Products";
 
 
 const page = () => {

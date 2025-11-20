@@ -4,9 +4,9 @@ import { Provider } from "react-redux";
 import { store } from "@/lib/store";
 import "leaflet/dist/leaflet.css";
 import "@/app/globals.css";
-import Navbar from "./component/Navbar";
+import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
-import Footer from "./component/Footer";
+import Footer from "./components/Footer";
 
 export default function MainLayout({
   children,

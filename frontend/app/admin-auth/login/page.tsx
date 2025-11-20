@@ -158,32 +158,11 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <Link
-                  href="#!"
-                  className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-
               <Button className="w-full" size="sm" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </div>
           </form>
-
-          <div className="mt-5">
-            <p className="text-sm text-center text-gray-700 dark:text-gray-400">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/admin-auth/register"
-                className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-              >
-                Sign Up
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>

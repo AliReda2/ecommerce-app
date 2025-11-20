@@ -182,7 +182,7 @@ const Navbar: React.FC = () => {
                   onClick={handleProfileClick}
                   className="hover:text-blue-600 hover:scale-110 transition-transform duration-200"
                 >
-                  <User size={24} />
+                  <User name="profile" size={24} />
                 </button>
 
                 {/* Dropdown Panel */}
@@ -227,7 +227,7 @@ const Navbar: React.FC = () => {
                 <button className="hover:text-red-600 hover:scale-110 transition-transform duration-200">
                   {user ? (
                     <Link href={"/wishList"} className="relative">
-                      <Heart size={24} />
+                      <Heart name="wishlist" size={24} />
                       {wishListItems.length > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                           {wishListItems.length}
@@ -236,11 +236,12 @@ const Navbar: React.FC = () => {
                     </Link>
                   ) : authChecked ? (
                     <Heart
+                      name="wishlist"
                       size={24}
                       onClick={() => toast.error("Login first")}
                     />
                   ) : (
-                    <Heart size={24} className="opacity-50" />
+                    <Heart name="wishlist" size={24} className="opacity-50" />
                   )}
                 </button>
 
@@ -248,7 +249,7 @@ const Navbar: React.FC = () => {
                 <button className="hover:scale-110 transition-transform duration-200">
                   {user ? (
                     <Link href="/cart" className="relative">
-                      <ShoppingCart size={24} />
+                      <ShoppingCart name="cart" size={24} />
                       {cartItems.length > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                           {cartItems.length}
@@ -257,11 +258,16 @@ const Navbar: React.FC = () => {
                     </Link>
                   ) : authChecked ? (
                     <ShoppingCart
+                      name="cart"
                       size={24}
                       onClick={() => toast.error("Login first")}
                     />
                   ) : (
-                    <ShoppingCart size={24} className="opacity-50" />
+                    <ShoppingCart
+                      name="cart"
+                      size={24}
+                      className="opacity-50"
+                    />
                   )}
                 </button>
               </div>

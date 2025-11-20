@@ -1,11 +1,6 @@
-"use client";
-
-import { useDispatch, useSelector } from "react-redux";
 import UpdateUserStatus from "./components/UpdateUserStatus";
 import { User } from "@/lib/types";
-import { AppDispatch, RootState } from "@/lib/store";
-import { fetchAllUsers } from "@/lib/features/userSlice";
-import { useEffect } from "react";
+
 import {
   TableCaption,
   TableHeader,
@@ -16,15 +11,22 @@ import {
   Table,
 } from "@/components/ui/table";
 import DeleteUser from "./components/DeleteUser";
+import { cookies } from "next/headers";
 
-const Users = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { users } = useSelector((state: RootState) => state.user);
+const Users = async () => {
+  const cookieStore = cookies();
+  const accessToken = (await cookieStore).get("access_token")?.value;
+  const refreshToken = (await cookieStore).get("refresh_token")?.value;
 
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`, {
+    cache: "no-store",
+    headers: {
+      Cookie: `access_token=${accessToken}; refresh_token=${refreshToken}`,
+    },
+  });
 
+  const payload = await res.json();
+  const users = payload.data;
   return (
     <div className="overflow-x-auto p-4">
       <Table>

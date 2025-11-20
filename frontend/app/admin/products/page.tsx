@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import type { Product } from "@/lib/types/product";
 import DeleteProduct from "./components/DeleteProduct";
@@ -16,18 +14,14 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
-import { fetchProducts } from "@/lib/features/productSlice";
-import { useEffect } from "react";
 
-export default function Product() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { products } = useSelector((state: RootState) => state.product);
+export default async function Product() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product`, {
+    cache: "no-store",
+  });
 
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+  const payload = await res.json();
+  const products = payload.data;
 
   if (products.length === 0) {
     return (

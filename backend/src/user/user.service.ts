@@ -156,6 +156,6 @@ export class UserService {
       where: { id: userId },
     });
 
-    return { message: 'User deleted successfully' };
+    return { msg: 'User deleted successfully' };
   }
 }

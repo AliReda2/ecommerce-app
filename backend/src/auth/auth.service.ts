@@ -42,7 +42,7 @@ export class AuthService {
       await this.mailService.sendOtp(user.email);
 
       return {
-        message: 'Registration successful. Please verify your email.',
+        msg: 'Registration successful. Please verify your email.',
         userId: user.id,
       };
     } catch (error) {
@@ -90,7 +90,7 @@ export class AuthService {
     await this.updateRtHash(user.id, tokens.refresh_token);
 
     return {
-      message: 'Email verified successfully.',
+      msg: 'Email verified successfully.',
       tokens,
     };
   }

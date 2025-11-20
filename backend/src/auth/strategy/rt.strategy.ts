@@ -12,14 +12,29 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     private prisma: PrismaService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => {
+          try {
+            return (
+              (req as any)?.cookies?.refresh_token ||
+              ExtractJwt.fromAuthHeaderAsBearerToken()(req as any)
+            );
+          } catch (e) {
+            return null;
+          }
+        },
+      ]),
       secretOrKey: config.get('REFRESH_JWT_SECRET') || 'defaultsecret',
       passReqToCallback: true,
     });
   }
 
   async validate(req: Request, payload: { sub: string }) {
-    const refreshToken = req.get('Authorization')?.replace('Bearer', '').trim();
+    const refreshTokenFromHeader = req.get('Authorization')
+      ? req.get('Authorization')?.replace('Bearer', '').trim()
+      : undefined;
+    const refreshToken =
+      (req as any)?.cookies?.refresh_token || refreshTokenFromHeader;
     const user = await this.prisma.user.findUnique({
       where: {
         id: payload.sub,

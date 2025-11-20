@@ -5,10 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { Product } from "@/lib/types";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store";
 import { addToCart } from "@/lib/features/cartSlice";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { checkAuth } from "@/lib/features/authSlice";
 import toast from "react-hot-toast";
 import { Heart } from "lucide-react";
@@ -28,51 +26,49 @@ export default function ProductCard({
   highlight,
   innerRef,
 }: ProductCardProps) {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const { user, authChecked } = useAppSelector((state) => state.auth);
   const { wishListItems } = useAppSelector((state) => state.wishList);
+
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    dispatch(checkAuth());
-  }, [dispatch]);
+    if (!authChecked) dispatch(checkAuth());
+  }, [dispatch, authChecked]);
 
-  const increase = () => setQuantity((q) => q + 1);
-  const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
-
-  const handleAddToCart = async (productId: string, quantity: number) => {
-    if (!user || !authChecked) {
-      return toast.error("Login first");
-    }
-    await dispatch(addToCart({ productId, quantity }))
-      .unwrap()
-      .then(() => toast.success(`${product.name} added to cart!`))
-      .catch((error) => toast.error(error));
-  };
-
-  // Check if product is already in wishlist
   const wishlistItem = useMemo(
     () => wishListItems.find((item) => item.productId === product.id),
     [wishListItems, product.id]
   );
 
-  const handleWishlistToggle = async () => {
-    if (!user || !authChecked) {
-      return toast.error("Login first");
-    }
+  const increase = () => setQuantity((q) => q + 1);
+  const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
-    if (wishlistItem) {
-      // Product is in wishlist, remove it
-      await dispatch(removeFromWishlist({ wishlistId: wishlistItem.id }))
-        .unwrap()
-        .then(() => toast.success(`${product.name} removed from wishlist`))
-        .catch((error) => toast.error(error));
-    } else {
-      // Product not in wishlist, add it
-      await dispatch(addToWishlist({ productId: product.id }))
-        .unwrap()
-        .then(() => toast.success(`${product.name} added to wishlist`))
-        .catch((error) => toast.error(error));
+  const handleAddToCart = async () => {
+    if (!user || !authChecked) return toast.error("Login first");
+    try {
+      await dispatch(addToCart({ productId: product.id, quantity })).unwrap();
+      toast.success(`${product.name} added to cart!`);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to add to cart");
+    }
+  };
+
+  const handleWishlistToggle = async () => {
+    if (!user || !authChecked) return toast.error("Login first");
+
+    try {
+      if (wishlistItem) {
+        await dispatch(
+          removeFromWishlist({ wishlistId: wishlistItem.id })
+        ).unwrap();
+        toast.success(`${product.name} removed from wishlist`);
+      } else {
+        await dispatch(addToWishlist({ productId: product.id })).unwrap();
+        toast.success(`${product.name} added to wishlist`);
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Wishlist action failed");
     }
   };
 
@@ -84,12 +80,14 @@ export default function ProductCard({
       }`}
     >
       <CardHeader className="flex items-center justify-center p-0 rounded-t-2xl relative">
-        <div className="relative mx-auto
+        <div
+          className="relative mx-auto
         lg:w-48 lg:h-48
         md:w-40 md:h-40 
         sm:w-32 sm:h-32 
         w-24 h-24
-        ">
+        "
+        >
           <Image
             src={product.imageUrl || "/images/codart.png"}
             alt={product.name}
@@ -105,6 +103,7 @@ export default function ProductCard({
         >
           <Heart
             size={24}
+            name="like"
             fill={wishlistItem ? "red" : "none"}
             className={`${
               wishlistItem ? "text-red-500" : ""
@@ -175,7 +174,7 @@ export default function ProductCard({
           <Button
             variant="default"
             size="sm"
-            onClick={() => handleAddToCart(product.id, quantity)}
+            onClick={handleAddToCart}
             className="
     bg-blue-600 hover:bg-blue-700 
     text-white font-medium rounded-lg 

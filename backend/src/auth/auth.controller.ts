@@ -39,43 +39,148 @@ export class AuthController {
   @ApiOperation({ summary: 'Register a user (email verification required)' })
   register(
     @Body() dto: AuthRegisterDto,
-  ): Promise<{ message: string; userId: string }> {
+  ): Promise<{ msg: string; userId: string }> {
     return this.authService.register(dto);
   }
 
   @Post('verify-email')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify user email using OTP' })
-  verifyEmail(
+  async verifyEmail(
     @Body() dto: VerifyEmailDto,
-  ): Promise<{ message: string; tokens: Tokens }> {
-    return this.authService.verifyEmail(dto);
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ msg: string; tokens: Tokens } | { msg: string }> {
+    const result = await this.authService.verifyEmail(dto);
+
+    const isProd = this.config.get<string>('NODE_ENV') === 'production';
+    // set cookies: access token (short-lived), refresh token (httpOnly)
+    res.cookie('access_token', result.tokens.access_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
+    res.cookie('refresh_token', result.tokens.refresh_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Set a small non-HttpOnly flag so the client can detect that tokens exist.
+    // This cookie contains no sensitive data and merely signals presence of auth cookies.
+    res.cookie('has_auth', '1', {
+      httpOnly: false,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // Return only msg to encourage cookie-based auth on client
+    return { msg: result.msg };
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login a user' })
-  login(@Body() dto: AuthLoginDto): Promise<Tokens> {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: AuthLoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ msg: string }> {
+    const tokens = await this.authService.login(dto);
+    const isProd = this.config.get<string>('NODE_ENV') === 'production';
+
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 1000,
+    });
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // set client-visible flag cookie
+    res.cookie('has_auth', '1', {
+      httpOnly: false,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // Don't expose tokens in the response body when using HttpOnly cookies
+    return { msg: 'Logged in' };
   }
 
   @UseGuards(AtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout a user' })
-  logout(@GetUser('id') userId: string) {
-    return this.authService.logout(userId);
+  async logout(@GetUser('id') userId: string, @Res() res: Response) {
+    // Clear cookies on logout
+    res.clearCookie('access_token', { path: '/' });
+    res.clearCookie('refresh_token', { path: '/' });
+    res.clearCookie('has_auth', { path: '/' });
+    await this.authService.logout(userId);
+    return res.sendStatus(200);
+  }
+
+  @UseGuards(AtGuard)
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get current authenticated user' })
+  getMe(@GetUser() user: any) {
+    // Return user information (no tokens)
+    return { user };
   }
 
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh tokens' })
-  refreshTokens(
+  async refreshTokens(
     @GetUser('id') userId: string,
     @GetUser('refreshToken') refreshToken: string,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.refreshTokens(userId, refreshToken);
+    const tokens = await this.authService.refreshTokens(userId, refreshToken);
+    const isProd = this.config.get<string>('NODE_ENV') === 'production';
+
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 1000,
+    });
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // set client-visible flag cookie after refresh
+    res.cookie('has_auth', '1', {
+      httpOnly: false,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // Don't return tokens in the response body; tokens are set via cookies
+    return { msg: 'Tokens refreshed' };
   }
 
   @UseGuards(GoogleAuthGuard)
@@ -87,9 +192,33 @@ export class AuthController {
   @Get('google/callback')
   async googleCallback(@Req() req: Request, @Res() res: Response) {
     const response = await this.authService.googleLogin(req?.user?.id);
+    const isProd = this.config.get<string>('NODE_ENV') === 'production';
 
-    res.redirect(
-      `${this.FRONTEND_URL}/auth/google/callback?access_token=${response.access_token}&refresh_token=${response.refresh_token}`,
-    );
+    // set cookies and redirect to frontend without tokens in query
+    res.cookie('access_token', response.access_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 1000,
+    });
+    res.cookie('refresh_token', response.refresh_token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // set client-visible flag cookie for OAuth flow
+    res.cookie('has_auth', '1', {
+      httpOnly: false,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.redirect(`${this.FRONTEND_URL}`);
   }
 }

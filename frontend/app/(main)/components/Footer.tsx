@@ -1,13 +1,7 @@
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Phone,
-  MessageCircle,
-  Mail,
-  MapPin,
-} from "lucide-react";
+import CurrentYear from "@/components/CurrentYear";
+import { Instagram, Phone, MessageCircle, Mail, MapPin } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const Footer = () => {
   return (
@@ -237,7 +231,11 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <div className="text-gray-600 text-sm text-center md:text-left">
-              © {new Date().getFullYear()} Codart Shop. All rights reserved.
+              ©{" "}
+              <Suspense fallback="...">
+                <CurrentYear />
+              </Suspense>{" "}
+              Codart Shop. All rights reserved.
             </div>
           </div>
         </div>

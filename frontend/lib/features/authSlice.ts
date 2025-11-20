@@ -1,6 +1,5 @@
 // store/authSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { jwtDecode } from "jwt-decode";
 import { api } from "@/api/axios";
 import type { RegisterResponse, RegisterUser, UserRole } from "../types";
 import toast from "react-hot-toast";
@@ -13,20 +12,7 @@ interface VerifyOtpPayload {
 
 interface VerifyOtpResponse {
   message: string;
-  tokens: {
-    access_token: string;
-    refresh_token: string;
-  };
-}
-
-interface JwtPayload {
-  sub: string;
-  role: UserRole;
-  fullName: string;
-  email: string;
-  isVerified: boolean;
-  iat: number;
-  exp: number;
+  user?: AuthUser;
 }
 
 interface AuthUser {
@@ -38,8 +24,6 @@ interface AuthUser {
 }
 
 interface AuthState {
-  access_token: string | null;
-  refresh_token: string | null;
   user: AuthUser | null;
   isLoading: boolean;
   error: string | null;
@@ -48,8 +32,6 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  access_token: null,
-  refresh_token: null,
   user: null,
   isLoading: false,
   error: null,
@@ -57,84 +39,73 @@ const initialState: AuthState = {
   authChecked: false,
 };
 
-const getUserFromToken = (token: string): AuthUser => {
-  try {
-    const decoded = jwtDecode<JwtPayload>(token);
-    if (!decoded?.sub) throw new Error("Invalid token payload");
-
-    return {
-      id: decoded.sub,
-      role: decoded.role,
-      fullName: decoded.fullName,
-      email: decoded.email,
-      isVerified: decoded.isVerified,
-    };
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    throw new Error(`Failed to decode token: ${message}`);
-  }
-};
-
 // Thunks
+// Guard to prevent multiple checkAuth calls simultaneously
+let checkAuthPromise: Promise<{ user: AuthUser }> | null = null;
+
+// Helper: check for a non-HttpOnly flag cookie indicating tokens exist
+function hasAuthFlagCookie(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return document.cookie
+      .split(";")
+      .some((c) => c.trim().startsWith("has_auth="));
+  } catch {
+    return false;
+  }
+}
+
 export const checkAuth = createAsyncThunk<
-  { access_token: string; user: AuthUser },
+  { user: AuthUser },
   void,
   { rejectValue: string }
 >("auth/checkAuth", async (_, { rejectWithValue }) => {
-  const access_token = localStorage.getItem("access_token");
-  const refresh_token = localStorage.getItem("refresh_token");
-  if (!access_token) return rejectWithValue("No token");
+  if (!hasAuthFlagCookie()) {
+    console.log(
+      "[checkAuth] No auth flag cookie present; skipping /auth/me request"
+    );
+    return rejectWithValue("No auth cookie");
+  }
+  // If a check is already in progress, return that promise
+  if (checkAuthPromise) {
+    console.log("[checkAuth] Guard: Reusing existing checkAuth promise");
+    return checkAuthPromise;
+  }
+
+  console.log("[checkAuth] Starting new auth check");
+  checkAuthPromise = (async () => {
+    try {
+      // Try to get current user (access token is read from cookie by server)
+      const { data } = await api.get<{ user: AuthUser }>("/auth/me");
+      console.log("[checkAuth] Auth check successful, user:", data.user);
+      checkAuthPromise = null;
+      return { user: data.user };
+    } catch (err: unknown) {
+      const errMsg = getErrorMessage(err) || "Failed to check authentication";
+      console.error("[checkAuth] Auth check failed:", errMsg);
+      checkAuthPromise = null;
+      toast.error(errMsg);
+      throw errMsg;
+    }
+  })();
 
   try {
-    const currentTime = Math.floor(Date.now() / 1000);
-    let token = access_token;
-
-    // Check token expiration
-    if (jwtDecode<JwtPayload>(access_token).exp < currentTime) {
-      if (!refresh_token) throw new Error("No refresh token");
-
-      const { data } = await api.post(
-        "/auth/refresh",
-        {},
-        { headers: { Authorization: `Bearer ${refresh_token}` } }
-      );
-
-      token = data.access_token;
-      localStorage.setItem("access_token", token);
-      if (data.refresh_token) {
-        localStorage.setItem("refresh_token", data.refresh_token);
-      }
-    }
-
-    return {
-      access_token: token,
-      user: getUserFromToken(token),
-    };
-  } catch (err: unknown) {
-    toast.error(getErrorMessage(err) || "Failed to check authentication");
-    // remove only auth keys
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    return rejectWithValue(getErrorMessage(err));
+    return await checkAuthPromise;
+  } catch (errMsg: unknown) {
+    return rejectWithValue(errMsg as string);
   }
 });
 
 export const login = createAsyncThunk<
-  { access_token: string; user: AuthUser },
+  { user: AuthUser },
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    const { data } = await api.post("/auth/login", credentials);
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-    // If you must set a cookie, prefer server-set httpOnly cookie for refresh token.
-    document.cookie = `access_token=${data.access_token}; path=/; max-age=3600; samesite=lax`;
-
-    return {
-      access_token: data.access_token,
-      user: getUserFromToken(data.access_token),
-    };
+    // login sets HttpOnly cookies; request must include credentials (handled by axios)
+    await api.post("/auth/login", credentials);
+    const { data } = await api.get<{ user: AuthUser }>("/auth/me");
+    return { user: data.user };
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
   }
@@ -145,9 +116,6 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
   async (_, { rejectWithValue }) => {
     try {
       await api.post("/auth/logout");
-      // remove only the auth keys
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
     } catch (err: unknown) {
       return rejectWithValue(getErrorMessage(err));
     }
@@ -177,11 +145,9 @@ export const verifyOtp = createAsyncThunk<
   { rejectValue: string }
 >("auth/verifyOtp", async (data, { rejectWithValue }) => {
   try {
-    const response = await api.post<VerifyOtpResponse>(
-      "/auth/verify-email",
-      data
-    );
-    return response.data; // contains message + tokens
+    await api.post("/auth/verify-email", data);
+    const { data: me } = await api.get<{ user: AuthUser }>("/auth/me");
+    return { message: "Email verified", user: me.user } as VerifyOtpResponse;
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
   }
@@ -211,10 +177,7 @@ const authSlice = createSlice({
       state.registrationSuccess = false;
     },
     logout: (state) => {
-      state.access_token = null;
-      state.refresh_token = null;
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
+      state.user = null;
     },
   },
   extraReducers: (builder) => {
@@ -232,7 +195,6 @@ const authSlice = createSlice({
       .addCase(login.pending, handlePending)
       .addCase(login.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.access_token = payload.access_token;
         state.user = payload.user;
         state.authChecked = true;
       })
@@ -243,13 +205,11 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.access_token = payload.access_token;
         state.user = payload.user;
         state.authChecked = true;
       })
       .addCase(checkAuth.rejected, (state) => {
         state.isLoading = false;
-        state.access_token = null;
         state.user = null;
         state.authChecked = true;
       })
@@ -283,17 +243,8 @@ const authSlice = createSlice({
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.access_token = action.payload.tokens.access_token;
-        state.refresh_token = action.payload.tokens.refresh_token;
-        state.user = getUserFromToken(action.payload.tokens.access_token);
-        localStorage.setItem(
-          "access_token",
-          action.payload.tokens.access_token
-        );
-        localStorage.setItem(
-          "refresh_token",
-          action.payload.tokens.refresh_token
-        );
+        // set user from payload if available
+        if (action.payload?.user) state.user = action.payload.user;
         state.error = null;
       })
       .addCase(verifyOtp.rejected, (state, action) => {

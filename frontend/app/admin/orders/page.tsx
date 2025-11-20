@@ -1,61 +1,40 @@
-"use client";
-
 import {
   TableCaption,
   TableHeader,
   TableRow,
   TableHead,
   TableBody,
-  TableCell,
   Table,
 } from "@/components/ui/table";
-import { Order, OrderStatus } from "@/lib/types";
-import { Badge } from "@/components/ui/badge";
-import { useEffect } from "react";
-import { fetchAllOrders } from "@/lib/features/orderSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import UpdateOrderStatus from "./components/UpdateOrderStatus";
-import { useRouter } from "next/navigation";
+import { cookies } from "next/headers";
+import OrderRow from "./components/OrderRow";
+import { Order } from "@/lib/types";
 
-const OrdersPage = () => {
-  const dispatch = useAppDispatch();
-  const { orders } = useAppSelector((state) => state.order);
-  const router = useRouter();
+export default async function OrdersPage() {
+  const cookieStore = cookies();
+  const access = (await cookieStore).get("access_token")?.value ?? "";
+  const refresh = (await cookieStore).get("refresh_token")?.value ?? "";
 
-  useEffect(() => {
-    dispatch(fetchAllOrders());
-  }, [dispatch]);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/order`, {
+    cache: "no-store",
+    headers: {
+      Cookie: `access_token=${access}; refresh_token=${refresh}`,
+    },
+  });
 
-  const getVariant = (status: OrderStatus) => {
-    switch (status) {
-      case "CANCELLED":
-        return "destructive";
-      case "PENDING":
-        return "pending";
-      case "COMPLETED":
-        return "success";
-      default:
-        return "default";
-    }
-  };
+  const payload = await res.json();
+  const orders = payload.data;
 
-  const handleViewOrder = (id: string) => {
-    router.replace(`/admin/orders/${id}`);
-  };
-
-  if (orders?.length === 0) {
-    return (
-      <>
-        <h1>NO Orders To Display</h1>
-      </>
-    );
+  if (!orders || orders.length === 0) {
+    return <h1>No orders to display</h1>;
   }
+
   return (
     <Table>
       <TableCaption>A list of Orders</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="">User ID</TableHead>
+          <TableHead>User ID</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Total Price</TableHead>
           <TableHead>Created At</TableHead>
@@ -63,25 +42,10 @@ const OrdersPage = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {orders &&
-          orders.map((order: Order) => (
-            <TableRow key={order.id} onClick={() => handleViewOrder(order.id)}>
-              <TableCell> {order.userId}</TableCell>
-              <TableCell>
-                <Badge variant={getVariant(order.status)}>{order.status}</Badge>
-              </TableCell>
-              <TableCell> {order.totalPrice}</TableCell>
-              <TableCell> {order.createdAt}</TableCell>
-              <TableCell className="text-center">
-                <UpdateOrderStatus orderId={order.id} status={"COMPLETED"} />
-                <UpdateOrderStatus orderId={order.id} status={"PENDING"} />
-                <UpdateOrderStatus orderId={order.id} status={"CANCELLED"} />
-              </TableCell>
-            </TableRow>
-          ))}
+        {orders.map((order: Order) => (
+          <OrderRow key={order.id} order={order} />
+        ))}
       </TableBody>
     </Table>
   );
-};
-
-export default OrdersPage;
+}
