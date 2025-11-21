@@ -39,7 +39,7 @@ const Login = () => {
 
       toast.success("Logged in successfully!");
 
-      if (user.user.role === "ADMIN") {
+      if (user.user.role === "ADMIN" || user.user.role === "SUPERADMIN") {
         router.replace("/admin");
       } else {
         router.replace("/");

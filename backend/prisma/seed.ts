@@ -7,6 +7,17 @@ async function main() {
   // Seed Users
   await Promise.all([
     prisma.user.upsert({
+      where: { email: 'superAdmin@example.com' },
+      update: {},
+      create: {
+        firstName: 'superAdmin',
+        lastName: 'User',
+        email: 'superAdmin@example.com',
+        password: await argon.hash('12345678'),
+        role: 'SUPERADMIN',
+      },
+    }),
+    prisma.user.upsert({
       where: { email: 'admin@example.com' },
       update: {},
       create: {

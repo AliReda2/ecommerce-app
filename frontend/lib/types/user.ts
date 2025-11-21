@@ -43,4 +43,4 @@ export interface SingleUserResponse {
   msg: string;
 }
 
-export type UserRole = "CUSTOMER" | "ADMIN";
+export type UserRole = "CUSTOMER" | "ADMIN" | "SUPERADMIN";

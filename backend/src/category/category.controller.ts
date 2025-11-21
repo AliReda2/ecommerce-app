@@ -36,7 +36,7 @@ export class CategoryController {
 
   @Post()
   @UseGuards(AtGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create a new category' })
   @ApiBody({
@@ -54,7 +54,7 @@ export class CategoryController {
 
   @Patch(':id')
   @UseGuards(AtGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an existing category' })
   @ApiBody({
@@ -74,7 +74,7 @@ export class CategoryController {
 
   @Delete(':id')
   @UseGuards(AtGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Delete a category' })
   async deleteCategory(@Param('id') id: string) {

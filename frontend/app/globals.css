@@ -137,7 +137,9 @@
   }
 }
 
-/* (Contact page styles removed — converted to Tailwind in components) */
+html {
+  scroll-behavior: smooth;
+}
 
 .btn-primary {
   background: var(--primary);

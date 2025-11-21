@@ -6,26 +6,28 @@ import { useEffect, useState } from "react";
 
 const cards = [
   {
-    title: "Essential Tech Solutions",
-    subtitle: "Fast Charging",
+    title: "Premium Headsets",
+    subtitle: "Crystal-Clear Sound",
     description:
-      "Premium tech accessories for your daily needs. Quality products designed to power up your devices.",
+      "Experience immersive audio with high-fidelity headsets designed for work, gaming, and everyday use.",
     buttonText: "Shop Now",
     image: "/images/headset.png",
   },
   {
-    title: "Wireless Audio",
-    subtitle: "20% off",
-    description: "High-quality wireless audio for music lovers.",
+    title: "Wireless Earbuds",
+    subtitle: "True Wireless Freedom",
+    description:
+      "Enjoy seamless connectivity and rich sound with compact, lightweight wireless earbuds.",
     buttonText: "Shop Collection",
-    image: "/images/powerbank.png",
+    image: "/images/wireless.png",
   },
   {
-    title: "Power & Charging",
-    subtitle: "Fast Charging",
-    description: "Reliable chargers and accessories for all your devices.",
+    title: "Fast Power Solutions",
+    subtitle: "High-Capacity Power Banks",
+    description:
+      "Stay charged all day with durable, fast-charging power banks built for reliability and travel.",
     buttonText: "Shop Now",
-    image: "/images/wireless.png",
+    image: "/images/powerbank.png",
   },
 ];
 
@@ -102,7 +104,7 @@ const Hero = () => {
                 data-carousel-item
               >
                 <section
-                  className="bg-blue-100 grid pt-0 items-center h-full overflow-hidden
+                  className="bg-blue-100 grid pt-0 items-center h-full overflow-hidden justify-items-center
                   2xl:grid-rows-[92%_auto] 2xl:px-10 2xl:gap-0 
                   xl:grid-rows-[92%_auto] xl:px-6
                   lg:grid-rows-[92%_auto] lg:px-4 lg:py-8
@@ -113,15 +115,14 @@ const Hero = () => {
                 >
                   {/* Text Content */}
                   <div
-                    className="flex flex-col justify-center space-y-4 
-                  2xl:pl-10
+                    className="flex flex-col justify-center
                   lg:w-9/12 
                   md:space-y-6 md:w-10/12 
                   px-2
                   "
                   >
                     <span
-                      className="text-blue-700 font-semibold uppercase tracking-wide text-sm 
+                      className="text-blue-700 font-serif lg:text-2xl uppercase tracking-wide 
                     md:text-base
                     "
                     >
@@ -129,7 +130,8 @@ const Hero = () => {
                     </span>
                     <h1
                       className=" 
-                    font-extrabold text-gray-900 leading-tight transition-all duration-300
+                    font-sans text-gray-900 leading-tight transition-all duration-300
+                    xl:text-8xl
                     lg:text-6xl 
                     md:text-5xl 
                     sm:text-3xl

@@ -33,10 +33,10 @@ export class ProductController {
   async getAllProducts() {
     return this.productService.getAllProducts();
   }
-  
+
   @Get('admin')
   @UseGuards(AtGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Get all products Admin' })
   async getAllProductsAdmin() {
@@ -57,7 +57,7 @@ export class ProductController {
 
   @Post()
   @UseGuards(AtGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create a new product' })
   @UseInterceptors(FileInterceptor('image'))
@@ -74,7 +74,7 @@ export class ProductController {
 
   @Patch(':id')
   @UseGuards(AtGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an existing product' })
   @ApiConsumes('multipart/form-data')
@@ -92,7 +92,7 @@ export class ProductController {
 
   @Delete(':id')
   @UseGuards(AtGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Delete a product' })
   async deleteProduct(@Param('id') id: string) {

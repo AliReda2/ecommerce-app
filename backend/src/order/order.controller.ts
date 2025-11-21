@@ -53,14 +53,14 @@ export class OrderController {
 
   // ---------- ADMIN ROUTES ----------
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @Get()
   @ApiOperation({ summary: 'Get all orders (admin only)' })
   async getAllOrders() {
     return this.orderService.getAllOrders();
   }
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update order status (admin only)' })
   @ApiBody({

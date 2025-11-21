@@ -28,18 +28,18 @@ export default function ProductsClient({
     }
   }, [dispatch, products]);
 
-  // Scroll to highlighted product
   useEffect(() => {
     if (!highlightedProductId) return;
 
     const el = productRefs.current[highlightedProductId];
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (el) {
+      // This will now be smooth due to CSS
+      el.scrollIntoView({ block: "center" });
 
-    const timer = setTimeout(() => {
-      dispatch(setHighlightedProduct(null));
-    }, 3000);
-
-    return () => clearTimeout(timer);
+      setTimeout(() => {
+        dispatch(setHighlightedProduct(null));
+      }, 3000);
+    }
   }, [highlightedProductId, dispatch]);
 
   const items = useMemo(
@@ -50,7 +50,10 @@ export default function ProductsClient({
   const skeletonCount = initialProducts?.length || 8;
 
   return (
-    <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div
+      className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      style={{ scrollBehavior: "smooth" }}
+    >
       {isLoading
         ? Array.from({ length: skeletonCount }).map((_, idx) => (
             <ProductCardSkeleton key={idx} />

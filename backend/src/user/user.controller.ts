@@ -34,28 +34,28 @@ export class UserController {
     return this.userService.updateCurrentUser(userId, data);
   }
 
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   async getAllUsers() {
     return this.userService.getAllUsers();
   }
 
-  @Roles('ADMIN')
+  @Roles('SUPERADMIN')
   @Get('ban/:userId')
   @ApiOperation({ summary: 'Ban a user' })
   async banUser(@Param('userId') userId: string) {
     return this.userService.banUser(userId);
   }
 
-  @Roles('ADMIN')
+  @Roles('SUPERADMIN')
   @Get('unban/:userId')
   @ApiOperation({ summary: 'Unban a user' })
   async unbanUser(@Param('userId') userId: string) {
     return this.userService.unbanUser(userId);
   }
 
-  @Roles('ADMIN')
+  @Roles('SUPERADMIN')
   @Delete(':userId')
   @ApiOperation({ summary: 'Delete a user' })
   async deleteUser(@Param('userId') userId: string) {

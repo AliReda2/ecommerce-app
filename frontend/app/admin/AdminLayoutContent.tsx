@@ -1,9 +1,12 @@
 "use client";
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
-import AppLayout from "@/components/admin/layout/AppLayout"; // Import the fixed AppLayout
+import AppLayout from "@/components/admin/layout/AppLayout";
 import { ThemeProvider } from "@/components/admin/context/ThemeContext";
+
+const allowedRoles = ["ADMIN", "SUPERADMIN"];
 
 export default function AdminLayoutContent({
   children,
@@ -15,13 +18,16 @@ export default function AdminLayoutContent({
   const authChecked = useAppSelector((state) => state.auth.authChecked);
 
   useEffect(() => {
-    // Wait until we've checked auth (hydration or refresh attempt)
-    if (authChecked && (!user || user.role !== "ADMIN")) {
-      router.replace("/admin-auth/login");
+    if (authChecked) {
+      const isAllowed =
+        user && allowedRoles.includes(String(user.role).toUpperCase());
+
+      if (!isAllowed) {
+        router.replace("/admin-auth/login");
+      }
     }
   }, [authChecked, user, router]);
 
-  // Show a loading state while auth is being checked
   if (!authChecked) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -30,10 +36,10 @@ export default function AdminLayoutContent({
     );
   }
 
-  // If not authorized, don't render the layout
-  if (!user || user.role !== "ADMIN") {
-    return null;
-  }
+  const isAllowed =
+    user && allowedRoles.includes(String(user.role).toUpperCase());
+
+  if (!isAllowed) return null;
 
   return (
     <ThemeProvider>
