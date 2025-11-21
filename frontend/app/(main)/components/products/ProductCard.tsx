@@ -75,7 +75,7 @@ export default function ProductCard({
   return (
     <Card
       ref={innerRef}
-      className={`flex flex-col justify-between border border-gray-200 shadow-md rounded-xl bg-white p-3 sm:p-4 h-full transition-all duration-300 ${
+      className={`product-card flex flex-col justify-between border border-gray-200 shadow-md rounded-xl bg-white p-3 sm:p-4 h-full transition-all duration-300 ${
         highlight ? "ring-4 ring-yellow-400" : ""
       }`}
     >

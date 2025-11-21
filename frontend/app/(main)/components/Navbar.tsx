@@ -147,7 +147,7 @@ const Navbar: React.FC = () => {
                       key={p.id}
                       className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-100"
                       onClick={() => {
-                        dispatch(setHighlightedProduct(p.id));
+                        dispatch(setHighlightedProduct(String(p.id)));
                         setSearchTerm("");
                       }}
                     >
