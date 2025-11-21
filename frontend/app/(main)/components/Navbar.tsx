@@ -113,9 +113,9 @@ const Navbar: React.FC = () => {
         }`}
       >
         <div className="mx-auto px-0 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-evenly h-26">
+          <div className="sm:flex sm:items-center sm:justify-evenly sm:h-26 grid grid-cols-2 grid-rows-2">
             {/* Logo */}
-            <Link href={"/"}>
+            <Link href={"/"} className="flex justify-center">
               <Image
                 src="/images/codart.png"
                 alt="logo"
@@ -126,7 +126,7 @@ const Navbar: React.FC = () => {
             </Link>
 
             {/* Search */}
-            <div className="flex-1 px-0 sm:px-4 max-w-xl relative">
+            <div className="flex-1 md:px-0 sm:px-4 sm:max-w-xl sm:relative row-start-2 col-span-2 sm:mx-0 mx-5">
               <Input
                 type="search"
                 placeholder={isMobile ? "Search..." : "Search for products..."}
@@ -137,7 +137,7 @@ const Navbar: React.FC = () => {
 
               <Search
                 size={20}
-                className="absolute right-7 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute right-7 sm:top-1/2 top-[62%] -translate-y-1/2 text-gray-400"
               />
 
               {searchTerm && filteredProducts.length > 0 && (
