@@ -68,9 +68,6 @@ export class AuthService {
       select: {
         id: true,
         role: true,
-        firstName: true,
-        lastName: true,
-        email: true,
         isVerified: true,
       },
     });
@@ -78,15 +75,7 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const fullName = `${user.firstName} ${user.lastName}`;
-
-    const tokens = await this.signToken(
-      user.id,
-      user.role,
-      fullName,
-      user.email,
-      user.isVerified,
-    );
+    const tokens = await this.signToken(user.id, user.role, user.isVerified);
     await this.updateRtHash(user.id, tokens.refresh_token);
 
     return {
@@ -105,9 +94,6 @@ export class AuthService {
         id: true,
         role: true,
         password: true,
-        email: true,
-        firstName: true,
-        lastName: true,
         isActive: true,
         isVerified: true,
       },
@@ -122,16 +108,9 @@ export class AuthService {
     const passwordMatches = await argon.verify(user.password, dto.password);
     // If password does not match, throw an error
     if (!passwordMatches) throw new ForbiddenException('Credentials incorrect');
-    const fullName = user.firstName + ' ' + user.lastName;
 
     // Return the new tokens
-    const tokens = await this.signToken(
-      user.id,
-      user.role,
-      fullName,
-      user.email,
-      user.isVerified,
-    );
+    const tokens = await this.signToken(user.id, user.role, user.isVerified);
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
     // Return the tokens
@@ -146,10 +125,6 @@ export class AuthService {
       select: {
         id: true,
         role: true,
-        email: true,
-        password: true,
-        firstName: true,
-        lastName: true,
         isActive: true,
         isVerified: true,
       },
@@ -160,16 +135,9 @@ export class AuthService {
     if (!user.isActive) {
       throw new ForbiddenException('User account is inactive');
     }
-    const fullName = user.firstName + ' ' + user.lastName;
 
     // Return the new tokens
-    const tokens = await this.signToken(
-      user.id,
-      user.role,
-      fullName,
-      user.email,
-      user.isVerified,
-    );
+    const tokens = await this.signToken(user.id, user.role, user.isVerified);
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
     // Return the tokens
@@ -203,10 +171,7 @@ export class AuthService {
       select: {
         id: true,
         role: true,
-        email: true,
         hashedRtoken: true,
-        firstName: true,
-        lastName: true,
         isVerified: true,
       },
     });
@@ -218,35 +183,20 @@ export class AuthService {
     const rtMatches = await argon.verify(user.hashedRtoken, rt);
     // If refresh token does not match, throw an error
     if (!rtMatches) throw new ForbiddenException('Access Denied');
-    const fullName = user.firstName + ' ' + user.lastName;
 
     // Generate new tokens
-    const tokens = await this.signToken(
-      user.id,
-      user.role,
-      fullName,
-      user.email,
-      user.isVerified,
-    );
+    const tokens = await this.signToken(user.id, user.role, user.isVerified);
     // Save the refresh token hash in the database
     await this.updateRtHash(user.id, tokens.refresh_token);
     // Return the tokens
     return tokens;
   }
 
-  async signToken(
-    userId: string,
-    role: string,
-    fullName: string,
-    email: string,
-    isVerified: boolean,
-  ) {
+  async signToken(userId: string, role: string, isVerified: boolean) {
     // Create a JWT token
     const payload = {
       sub: userId,
       role,
-      fullName,
-      email,
       isVerified,
     };
     const [access_token, refresh_token] = await Promise.all([

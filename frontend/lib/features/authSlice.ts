@@ -131,7 +131,7 @@ export const register = createAsyncThunk<
     const { data } = await api.post("/auth/register", userData);
 
     return {
-      message: data.message,
+      msg: data.message,
       userId: data.userId,
     };
   } catch (err: unknown) {

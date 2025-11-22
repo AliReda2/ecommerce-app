@@ -15,6 +15,7 @@ async function main() {
         email: 'superAdmin@example.com',
         password: await argon.hash('12345678'),
         role: 'SUPERADMIN',
+        isVerified: true,
       },
     }),
     prisma.user.upsert({
@@ -26,6 +27,7 @@ async function main() {
         email: 'admin@example.com',
         password: await argon.hash('12345678'),
         role: 'ADMIN',
+        isVerified: true,
       },
     }),
     prisma.user.upsert({

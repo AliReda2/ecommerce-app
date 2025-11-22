@@ -5,7 +5,7 @@ export interface RegisterUser {
   lastName: string;
 }
 export interface RegisterResponse {
-  message: string;
+  msg: string;
   userId: string;
 }
 export interface LoginUser {

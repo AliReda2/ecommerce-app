@@ -68,9 +68,7 @@ export class AuthController {
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-
-    // Set a small non-HttpOnly flag so the client can detect that tokens exist.
-    // This cookie contains no sensitive data and merely signals presence of auth cookies.
+    // set client-visible flag cookie
     res.cookie('has_auth', '1', {
       httpOnly: false,
       secure: isProd,
