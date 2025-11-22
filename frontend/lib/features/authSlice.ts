@@ -59,6 +59,7 @@ let checkAuthPromise: Promise<{ user: AuthUser }> | null = null;
 function hasAuthFlagCookie(): boolean {
   if (typeof window === "undefined") return false;
   try {
+    console.log( "cookies:", document.cookie);
     return document.cookie
       .split(";")
       .some((c) => c.trim().startsWith("has_auth="));
