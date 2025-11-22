@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
         }`}
       >
         <div className="mx-auto px-0 sm:px-6 lg:px-8">
-          <div className="sm:flex sm:items-center sm:justify-evenly sm:h-26 grid grid-cols-2 grid-rows-2">
+          <div className="flex items-center justify-evenly h-26">
             {/* Logo */}
             <Link href={"/"} className="flex justify-center">
               <Image
@@ -126,7 +126,7 @@ const Navbar: React.FC = () => {
             </Link>
 
             {/* Search */}
-            <div className="flex-1 md:px-0 sm:px-4 sm:max-w-xl sm:relative row-start-2 col-span-2 sm:mx-0 mx-5">
+            <div className="flex-1 md:px-0 sm:px-4 sm:max-w-xl sm:relative row-start-2 col-span-2 sm:mx-0 mx-5 sm:block hidden">
               <Input
                 type="search"
                 placeholder={isMobile ? "Search..." : "Search for products..."}
