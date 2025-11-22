@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Nunito, Geist_Mono } from "next/font/google";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
@@ -62,7 +61,6 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
-        <SpeedInsights />
       </body>
     </html>
   );
