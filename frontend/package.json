@@ -25,6 +25,7 @@
     "@reduxjs/toolkit": "^2.9.2",
     "@tanstack/react-table": "^8.21.3",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "apexcharts": "^5.3.5",
     "axios": "^1.13.0",
     "class-variance-authority": "^0.7.1",
