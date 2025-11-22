@@ -1,0 +1,19 @@
+"use client";
+
+import { Provider } from "react-redux";
+import { store } from "@/lib/store";
+import "@/app/globals.css";
+import { Toaster } from "react-hot-toast";
+
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Provider store={store}>
+      {children}
+      <Toaster position="top-right" reverseOrder={false} />
+    </Provider>
+  );
+}

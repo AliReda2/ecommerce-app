@@ -168,6 +168,40 @@ export const resendOtp = createAsyncThunk<
   }
 });
 
+export const forgotPassword = createAsyncThunk<
+  { message: string },
+  { email: string },
+  { rejectValue: string }
+>("auth/forgotPassword", async ({ email }, { rejectWithValue }) => {
+  try {
+    const response = await api.post<{ message: string }>(
+      "/auth/forgot-password",
+      {
+        email,
+      }
+    );
+    return response.data;
+  } catch (err: unknown) {
+    return rejectWithValue(getErrorMessage(err));
+  }
+});
+
+export const resetPassword = createAsyncThunk<
+  { message: string },
+  { email: string; otp: string; password: string },
+  { rejectValue: string }
+>("auth/resetPassword", async (data, { rejectWithValue }) => {
+  try {
+    const response = await api.post<{ message: string }>(
+      "/auth/reset-password",
+      data
+    );
+    return response.data;
+  } catch (err: unknown) {
+    return rejectWithValue(getErrorMessage(err));
+  }
+});
+
 // Slice
 const authSlice = createSlice({
   name: "auth",
@@ -250,7 +284,25 @@ const authSlice = createSlice({
       .addCase(verifyOtp.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "OTP verification failed";
-      });
+      })
+      .addCase(resendOtp.pending, handlePending)
+      .addCase(resendOtp.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(resendOtp.rejected, handleRejected)
+      .addCase(forgotPassword.pending, handlePending)
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(forgotPassword.rejected, handleRejected)
+      .addCase(resetPassword.pending, handlePending)
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(resetPassword.rejected, handleRejected);
   },
 });
 

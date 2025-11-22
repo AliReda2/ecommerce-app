@@ -19,6 +19,7 @@ import {
   verifyOtp,
 } from "@/lib/features/authSlice";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 interface LoginModalProps {
   open: boolean;
@@ -61,7 +62,10 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
       })
     )
       .unwrap()
-      .then(() => toast.success("Logged in successfully"))
+      .then(() => {
+        toast.success("Logged in successfully");
+        onClose(); // close modal after success
+      })
       .catch((error) => toast.error(error));
   };
 
@@ -104,6 +108,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         setEmail(registerData.email); // <-- SAVE EMAIL HERE
         setMode("verify"); // <-- Switch to verify
         setOtpExpiresIn(600); // reset OTP validity
+        onClose(); // close modal after success
       })
       .catch((error) => toast.error(error));
   };
@@ -120,7 +125,10 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
     if (email)
       await dispatch(verifyOtp({ email, otp }))
         .unwrap()
-        .then(() => toast.success("OTP verified successfully"))
+        .then(() => {
+          toast.success("OTP verified successfully");
+          onClose(); // close modal after success
+        })
         .catch((error) => toast.error(error));
     onClose();
   };
@@ -306,6 +314,12 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               </div>
             </div>
 
+            <Link href="/forgot-password" onClick={() => onClose()}>
+              Forgot Password?
+            </Link>
+
+            <br />
+            <br />
             <Button className="w-full" size="sm" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign in"}
             </Button>

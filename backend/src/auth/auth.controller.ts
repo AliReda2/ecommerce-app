@@ -20,6 +20,7 @@ import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
 import { GoogleAuthGuard } from './guard/google-auth/google-auth.guard';
 import type { Request, Response } from 'express'; // ✅ add this
 import { ConfigService } from '@nestjs/config';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -218,5 +219,17 @@ export class AuthController {
     });
 
     res.redirect(`${this.FRONTEND_URL}`);
+  }
+
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'Forgot password - send reset OTP' })
+  async forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password using OTP' })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }

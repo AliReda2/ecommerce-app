@@ -7,7 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { AuthRegisterDto } from './dto';
+import { AuthRegisterDto, ResetPasswordDto } from './dto';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -247,5 +247,43 @@ export class AuthService {
       //generate a random
       password: Math.random().toString(36).slice(-8),
     });
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      throw new NotFoundException('User with this email does not exist.');
+    }
+    await this.mailService.sendPasswordResetOtp(email);
+    return { msg: 'If this email exists, an OTP has been sent.' };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const record = await this.prisma.emailVerification.findUnique({
+      where: { email: dto.email },
+    });
+    if (!record) throw new BadRequestException('Invalid request');
+
+    const isValid = await argon.verify(record.otp, dto.otp);
+    if (!isValid) throw new BadRequestException('Invalid OTP');
+
+    if (record.expiresAt < new Date()) {
+      throw new BadRequestException('OTP expired');
+    }
+
+    const hashed = await argon.hash(dto.password);
+
+    await this.prisma.user.update({
+      where: { email: dto.email },
+      data: { password: hashed },
+    });
+
+    await this.prisma.emailVerification.delete({
+      where: { email: dto.email },
+    });
+
+    return { message: 'Password reset successful' };
   }
 }
