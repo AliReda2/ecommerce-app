@@ -18,7 +18,7 @@ const Users = async () => {
   const accessToken = (await cookieStore).get("access_token")?.value;
   const refreshToken = (await cookieStore).get("refresh_token")?.value;
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/users`, {
     cache: "no-store",
     headers: {
       Cookie: `access_token=${accessToken}; refresh_token=${refreshToken}`,

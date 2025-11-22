@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function CategoryCarousel() {
   "use cache";
   cacheLife("hours");
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/category`, {
     cache: "no-store",
   });
 

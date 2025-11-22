@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function Products() {
   "use cache";
   cacheLife("hours");
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/product`, {
     cache: "no-store",
   });
 

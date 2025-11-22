@@ -18,7 +18,7 @@ export default async function CategoryPage() {
   const access = (await cookieStore).get("access_token")?.value ?? "";
   const refresh = (await cookieStore).get("refresh_token")?.value ?? "";
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/category`, {
     cache: "no-store",
     headers: {
       Cookie: `access_token=${access}; refresh_token=${refresh}`,

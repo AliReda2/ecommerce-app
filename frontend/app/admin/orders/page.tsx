@@ -15,7 +15,7 @@ export default async function OrdersPage() {
   const access = (await cookieStore).get("access_token")?.value ?? "";
   const refresh = (await cookieStore).get("refresh_token")?.value ?? "";
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/order`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/order`, {
     cache: "no-store",
     headers: {
       Cookie: `access_token=${access}; refresh_token=${refresh}`,

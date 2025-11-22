@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL; // NestJS default port
+const API_URL = process.env.BACKEND_URL; // NestJS default port
 
 export const api = axios.create({
   baseURL: API_URL,
