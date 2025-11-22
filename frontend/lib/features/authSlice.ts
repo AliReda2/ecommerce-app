@@ -61,14 +61,14 @@ export const checkAuth = createAsyncThunk<
   { rejectValue: string }
 >("auth/checkAuth", async (_, { rejectWithValue }) => {
   if (!hasAuthFlagCookie()) {
-    // console.log(
-    //   "[checkAuth] No auth flag cookie present; skipping /auth/me request"
-    // );
+    console.log(
+      "[checkAuth] No auth flag cookie present; skipping /auth/me request"
+    );
     return rejectWithValue("No auth cookie");
   }
   // If a check is already in progress, return that promise
   if (checkAuthPromise) {
-    // console.log("[checkAuth] Guard: Reusing existing checkAuth promise");
+    console.log("[checkAuth] Guard: Reusing existing checkAuth promise");
     return checkAuthPromise;
   }
 
@@ -77,7 +77,7 @@ export const checkAuth = createAsyncThunk<
     try {
       // Try to get current user (access token is read from cookie by server)
       const { data } = await api.get<{ user: AuthUser }>("/auth/me");
-      // console.log("[checkAuth] Auth check successful, user:", data.user);
+      console.log("[checkAuth] Auth check successful, user:", data.user);
       checkAuthPromise = null;
       return { user: data.user };
     } catch (err: unknown) {
