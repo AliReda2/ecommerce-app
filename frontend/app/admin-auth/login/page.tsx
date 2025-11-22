@@ -15,7 +15,7 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { isLoading } = useSelector((state: RootState) => state.auth);
+  const { isLoggingIn } = useSelector((state: RootState) => state.auth);
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -158,8 +158,8 @@ const Login = () => {
                 </div>
               </div>
 
-              <Button className="w-full" size="sm" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign in"}
+              <Button className="w-full" size="sm" disabled={isLoggingIn}>
+                {isLoggingIn ? "Signing in..." : "Sign in"}
               </Button>
             </div>
           </form>

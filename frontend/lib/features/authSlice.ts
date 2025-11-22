@@ -25,7 +25,13 @@ interface AuthUser {
 
 interface AuthState {
   user: AuthUser | null;
-  isLoading: boolean;
+  isSendingForgotPassword: boolean;
+  isLoggingIn: boolean;
+  isRegistering: boolean;
+  isCheckingAuth: boolean;
+  isVerifyingOtp: boolean;
+  isSendingOtp: boolean;
+  isResettingPassword: boolean;
   error: string | null;
   registrationSuccess: boolean;
   authChecked: boolean;
@@ -33,7 +39,13 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  isLoading: false,
+  isSendingForgotPassword: false,
+  isCheckingAuth: false,
+  isLoggingIn: false,
+  isRegistering: false,
+  isVerifyingOtp: false,
+  isSendingOtp: false,
+  isResettingPassword: false,
   error: null,
   registrationSuccess: false,
   authChecked: false,
@@ -96,17 +108,23 @@ export const checkAuth = createAsyncThunk<
   }
 });
 
+// In your authSlice.ts, add debugging
 export const login = createAsyncThunk<
   { user: AuthUser },
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    // login sets HttpOnly cookies; request must include credentials (handled by axios)
+    console.log("🔄 Starting login...");
+
     await api.post("/auth/login", credentials);
+
     const { data } = await api.get<{ user: AuthUser }>("/auth/me");
+    console.log("✅ User data fetched:", data.user);
+
     return { user: data.user };
   } catch (err: unknown) {
+    console.error("❌ Login failed:", err);
     return rejectWithValue(getErrorMessage(err));
   }
 });
@@ -215,35 +233,33 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    const handlePending = (state: AuthState) => {
-      state.isLoading = true;
-      state.error = null;
-    };
-
-    const handleRejected = (state: AuthState, action: { payload?: string }) => {
-      state.isLoading = false;
-      state.error = action.payload || null;
-    };
-
     builder
-      .addCase(login.pending, handlePending)
+      .addCase(login.pending, (state) => {
+        state.isLoggingIn = true;
+        state.error = null;
+      })
       .addCase(login.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
+        state.isLoggingIn = false;
         state.user = payload.user;
         state.authChecked = true;
       })
-      .addCase(login.rejected, handleRejected)
+      .addCase(login.rejected, (state, { payload }) => {
+        state.isLoggingIn = false;
+        state.user = null;
+        state.error = payload as string;
+        state.authChecked = true;
+      })
 
       .addCase(checkAuth.pending, (state) => {
-        state.isLoading = true;
+        state.isCheckingAuth = true;
       })
       .addCase(checkAuth.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
+        state.isCheckingAuth = false;
         state.user = payload.user;
         state.authChecked = true;
       })
       .addCase(checkAuth.rejected, (state) => {
-        state.isLoading = false;
+        state.isCheckingAuth = false;
         state.user = null;
         state.authChecked = true;
       })
@@ -259,50 +275,71 @@ const authSlice = createSlice({
         state.authChecked = true;
       })
 
-      .addCase(register.pending, handlePending)
+      .addCase(register.pending, (state) => {
+        state.isRegistering = true;
+        state.error = null;
+      })
       .addCase(register.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isRegistering = false;
         state.registrationSuccess = true;
         state.error = null;
       })
 
       .addCase(register.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isRegistering = false;
         state.error = action.payload as string;
         state.registrationSuccess = false;
       })
       .addCase(verifyOtp.pending, (state) => {
-        state.isLoading = true;
+        state.isVerifyingOtp = true;
         state.error = null;
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isVerifyingOtp = false;
         // set user from payload if available
         if (action.payload?.user) state.user = action.payload.user;
         state.error = null;
       })
       .addCase(verifyOtp.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isVerifyingOtp = false;
         state.error = action.payload || "OTP verification failed";
       })
-      .addCase(resendOtp.pending, handlePending)
+      .addCase(resendOtp.pending, (state) => {
+        state.isSendingOtp = true;
+        state.error = null;
+      })
       .addCase(resendOtp.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isSendingOtp = false;
         state.error = null;
       })
-      .addCase(resendOtp.rejected, handleRejected)
-      .addCase(forgotPassword.pending, handlePending)
+      .addCase(resendOtp.rejected, (state, action) => {
+        state.isSendingOtp = false;
+        state.error = action.payload || "Failed to resend OTP";
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.isSendingForgotPassword = true;
+        state.error = null;
+      })
       .addCase(forgotPassword.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isSendingForgotPassword = false;
         state.error = null;
       })
-      .addCase(forgotPassword.rejected, handleRejected)
-      .addCase(resetPassword.pending, handlePending)
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isSendingForgotPassword = false;
+        state.error = action.payload || "Failed to send password reset email";
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.isResettingPassword = true;
+        state.error = null;
+      })
       .addCase(resetPassword.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isResettingPassword = false;
         state.error = null;
       })
-      .addCase(resetPassword.rejected, handleRejected);
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.isResettingPassword = false;
+        state.error = action.payload || "Failed to reset password";
+      });
   },
 });
 

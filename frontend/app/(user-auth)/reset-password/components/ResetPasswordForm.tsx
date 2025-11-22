@@ -13,7 +13,7 @@ const ResetPasswordForm = () => {
   const params = useSearchParams();
 
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector((state) => state.auth);
+  const { isResettingPassword } = useAppSelector((state) => state.auth);
 
   const emailFromQuery = params.get("email") ?? "";
 
@@ -70,8 +70,8 @@ const ResetPasswordForm = () => {
           />
         </div>
 
-        <Button className="w-full" disabled={isLoading}>
-          {isLoading ? "Resetting..." : "Reset Password"}
+        <Button className="w-full" disabled={isResettingPassword}>
+          {isResettingPassword ? "Resetting..." : "Reset Password"}
         </Button>
       </form>
     </div>

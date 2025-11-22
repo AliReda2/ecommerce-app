@@ -18,9 +18,10 @@ import { AtGuard, RtGuard } from './guard';
 import { GetUser } from './decorator';
 import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
 import { GoogleAuthGuard } from './guard/google-auth/google-auth.guard';
-import type { Request, Response } from 'express'; // ✅ add this
+import type { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -58,14 +59,14 @@ export class AuthController {
     res.cookie('access_token', result.tokens.access_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 60 * 60 * 1000, // 1 hour
     });
     res.cookie('refresh_token', result.tokens.refresh_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
@@ -73,7 +74,7 @@ export class AuthController {
     res.cookie('has_auth', '1', {
       httpOnly: false,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -92,17 +93,18 @@ export class AuthController {
     const tokens = await this.authService.login(dto);
     const isProd = this.config.get<string>('NODE_ENV') === 'production';
 
+    // Fix cookie settings
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
-      maxAge: 60 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,
     });
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -111,7 +113,7 @@ export class AuthController {
     res.cookie('has_auth', '1', {
       httpOnly: false,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -157,14 +159,14 @@ export class AuthController {
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 60 * 60 * 1000,
     });
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -173,7 +175,7 @@ export class AuthController {
     res.cookie('has_auth', '1', {
       httpOnly: false,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -197,14 +199,14 @@ export class AuthController {
     res.cookie('access_token', response.access_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 60 * 60 * 1000,
     });
     res.cookie('refresh_token', response.refresh_token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -213,7 +215,7 @@ export class AuthController {
     res.cookie('has_auth', '1', {
       httpOnly: false,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });

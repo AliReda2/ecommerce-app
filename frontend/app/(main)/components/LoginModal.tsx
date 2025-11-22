@@ -33,7 +33,9 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
   const [mode, setMode] = useState<"login" | "register" | "verify">("login");
 
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading } = useSelector((state: RootState) => state.auth);
+  const { isRegistering, isLoggingIn, isVerifyingOtp } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const [email, setEmail] = useState("");
 
@@ -329,8 +331,8 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
 
             <br />
             <br />
-            <Button className="w-full" size="sm" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+            <Button className="w-full" size="sm" disabled={isLoggingIn}>
+              {isLoggingIn ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         )}
@@ -395,8 +397,8 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               />
             </div>
 
-            <Button className="w-full" size="sm" disabled={isLoading}>
-              {isLoading ? "Creating account..." : "Register"}
+            <Button className="w-full" size="sm" disabled={isRegistering}>
+              {isRegistering ? "Creating account..." : "Register"}
             </Button>
           </form>
         )}
@@ -443,8 +445,8 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
                 />
               </div>
 
-              <Button className="w-full" size="sm" disabled={isLoading}>
-                {isLoading ? "Verifying..." : "Verify OTP"}
+              <Button className="w-full" size="sm" disabled={isVerifyingOtp}>
+                {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
               </Button>
             </form>
           </div>

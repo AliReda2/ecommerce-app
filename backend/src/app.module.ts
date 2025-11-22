@@ -12,6 +12,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { MailModule } from './mail/mail.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import googleOAuthConfig from './config/google-oauth.config';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -19,6 +20,28 @@ import googleOAuthConfig from './config/google-oauth.config';
       isGlobal: true,
       load: [googleOAuthConfig],
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'auth-sensitive',
+        ttl: 60000, // 1 minute
+        limit: 1, // Login, password reset, OTP verification
+      },
+      {
+        name: 'auth-general',
+        ttl: 60000, // 1 minute
+        limit: 10, // Registration, token refresh
+      },
+      {
+        name: 'api-general',
+        ttl: 60000, // 1 minute
+        limit: 100, // General API endpoints
+      },
+      {
+        name: 'api-burst',
+        ttl: 1000, // 1 second
+        limit: 10, // Short burst protection
+      },
+    ]),
     AuthModule,
     PrismaModule,
     UserModule,

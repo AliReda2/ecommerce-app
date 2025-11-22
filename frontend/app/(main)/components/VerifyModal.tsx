@@ -23,7 +23,7 @@ interface VerifyOtpModalProps {
 
 const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading } = useSelector((state: RootState) => state.auth);
+  const { isVerifyingOtp } = useSelector((state: RootState) => state.auth);
 
   const [otp, setOtp] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -127,8 +127,8 @@ const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
               />
             </div>
 
-            <Button className="w-full" size="sm" disabled={isLoading}>
-              {isLoading ? "Verifying..." : "Verify OTP"}
+            <Button className="w-full" size="sm" disabled={isVerifyingOtp}>
+              {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
             </Button>
           </form>
         </div>

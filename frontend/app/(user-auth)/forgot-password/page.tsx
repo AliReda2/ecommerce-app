@@ -14,7 +14,7 @@ export default function ForgotPasswordPage() {
   const goBack = useGoBack();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector((state) => state.auth);
+  const { isSendingOtp } = useAppSelector((state) => state.auth);
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,8 +70,8 @@ export default function ForgotPasswordPage() {
           />
         </div>
 
-        <Button className="w-full" disabled={isLoading}>
-          {isLoading ? "Sending..." : "Send OTP"}
+        <Button className="w-full" disabled={isSendingOtp}>
+          {isSendingOtp ? "Sending..." : "Send OTP"}
         </Button>
       </form>
     </div>

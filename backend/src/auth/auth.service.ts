@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import { MailService } from 'src/mail/mail.service';
 import { VerifyEmailDto } from 'src/mail/dto/verifyEmail.dto';
 import { UserService } from 'src/user/user.service';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -99,7 +100,7 @@ export class AuthService {
       },
     });
     // If user not found, throw an error
-    if (!user) throw new ForbiddenException('Credentials incorrect');
+    if (!user) throw new ForbiddenException('Invalid credentials');
 
     if (!user.isActive) {
       throw new ForbiddenException('User account is inactive');
@@ -107,7 +108,7 @@ export class AuthService {
     // Compare the password with the hash
     const passwordMatches = await argon.verify(user.password, dto.password);
     // If password does not match, throw an error
-    if (!passwordMatches) throw new ForbiddenException('Credentials incorrect');
+    if (!passwordMatches) throw new ForbiddenException('Invalid credentials');
 
     // Return the new tokens
     const tokens = await this.signToken(user.id, user.role, user.isVerified);
@@ -182,8 +183,14 @@ export class AuthService {
     // Compare the refresh token with the hash
     const rtMatches = await argon.verify(user.hashedRtoken, rt);
     // If refresh token does not match, throw an error
-    if (!rtMatches) throw new ForbiddenException('Access Denied');
-
+    if (!rtMatches) {
+      // ✅ Optional: Invalidate all tokens on suspected theft
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { hashedRtoken: null },
+      });
+      throw new ForbiddenException('Access Denied');
+    }
     // Generate new tokens
     const tokens = await this.signToken(user.id, user.role, user.isVerified);
     // Save the refresh token hash in the database
@@ -245,11 +252,14 @@ export class AuthService {
     return await this.userService.createUser({
       ...googleUser,
       //generate a random
-      password: Math.random().toString(36).slice(-8),
+      password: randomBytes(32).toString('hex'),
     });
   }
 
   async forgotPassword(email: string) {
+    if (!email || !email.includes('@')) {
+      throw new BadRequestException('Invalid email format');
+    }
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
