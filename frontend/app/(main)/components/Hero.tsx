@@ -131,7 +131,8 @@ const Hero = () => {
                     <h1
                       className=" 
                     font-sans text-gray-900 leading-tight transition-all duration-300
-                    xl:text-8xl
+                    2xl:text-8xl
+                    xl:text-7xl
                     lg:text-6xl 
                     md:text-5xl 
                     sm:text-3xl

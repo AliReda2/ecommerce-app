@@ -4,7 +4,7 @@ import axios from 'axios';
 @Injectable()
 export class AnalyticsService {
   private api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    baseURL: process.env.POSTHOG_HOST,
     headers: {
       Authorization: `Bearer ${process.env.POSTHOG_PERSONAL_API_KEY}`,
       'Content-Type': 'application/json',
