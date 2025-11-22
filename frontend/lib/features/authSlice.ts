@@ -59,7 +59,6 @@ let checkAuthPromise: Promise<{ user: AuthUser }> | null = null;
 function hasAuthFlagCookie(): boolean {
   if (typeof window === "undefined") return false;
   try {
-    console.log( "cookies:", document.cookie);
     return document.cookie
       .split(";")
       .some((c) => c.trim().startsWith("has_auth="));
@@ -123,6 +122,11 @@ export const login = createAsyncThunk<
     const { data } = await api.get<{ user: AuthUser }>("/auth/me");
     console.log("✅ User data fetched:", data.user);
 
+    if (typeof window !== "undefined") {
+      // set cookie for current origin (frontend)
+      const maxAge = 7 * 24 * 60 * 60; // 7 days
+      document.cookie = `has_auth=1; max-age=${maxAge}; path=/; SameSite=None; Secure`;
+    }
     return { user: data.user };
   } catch (err: unknown) {
     console.error("❌ Login failed:", err);
@@ -134,7 +138,10 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await api.post("/auth/logout");
+      await api.post("/auth/logout"); // server clears HttpOnly cookies
+      if (typeof window !== "undefined") {
+        document.cookie = "has_auth=; max-age=0; path=/; SameSite=None; Secure";
+      }
     } catch (err: unknown) {
       return rejectWithValue(getErrorMessage(err));
     }
