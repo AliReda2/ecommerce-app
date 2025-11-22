@@ -77,7 +77,7 @@ export default function ProductsClient({
         const absoluteElementTop = elementRect.top + window.pageYOffset;
         const scrollPosition = absoluteElementTop - navbarHeight;
 
-        console.log("Scrolling to:", scrollPosition);
+        // console.log("Scrolling to:", scrollPosition);
 
         // Use the custom smooth scroll instead of window.scrollTo
         smoothScrollTo(scrollPosition, 1000);

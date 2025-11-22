@@ -22,7 +22,7 @@ const ContactForm = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle form submission here
-    console.log("Form submitted:", formData);
+    // console.log("Form submitted:", formData);
     // Add your form submission logic (API call, etc.)
   };
 

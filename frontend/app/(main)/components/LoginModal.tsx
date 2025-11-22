@@ -20,6 +20,7 @@ import {
 } from "@/lib/features/authSlice";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 interface LoginModalProps {
   open: boolean;
@@ -62,8 +63,16 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
       })
     )
       .unwrap()
-      .then(() => {
+      .then((data) => {
         toast.success("Logged in successfully");
+
+        // Identify the user in PostHog
+        posthog.identify(data.user.id, {
+          email: data.user.email,
+          fullName: data.user.fullName,
+          role: data.user.role,
+        });
+
         onClose(); // close modal after success
       })
       .catch((error) => toast.error(error));

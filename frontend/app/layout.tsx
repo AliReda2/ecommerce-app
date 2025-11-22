@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Nunito, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "leaflet/dist/leaflet.css";
@@ -64,7 +63,6 @@ export default function RootLayout({
       >
         {children}
         <SpeedInsights />
-        <Analytics />
       </body>
     </html>
   );
