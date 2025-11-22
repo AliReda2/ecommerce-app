@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
 interface ProductView {
@@ -14,7 +15,7 @@ interface AnalyticsRevenue {
   totalRevenue: number;
 }
 
-const BASE_URL = process.env.BACKEND_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function AdminDashboard() {
   const [pageviews, setPageviews] = useState(0);

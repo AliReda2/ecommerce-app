@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 export default async function Product() {
-  const res = await fetch(`${process.env.BACKEND_URL}/product`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product`, {
     cache: "no-store",
   });
 
