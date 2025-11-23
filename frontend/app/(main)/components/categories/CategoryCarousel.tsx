@@ -2,6 +2,7 @@ import { cacheLife } from "next/cache";
 import CategoryCarouselClient from "./CategoryCarouselClient";
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { ClientProvider } from "../../clientProvider";
 
 export const metadata: Metadata = {
   title: "Categories | Codart Shop",
@@ -29,8 +30,10 @@ export default async function CategoryCarousel() {
     <div className="max-w-[76%] mb-20">
       <h1 className="text-4xl font-mono font-semibold">Categories</h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <CategoryCarouselClient categories={categories} />
-      </Suspense>{" "}
+        <ClientProvider>
+          <CategoryCarouselClient categories={categories} />
+        </ClientProvider>
+      </Suspense>
     </div>
   );
 }
