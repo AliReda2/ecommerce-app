@@ -15,7 +15,7 @@ interface VerifyOtpResponse {
   user?: AuthUser;
 }
 
-interface AuthUser {
+export interface AuthUser {
   id: string;
   role: UserRole;
   fullName: string;
@@ -51,86 +51,73 @@ const initialState: AuthState = {
   authChecked: false,
 };
 
-// Thunks
-// Guard to prevent multiple checkAuth calls simultaneously
+// Single-flight guard for checkAuth
 let checkAuthPromise: Promise<{ user: AuthUser }> | null = null;
 
-// Helper: check for a non-HttpOnly flag cookie indicating tokens exist
-function hasAuthFlagCookie(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return document.cookie
-      .split(";")
-      .some((c) => c.trim().startsWith("has_auth="));
-  } catch {
-    return false;
-  }
-}
-
+/**
+ * checkAuth
+ * - Uses /auth/has to detect a session (server reads HttpOnly cookies)
+ * - If session exists, calls /auth/me to fetch the user object
+ * - Uses a single-flight promise to avoid duplicate network traffic
+ */
 export const checkAuth = createAsyncThunk<
   { user: AuthUser },
   void,
   { rejectValue: string }
 >("auth/checkAuth", async (_, { rejectWithValue }) => {
-  if (!hasAuthFlagCookie()) {
-    console.log(
-      "[checkAuth] No auth flag cookie present; skipping /auth/me request"
-    );
-    return rejectWithValue("No auth cookie");
+  // Avoid running in SSR
+  if (typeof window === "undefined") {
+    return rejectWithValue("SSR");
   }
-  // If a check is already in progress, return that promise
+
+  // Reuse ongoing check if present
   if (checkAuthPromise) {
-    console.log("[checkAuth] Guard: Reusing existing checkAuth promise");
     return checkAuthPromise;
   }
 
-  // console.log("[checkAuth] Starting new auth check");
   checkAuthPromise = (async () => {
     try {
-      // Try to get current user (access token is read from cookie by server)
-      const { data } = await api.get<{ user: AuthUser }>("/auth/me");
-      console.log("[checkAuth] Auth check successful, user:", data.user);
+      const flagResp = await api.get<{ hasAuth: boolean }>("/auth/has");
+
+      if (!flagResp.data?.hasAuth) {
+        // No active session on server
+        throw new Error("No session");
+      }
+
+      const meResp = await api.get<{ user: AuthUser }>("/auth/me");
+      return { user: meResp.data.user };
+    } finally {
+      // ensure promise cleared in all code paths
       checkAuthPromise = null;
-      return { user: data.user };
-    } catch (err: unknown) {
-      const errMsg = getErrorMessage(err) || "Failed to check authentication";
-      console.error("[checkAuth] Auth check failed:", errMsg);
-      checkAuthPromise = null;
-      toast.error(errMsg);
-      throw errMsg;
     }
   })();
 
   try {
     return await checkAuthPromise;
-  } catch (errMsg: unknown) {
-    return rejectWithValue(errMsg as string);
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err) || String(err) || "Failed to check auth";
+    if (typeof window !== "undefined") toast.error(msg);
+    return rejectWithValue(msg);
   }
 });
 
-// In your authSlice.ts, add debugging
 export const login = createAsyncThunk<
   { user: AuthUser },
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    console.log("🔄 Starting login...");
-
+    // Login sets HttpOnly cookies on the server
     await api.post("/auth/login", credentials);
 
+    // After login, /auth/me will return the user (backend reads cookies)
     const { data } = await api.get<{ user: AuthUser }>("/auth/me");
-    console.log("✅ User data fetched:", data.user);
 
-    if (typeof window !== "undefined") {
-      // set cookie for current origin (frontend)
-      const maxAge = 7 * 24 * 60 * 60; // 7 days
-      document.cookie = `has_auth=1; max-age=${maxAge}; path=/; SameSite=None; Secure`;
-    }
     return { user: data.user };
   } catch (err: unknown) {
-    console.error("❌ Login failed:", err);
-    return rejectWithValue(getErrorMessage(err));
+    const msg = getErrorMessage(err) || "Login failed";
+    if (typeof window !== "undefined") toast.error(msg);
+    return rejectWithValue(msg);
   }
 });
 
@@ -138,12 +125,12 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await api.post("/auth/logout"); // server clears HttpOnly cookies
-      if (typeof window !== "undefined") {
-        document.cookie = "has_auth=; max-age=0; path=/; SameSite=None; Secure";
-      }
+      // Server should clear HttpOnly cookies and invalidate session
+      await api.post("/auth/logout");
     } catch (err: unknown) {
-      return rejectWithValue(getErrorMessage(err));
+      const msg = getErrorMessage(err) || "Logout failed";
+      if (typeof window !== "undefined") toast.error(msg);
+      return rejectWithValue(msg);
     }
   }
 );
@@ -155,13 +142,14 @@ export const register = createAsyncThunk<
 >("auth/register", async (userData, { rejectWithValue }) => {
   try {
     const { data } = await api.post("/auth/register", userData);
-
     return {
       msg: data.message,
       userId: data.userId,
     };
   } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err));
+    const msg = getErrorMessage(err) || "Registration failed";
+    if (typeof window !== "undefined") toast.error(msg);
+    return rejectWithValue(msg);
   }
 });
 
@@ -169,13 +157,15 @@ export const verifyOtp = createAsyncThunk<
   VerifyOtpResponse,
   VerifyOtpPayload,
   { rejectValue: string }
->("auth/verifyOtp", async (data, { rejectWithValue }) => {
+>("auth/verifyOtp", async (payload, { rejectWithValue }) => {
   try {
-    await api.post("/auth/verify-email", data);
+    await api.post("/auth/verify-email", payload);
     const { data: me } = await api.get<{ user: AuthUser }>("/auth/me");
     return { message: "Email verified", user: me.user } as VerifyOtpResponse;
   } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err));
+    const msg = getErrorMessage(err) || "OTP verification failed";
+    if (typeof window !== "undefined") toast.error(msg);
+    return rejectWithValue(msg);
   }
 });
 
@@ -190,7 +180,9 @@ export const resendOtp = createAsyncThunk<
     });
     return response.data;
   } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err));
+    const msg = getErrorMessage(err) || "Failed to resend OTP";
+    if (typeof window !== "undefined") toast.error(msg);
+    return rejectWithValue(msg);
   }
 });
 
@@ -202,13 +194,13 @@ export const forgotPassword = createAsyncThunk<
   try {
     const response = await api.post<{ message: string }>(
       "/auth/forgot-password",
-      {
-        email,
-      }
+      { email }
     );
     return response.data;
   } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err));
+    const msg = getErrorMessage(err) || "Failed to send password reset email";
+    if (typeof window !== "undefined") toast.error(msg);
+    return rejectWithValue(msg);
   }
 });
 
@@ -216,19 +208,20 @@ export const resetPassword = createAsyncThunk<
   { message: string },
   { email: string; otp: string; password: string },
   { rejectValue: string }
->("auth/resetPassword", async (data, { rejectWithValue }) => {
+>("auth/resetPassword", async (payload, { rejectWithValue }) => {
   try {
     const response = await api.post<{ message: string }>(
       "/auth/reset-password",
-      data
+      payload
     );
     return response.data;
   } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err));
+    const msg = getErrorMessage(err) || "Failed to reset password";
+    if (typeof window !== "undefined") toast.error(msg);
+    return rejectWithValue(msg);
   }
 });
 
-// Slice
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -236,12 +229,16 @@ const authSlice = createSlice({
     resetRegistrationStatus: (state) => {
       state.registrationSuccess = false;
     },
-    logout: (state) => {
+    // local state reset only, server-side logout should be performed via logout thunk
+    clearUserState: (state) => {
       state.user = null;
+      state.authChecked = true;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      // login
       .addCase(login.pending, (state) => {
         state.isLoggingIn = true;
         state.error = null;
@@ -254,10 +251,11 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, { payload }) => {
         state.isLoggingIn = false;
         state.user = null;
-        state.error = payload as string;
+        state.error = payload ?? "Login failed";
         state.authChecked = true;
       })
 
+      // checkAuth
       .addCase(checkAuth.pending, (state) => {
         state.isCheckingAuth = true;
       })
@@ -266,23 +264,27 @@ const authSlice = createSlice({
         state.user = payload.user;
         state.authChecked = true;
       })
-      .addCase(checkAuth.rejected, (state) => {
+      .addCase(checkAuth.rejected, (state, { payload }) => {
         state.isCheckingAuth = false;
         state.user = null;
         state.authChecked = true;
+        // payload may be "No session" or an error message
+        state.error = payload ?? null;
       })
 
+      // logout
       .addCase(logout.fulfilled, (state) => {
         Object.assign(state, initialState);
         state.authChecked = true;
       })
       .addCase(logout.rejected, (state, { payload }) => {
-        // preserve error after resetting state
+        // clear client state but surface error
         Object.assign(state, initialState);
-        state.error = payload as string;
+        state.error = payload ?? "Logout failed";
         state.authChecked = true;
       })
 
+      // register
       .addCase(register.pending, (state) => {
         state.isRegistering = true;
         state.error = null;
@@ -292,26 +294,28 @@ const authSlice = createSlice({
         state.registrationSuccess = true;
         state.error = null;
       })
-
-      .addCase(register.rejected, (state, action) => {
+      .addCase(register.rejected, (state, { payload }) => {
         state.isRegistering = false;
-        state.error = action.payload as string;
+        state.error = payload ?? "Registration failed";
         state.registrationSuccess = false;
       })
+
+      // verifyOtp
       .addCase(verifyOtp.pending, (state) => {
         state.isVerifyingOtp = true;
         state.error = null;
       })
-      .addCase(verifyOtp.fulfilled, (state, action) => {
+      .addCase(verifyOtp.fulfilled, (state, { payload }) => {
         state.isVerifyingOtp = false;
-        // set user from payload if available
-        if (action.payload?.user) state.user = action.payload.user;
+        if (payload?.user) state.user = payload.user;
         state.error = null;
       })
-      .addCase(verifyOtp.rejected, (state, action) => {
+      .addCase(verifyOtp.rejected, (state, { payload }) => {
         state.isVerifyingOtp = false;
-        state.error = action.payload || "OTP verification failed";
+        state.error = payload ?? "OTP verification failed";
       })
+
+      // resendOtp
       .addCase(resendOtp.pending, (state) => {
         state.isSendingOtp = true;
         state.error = null;
@@ -320,10 +324,12 @@ const authSlice = createSlice({
         state.isSendingOtp = false;
         state.error = null;
       })
-      .addCase(resendOtp.rejected, (state, action) => {
+      .addCase(resendOtp.rejected, (state, { payload }) => {
         state.isSendingOtp = false;
-        state.error = action.payload || "Failed to resend OTP";
+        state.error = payload ?? "Failed to resend OTP";
       })
+
+      // forgotPassword
       .addCase(forgotPassword.pending, (state) => {
         state.isSendingForgotPassword = true;
         state.error = null;
@@ -332,10 +338,12 @@ const authSlice = createSlice({
         state.isSendingForgotPassword = false;
         state.error = null;
       })
-      .addCase(forgotPassword.rejected, (state, action) => {
+      .addCase(forgotPassword.rejected, (state, { payload }) => {
         state.isSendingForgotPassword = false;
-        state.error = action.payload || "Failed to send password reset email";
+        state.error = payload ?? "Failed to send password reset email";
       })
+
+      // resetPassword
       .addCase(resetPassword.pending, (state) => {
         state.isResettingPassword = true;
         state.error = null;
@@ -344,12 +352,12 @@ const authSlice = createSlice({
         state.isResettingPassword = false;
         state.error = null;
       })
-      .addCase(resetPassword.rejected, (state, action) => {
+      .addCase(resetPassword.rejected, (state, { payload }) => {
         state.isResettingPassword = false;
-        state.error = action.payload || "Failed to reset password";
+        state.error = payload ?? "Failed to reset password";
       });
   },
 });
 
-export const { resetRegistrationStatus } = authSlice.actions;
+export const { resetRegistrationStatus, clearUserState } = authSlice.actions;
 export default authSlice.reducer;

@@ -211,15 +211,6 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // set client-visible flag cookie for OAuth flow
-    res.cookie('has_auth', '1', {
-      httpOnly: false,
-      secure: isProd,
-      sameSite: isProd ? 'none' : 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     res.redirect(`${this.FRONTEND_URL}`);
   }
 
@@ -233,5 +224,11 @@ export class AuthController {
   @ApiOperation({ summary: 'Reset password using OTP' })
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
+  }
+
+  @Get('has')
+  hasAuth(@Req() req: Request) {
+    const hasAccess = !!req.cookies['access_token']; // HttpOnly cookie
+    return { hasAuth: hasAccess };
   }
 }
