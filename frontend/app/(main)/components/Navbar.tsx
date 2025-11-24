@@ -130,7 +130,12 @@ const Navbar: React.FC = () => {
               <Input
                 type="search"
                 placeholder={isMobile ? "Search..." : "Search for products..."}
-                className="w-full h-12 rounded-3xl bg-gray-50"
+                className="
+                w-full h-12 rounded-3xl bg-gray-50 border-gray-200  
+                focus:border-gray-300    
+                focus:ring-1 focus:ring-gray-300 
+                focus:outline-none
+              "
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -180,9 +185,10 @@ const Navbar: React.FC = () => {
                 {/* Profile */}
                 <button
                   onClick={handleProfileClick}
+                  name="profile"
                   className="hover:text-blue-600 hover:scale-110 transition-transform duration-200"
                 >
-                  <User name="profile" size={24} />
+                  <User size={24} />
                 </button>
 
                 {/* Dropdown Panel */}
@@ -224,10 +230,13 @@ const Navbar: React.FC = () => {
                 )}
 
                 {/* Wishlist */}
-                <button className="hover:text-red-600 hover:scale-110 transition-transform duration-200">
+                <button
+                  className="hover:text-red-600 hover:scale-110 transition-transform duration-200"
+                  name="wishlist"
+                >
                   {user ? (
                     <Link href={"/wishList"} className="relative">
-                      <Heart name="wishlist" size={24} />
+                      <Heart size={24} />
                       {wishListItems.length > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                           {wishListItems.length}
@@ -236,20 +245,22 @@ const Navbar: React.FC = () => {
                     </Link>
                   ) : authChecked ? (
                     <Heart
-                      name="wishlist"
                       size={24}
                       onClick={() => toast.error("Login first")}
                     />
                   ) : (
-                    <Heart name="wishlist" size={24} className="opacity-50" />
+                    <Heart size={24} className="opacity-50" />
                   )}
                 </button>
 
                 {/* Cart */}
-                <button className="hover:scale-110 transition-transform duration-200">
+                <button
+                  className="hover:scale-110 transition-transform duration-200"
+                  name="cart"
+                >
                   {user ? (
                     <Link href="/cart" className="relative">
-                      <ShoppingCart name="cart" size={24} />
+                      <ShoppingCart size={24} />
                       {cartItems.length > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                           {cartItems.length}
@@ -258,16 +269,11 @@ const Navbar: React.FC = () => {
                     </Link>
                   ) : authChecked ? (
                     <ShoppingCart
-                      name="cart"
                       size={24}
                       onClick={() => toast.error("Login first")}
                     />
                   ) : (
-                    <ShoppingCart
-                      name="cart"
-                      size={24}
-                      className="opacity-50"
-                    />
+                    <ShoppingCart size={24} className="opacity-50" />
                   )}
                 </button>
               </div>

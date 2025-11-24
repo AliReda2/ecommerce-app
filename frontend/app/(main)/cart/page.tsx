@@ -136,6 +136,7 @@ const Cart = () => {
       <div className="flex items-center space-x-3 mt-3 sm:mt-0">
         <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <button
+            name="decreaseQuantity"
             onClick={() => handleDecrease(item.id)}
             className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
             disabled={updatingItemId === item.id}
@@ -152,6 +153,7 @@ const Cart = () => {
           </div>
 
           <button
+            name="increaseQuantity"
             onClick={() => handleIncrease(item.id)}
             className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
             disabled={updatingItemId === item.id}
@@ -165,6 +167,7 @@ const Cart = () => {
         </div>
 
         <Button
+          name="removeItem"
           variant="ghost"
           size="icon"
           onClick={() => handleRemove(item.id)}
@@ -189,6 +192,7 @@ const Cart = () => {
       <div className="max-w-6xl mx-auto py-12 px-4 md:px-8">
         {/* Back button */}
         <button
+          name="goBack"
           onClick={goBack}
           className="flex items-center gap-2 text-gray-700 mb-6 hover:text-gray-900 transition hover:cursor-pointer"
         >
@@ -220,7 +224,10 @@ const Cart = () => {
             <p className="text-gray-500 mt-1">
               Add products to your cart to see them here.
             </p>
-            <Button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 rounded-lg">
+            <Button
+              name="continueShopping"
+              className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 rounded-lg"
+            >
               <Link href="/">Continue Shopping</Link>
             </Button>
           </div>
@@ -254,6 +261,7 @@ const Cart = () => {
                 </div>
 
                 <Button
+                  name="checkout"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-base font-medium shadow-sm rounded-lg"
                   onClick={handleOrder}
                 >
@@ -261,6 +269,7 @@ const Cart = () => {
                 </Button>
 
                 <Button
+                  name="continueShopping"
                   variant="outline"
                   className="w-full border-gray-300 text-gray-700 hover:bg-gray-100 py-3 rounded-lg"
                 >

@@ -1,23 +1,23 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { deleteProduct } from "@/lib/features/productSlice";
+import { deleteHero } from "@/lib/features/heroSlice";
 import { AppDispatch, RootState } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function DeleteProduct({ productId }: { productId: string }) {
+const DeleteHero = ({ itemId }: { itemId: string }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading } = useSelector((state: RootState) => state.product);
+  const { isDeleting } = useSelector((state: RootState) => state.hero);
   const router = useRouter();
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-    await dispatch(deleteProduct(productId))
+    if (!confirm("Are you sure you want to delete this hero?")) return;
+    await dispatch(deleteHero(itemId))
       .unwrap()
       .then(() => {
-        toast.success("product deleted");
+        toast.success("hero deleted");
         router.refresh();
       })
       .catch((error) => toast.error(error));
@@ -28,9 +28,11 @@ export default function DeleteProduct({ productId }: { productId: string }) {
       variant="destructive"
       size="default"
       onClick={handleDelete}
-      disabled={isLoading}
+      disabled={isDeleting}
     >
-      {isLoading ? "Deleting..." : "DELETE"}
+      {isDeleting ? "Deleting..." : "DELETE"}
     </Button>
   );
-}
+};
+
+export default DeleteHero;

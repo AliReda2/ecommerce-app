@@ -20,7 +20,9 @@ const LayoutContent: React.FC<{ children: React.ReactNode }> = ({
         } ${isMobileOpen ? "ml-0" : ""}`}
       >
         <AppHeader />
-        <div className="p-4 mx-auto max-w-screen-2xl md:p-6">
+        <div
+          className="p-4 mx-auto max-w-[calc(100vw-20rem)] md:p-6"
+        >
           {children} {/* Replaced Outlet with children */}
         </div>
       </div>

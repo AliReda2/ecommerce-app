@@ -13,6 +13,7 @@ import { MailModule } from './mail/mail.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import googleOAuthConfig from './config/google-oauth.config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { HeroModule } from './hero/hero.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     WishlistModule,
     MailModule,
     AnalyticsModule,
+    HeroModule,
   ],
 })
 export class AppModule {}

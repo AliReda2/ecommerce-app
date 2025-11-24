@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('CUSTOMER', 'ADMIN');
+CREATE TYPE "UserRole" AS ENUM ('CUSTOMER', 'ADMIN', 'SUPERADMIN');
 
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'COMPLETED', 'CANCELLED');
@@ -130,6 +130,26 @@ CREATE TABLE "Wishlist" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Wishlist_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "HeroSlide" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "titleColor" TEXT,
+    "subtitle" TEXT NOT NULL,
+    "subtitleColor" TEXT,
+    "description" TEXT NOT NULL,
+    "descriptionColor" TEXT,
+    "buttonText" TEXT NOT NULL,
+    "buttonColor" TEXT,
+    "imageUrl" TEXT NOT NULL,
+    "imageAlt" TEXT,
+    "backgroundColor" TEXT,
+    "order" INTEGER NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "HeroSlide_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

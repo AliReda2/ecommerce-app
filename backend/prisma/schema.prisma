@@ -157,3 +157,20 @@ model Wishlist {
   @@index([userId])
   @@index([productId])
 }
+
+model HeroSlide {
+  id               String  @id @default(uuid())
+  title            String
+  titleColor       String?
+  subtitle         String
+  subtitleColor    String?
+  description      String
+  descriptionColor String?
+  buttonText       String
+  buttonColor      String?
+  imageUrl         String?
+  imageAlt         String?
+  backgroundColor  String?
+  order            Int
+  isActive         Boolean @default(true)
+}

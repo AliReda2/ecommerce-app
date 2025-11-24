@@ -69,7 +69,7 @@ export default function CategoryCarouselClient({
           onClick={handleFetchAll}
           className="flex flex-col items-center justify-between bg-white border rounded-xl
           w-36 h-40 lg:w-44 lg:h-44 p-5 shadow-sm cursor-pointer transition-all duration-300 group
-          hover:-translate-y-2 hover:shadow-[0px_8px_22px_rgba(0,0,0,0.18)]"
+          hover:-translate-y-2 hover:shadow-[0px_8px_22px_rgba(0,0,0,0.18)] border-none"
         >
           <div className="relative w-28 h-28 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
             <Image
@@ -79,7 +79,7 @@ export default function CategoryCarouselClient({
               className="object-contain p-3"
             />
           </div>
-          <span className="text-sm font-semibold text-gray-700 group-hover:text-blue-700 text-center">
+          <span className="text-sm text-gray-700 group-hover:text-blue-700 text-center">
             All
           </span>
         </div>
@@ -91,7 +91,7 @@ export default function CategoryCarouselClient({
             onClick={() => handleCategoryClick(item.id)}
             className="flex flex-col items-center justify-between bg-white border rounded-xl
               w-36 h-40 lg:w-44 lg:h-44 p-5 shadow-sm cursor-pointer transition-all duration-300 group
-              hover:-translate-y-2 hover:shadow-[0px_8px_22px_rgba(0,0,0,0.18)]"
+              hover:-translate-y-2 hover:shadow-[0px_8px_22px_rgba(0,0,0,0.18)] border-none"
           >
             <div className="relative w-28 h-28 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
               <Image
@@ -101,7 +101,7 @@ export default function CategoryCarouselClient({
                 className="object-contain p-3"
               />
             </div>
-            <span className="text-sm font-semibold text-gray-700 group-hover:text-blue-700 text-center">
+            <span className="text-sm text-gray-700 group-hover:text-blue-700 text-center">
               {item.name}
             </span>
           </div>

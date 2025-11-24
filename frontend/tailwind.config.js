@@ -5,6 +5,11 @@ module.exports = {
         './components/**/*.{js,ts,jsx,tsx}',
     ],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                nunito: 'var(--font-nunito)',
+                geistMono: 'var(--font-geist-mono)',
+            },
+        },
     },
 };

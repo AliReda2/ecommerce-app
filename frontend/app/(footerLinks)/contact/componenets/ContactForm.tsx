@@ -114,6 +114,7 @@ const ContactForm = () => {
 
         <div className="text-center">
           <button
+          name="sendMessage"
             type="submit"
             className="inline-flex items-center justify-center gap-2 text-lg rounded-lg bg-primary text-primary-foreground px-6 py-3 font-semibold shadow-sm hover:shadow-md transition-transform active:translate-y-0.5"
           >

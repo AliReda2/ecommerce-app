@@ -24,6 +24,7 @@ import { AppDispatch, RootState } from "@/lib/store";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 const UpdateProduct = () => {
@@ -61,7 +62,12 @@ const UpdateProduct = () => {
     form.append("stock", String(formData.stock));
     if (formData.image) form.append("image", formData.image);
 
-    dispatch(updateProduct({ productId, productData: form }));
+    dispatch(updateProduct({ productId, productData: form }))
+      .unwrap()
+      .then(() => {
+        toast.success("product updated");
+      })
+      .catch((error) => toast.error(error));
   };
 
   return (

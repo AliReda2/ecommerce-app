@@ -42,10 +42,13 @@ const Hero = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
 
+  // ensure we always have arrays for slides and the two secondary sections
   const slides: HeroType[] =
-    heroesFromStore.length >= 3
-      ? heroesFromStore.slice(0, 3)
-      : defaultCards.map((c, i) => ({
+    (heroesFromStore && heroesFromStore.slice(0, 3))?.map((h) => h) ||
+    // if not enough data use defaultCards mapped to minimal Hero-like objects
+    defaultCards.map(
+      (c, i) =>
+        ({
           id: `fallback-${i}`,
           title: c.title,
           subtitle: c.subtitle,
@@ -56,7 +59,8 @@ const Hero = () => {
           backgroundColor: "",
           order: i,
           isActive: true,
-        }));
+        } as unknown as HeroType)
+    );
 
   const secondary1 =
     heroesFromStore && heroesFromStore.length > 3
@@ -180,7 +184,7 @@ const Hero = () => {
                   "
                   >
                     <span
-                      className="text-blue-700 lg:text-2xl uppercase tracking-wide 
+                      className="text-blue-700 font-serif lg:text-2xl uppercase tracking-wide 
                     md:text-base
                     "
                     >
@@ -188,7 +192,7 @@ const Hero = () => {
                     </span>
                     <h1
                       className=" 
-                    text-gray-900 leading-tight transition-all duration-300
+                    font-sans text-gray-900 leading-tight transition-all duration-300
                     2xl:text-8xl
                     xl:text-7xl
                     lg:text-6xl 
@@ -199,10 +203,10 @@ const Hero = () => {
                     >
                       {card.title}
                     </h1>
-                    <p className="text-gray-700 md:text-lg sm:block hidden">
+                    <p className="text-gray-700 text-base md:text-lg sm:block hidden">
                       {card.description}
                     </p>
-                    <Button className="w-fit mt-4 md:mt-6 px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-600 shadow-md transition-all duration-300 transform hover:scale-105">
+                    <Button className="mt-4 md:mt-6 px-6 py-3 bg-blue-700 text-white font-medium rounded-lg hover:bg-blue-600 shadow-md transition-all duration-300 transform hover:scale-105">
                       {card.buttonText ?? "Explore"}
                     </Button>
                   </div>
@@ -261,7 +265,7 @@ const Hero = () => {
             <div className="flex items-center space-x-3">
               <span
                 className="
-            text-gray-900
+              font-semibold text-gray-900
               sm:text-2xl
               text-xs 
               "
@@ -275,7 +279,7 @@ const Hero = () => {
             <hr className="border-gray-300 w-16" />
             <h1
               className="
-          text-gray-900
+            font-bold text-gray-900
             md:text-4xl 
             sm:text-3xl
             text-xs 
@@ -283,7 +287,14 @@ const Hero = () => {
             >
               {secondary1.title ?? "Wireless Audio"}
             </h1>
-            <Button className="w-fit mt-4 md:mt-6 px-4 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-600 shadow-md transition-all duration-300 transform hover:scale-105">
+            <Button
+              className="
+            sm:mt-4 sm:px-6 sm:py-3
+            md:mt-6 
+            bg-gray-900 text-white rounded-lg font-medium
+            hover:bg-gray-800 transition duration-200
+            "
+            >
               {secondary1.buttonText ?? "Shop Collection"}
             </Button>
           </div>
@@ -321,7 +332,7 @@ const Hero = () => {
             <div className="flex items-center space-x-3">
               <span
                 className="
-              text-gray-900
+              font-semibold text-gray-900
               sm:text-2xl
               text-xs 
               "
@@ -336,7 +347,7 @@ const Hero = () => {
 
             <h1
               className="
-          text-gray-900
+            font-bold text-gray-900
             md:text-4xl 
             sm:text-3xl
             text-xs 
@@ -344,7 +355,14 @@ const Hero = () => {
             >
               {secondary2.title ?? "Power & Charging"}
             </h1>
-            <Button className="w-fit mt-4 md:mt-6 px-4 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-600 shadow-md transition-all duration-300 transform hover:scale-105">
+            <Button
+              className="
+            sm:mt-4 sm:font-medium sm:px-6 sm:py-3
+            md:mt-6 
+            bg-gray-900 text-white rounded-lg font-light
+            hover:bg-gray-800 transition duration-200
+            "
+            >
               {secondary2.buttonText ?? "Shop Collection"}
             </Button>
           </div>

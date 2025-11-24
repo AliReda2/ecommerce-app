@@ -8,6 +8,7 @@ import orderReducer from "./features/orderSlice";
 import cartReducer from "./features/cartSlice";
 import wishListReducer from "./features/wishListSlice";
 import uiReducer from "./features/uiSlice";
+import heroReducer from "./features/heroSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     cart: cartReducer,
     wishList: wishListReducer,
     ui: uiReducer,
+    hero: heroReducer,
   },
 });
 
