@@ -52,7 +52,7 @@ export default async function Product() {
                   <AvatarImage src={product.imageUrl} />
                   <AvatarFallback>
                     <Image
-                      src={"/images/codart.png"}
+                      src={"/images/codart.webp"}
                       alt={product.name}
                       width={60}
                       height={60}

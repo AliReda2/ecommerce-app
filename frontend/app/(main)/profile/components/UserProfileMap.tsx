@@ -26,9 +26,9 @@ if (!(L.Icon.Default.prototype as unknown as IconPrototype)._iconPatched) {
   delete (L.Icon.Default.prototype as unknown as IconPrototype)._getIconUrl;
 
   L.Icon.Default.mergeOptions({
-    iconRetinaUrl: "/leaflet/marker-icon-2x.png",
-    iconUrl: "/leaflet/marker-icon.png",
-    shadowUrl: "/leaflet/marker-shadow.png",
+    iconRetinaUrl: "/leaflet/marker-icon-2x.webp",
+    iconUrl: "/leaflet/marker-icon.webp",
+    shadowUrl: "/leaflet/marker-shadow.webp",
   });
 
   (L.Icon.Default.prototype as unknown as IconPrototype)._iconPatched = true;
@@ -66,7 +66,7 @@ export default function UserProfileMap({
       className="h-full w-full rounded-md overflow-hidden"
     >
       <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.webp"
         attribution="&copy; OpenStreetMap"
       />
 

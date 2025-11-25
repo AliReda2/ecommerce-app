@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "Products | Codart Shop",
     description:
       "Browse all products available at Codart Shop with fast delivery.",
-    images: ["/images/products-og.png"],
+    images: ["/images/products-og.webp"],
   },
 };
 

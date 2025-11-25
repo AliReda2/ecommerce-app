@@ -73,7 +73,7 @@ export default function CategoryCarouselClient({
         >
           <div className="relative w-28 h-28 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
             <Image
-              src="/images/codart.png"
+              src="/images/codart.webp"
               alt="all"
               fill
               className="object-contain p-3"
@@ -95,7 +95,7 @@ export default function CategoryCarouselClient({
           >
             <div className="relative w-28 h-28 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
               <Image
-                src={item.imageUrl || "/images/codart.png"}
+                src={item.imageUrl || "/images/codart.webp"}
                 alt={item.name}
                 fill
                 className="object-contain p-3"

@@ -112,7 +112,7 @@ const Cart = () => {
       <div className="flex items-center space-x-4 sm:space-x-5 w-full sm:w-auto">
         <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
           <Image
-            src={item.product?.imageUrl || "/images/codart.png"}
+            src={item.product?.imageUrl || "/images/codart.webp"}
             alt={item.product?.name || "product name"}
             fill
             className="object-contain rounded-md bg-gray-50"

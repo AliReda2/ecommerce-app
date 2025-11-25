@@ -106,7 +106,7 @@ const WishListPage = () => {
                   <CardHeader className="flex items-center justify-center p-5 bg-gray-50 rounded-t-2xl relative">
                     <div className="relative w-40 h-40">
                       <Image
-                        src={item.product?.imageUrl || "/images/codart.png"}
+                        src={item.product?.imageUrl || "/images/codart.webp"}
                         alt={item.product?.name || "Product Image"}
                         fill
                         className="object-contain transition-transform duration-300 hover:scale-105"

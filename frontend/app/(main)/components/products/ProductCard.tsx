@@ -89,7 +89,7 @@ export default function ProductCard({
         "
         >
           <Image
-            src={product.imageUrl || "/images/codart.png"}
+            src={product.imageUrl || "/images/codart.webp"}
             alt={product.name}
             fill
             className="object-contain transition-transform duration-300 hover:scale-105"

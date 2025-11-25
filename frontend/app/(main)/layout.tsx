@@ -11,7 +11,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen bg-[url('/images/pattern-bg.png')] bg-repeat bg-size-[300px_300px]">
+    <div className="flex flex-col min-h-screen bg-[url('/images/pattern-bg.webp')] bg-repeat bg-size-[300px_300px]">
       <ClientProvider>
         <Navbar />
       </ClientProvider>

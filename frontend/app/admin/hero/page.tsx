@@ -146,7 +146,7 @@ const HeroPage = () => {
               <SortableRow key={item.id} item={item}>
                 <TableCell className="font-medium flex items-center gap-2">
                   <Image
-                    src={item.imageUrl || "/images/codart.png"}
+                    src={item.imageUrl || "/images/codart.webp"}
                     alt={item.imageAlt}
                     width={60}
                     height={60}

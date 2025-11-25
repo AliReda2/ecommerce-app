@@ -39,7 +39,6 @@ export default function UserOrdersPage() {
     );
   }
 
-
   // No orders state
   if (!isLoading && userOrders.length === 0) {
     return (
@@ -111,7 +110,7 @@ export default function UserOrdersPage() {
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 relative shrink-0">
                       <Image
-                        src={item.product.imageUrl || "/images/codart.png"}
+                        src={item.product.imageUrl || "/images/codart.webp"}
                         alt={item.product.name}
                         fill
                         className="object-contain rounded-lg"

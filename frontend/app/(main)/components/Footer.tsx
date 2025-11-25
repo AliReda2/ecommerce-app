@@ -1,6 +1,9 @@
 import CurrentYear from "@/components/CurrentYear";
-import { Instagram, Phone, MessageCircle, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { Suspense } from "react";
 
 const Footer = () => {
@@ -19,7 +22,11 @@ const Footer = () => {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div
+          className="grid grid-cols-1 gap-8 justify-items-center
+        md:grid-cols-2 
+        lg:grid-cols-4 lg:gap-12"
+        >
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <div className="flex flex-col h-full">
@@ -46,44 +53,37 @@ const Footer = () => {
                   Follow Us
                 </p>
                 <div className="flex gap-3">
-                  {[
-                    // { icon: Facebook, href: "#", color: "hover:bg-blue-600" },
-                    // { icon: Twitter, href: "#", color: "hover:bg-sky-500" },
-                    {
-                      icon: Instagram,
-                      href: "https://www.instagram.com/codartlb/",
-                      color: "hover:bg-pink-500",
-                    },
-                    {
-                      icon: MessageCircle,
-                      href: "https://wa.me/96170031455",
-                      color: "hover:bg-green-500",
-                    },
-                  ].map((social, index) => (
-                    <Link
-                      key={index}
-                      href={social.href}
-                      target={
-                        social.href.startsWith("http") ? "_blank" : undefined
-                      }
-                      className={`p-2 rounded-lg bg-blue-100 ${social.color} text-blue-700 hover:text-white transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg`}
-                    >
-                      <social.icon size={18} />
-                    </Link>
-                  ))}
+                  <Link
+                    href="https://wa.me/96170031455"
+                    className="group w-12 h-12 flex items-center justify-center rounded-lg bg-green-200 transition-all duration-200 hover:bg-green-500 hover:-translate-y-1"
+                  >
+                    <FontAwesomeIcon
+                      icon={faWhatsapp}
+                      className="w-6 h-6 text-[#1447e6] transition-colors duration-200 group-hover:text-white"
+                    />
+                  </Link>
+
+                  <Link
+                    href="https://www.instagram.com/codartlb/"
+                    className="group w-12 h-12 flex items-center justify-center rounded-lg bg-pink-200 transition-all duration-200 hover:bg-pink-500 hover:-translate-y-1"
+                  >
+                    <FontAwesomeIcon
+                      icon={faInstagram}
+                      className="w-6 h-6 text-[#1447e6] transition-colors duration-200 group-hover:text-white"
+                    />
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-2 lg:col-span-2">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block">
+          <div className="grid grid-cols-1 justify-items-center gap-8 md:grid-cols-2 lg:col-span-2">
+            <div className="space-y-4 justify-items-center md:justify-items-start">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center">
                 Quick Links
-                <span className="absolute bottom-0 left-0 w-1/2 h-0.5 bg-blue-700"></span>
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-3 justify-items-center md:justify-items-start">
                 {[
                   { href: "/", label: "Home" },
                   { href: "/about-us", label: "About Us" },
@@ -104,12 +104,11 @@ const Footer = () => {
               </ul>
             </div>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block">
+            <div className="space-y-4 justify-items-center md:justify-items-start">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center">
                 Support
-                <span className="absolute bottom-0 left-0 w-1/2 h-0.5 bg-blue-700"></span>
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-3 justify-items-center md:justify-items-start">
                 {[
                   { href: "/privacy-policy", label: "Privacy Policy" },
                   { href: "/terms-conditions", label: "Terms & Conditions" },
@@ -130,16 +129,15 @@ const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block">
+          <div className="space-y-4 justify-items-center md:justify-items-start">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center">
               Contact Info
-              <span className="absolute bottom-0 left-0 w-1/2 h-0.5 bg-blue-700"></span>
             </h3>
 
             <div className="space-y-4">
               <a
                 href="tel:+96170031455"
-                className="flex items-center gap-3 text-gray-700 hover:text-blue-700 transition-colors duration-200 group text-sm"
+                className="flex items-center gap-3  justify-evenly md:justify-self-start text-gray-700 hover:text-blue-700 transition-colors duration-200 group text-sm"
               >
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-700 transition-colors">
                   <Phone
@@ -153,26 +151,22 @@ const Footer = () => {
                 </div>
               </a>
 
-              <a
-                href="https://wa.me/96170031455"
-                target="_blank"
-                className="flex items-center gap-3 text-gray-700 hover:text-green-600 transition-colors duration-200 group text-sm"
-              >
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-600 transition-colors">
-                  <MessageCircle
-                    size={18}
-                    className="text-green-600 group-hover:text-white"
-                  />
-                </div>
+              <div className="flex items-center gap-3  justify-evenly md:justify-self-start text-gray-700 hover:text-green-600 transition-colors duration-200 group text-sm">
+                <Link
+                  href="https://wa.me/96170031455"
+                  className="group w-10 h-10 flex items-center justify-center rounded-lg bg-green-100 transition-all duration-200 hover:bg-green-500"
+                >
+                  <i className="fa-brands fa-whatsapp text-2xl text-[#1447e6] transition-colors duration-200 group-hover:text-white"></i>
+                </Link>
                 <div>
                   <p className="font-medium">WhatsApp</p>
                   <p className="text-gray-500 text-xs">Quick response</p>
                 </div>
-              </a>
+              </div>
 
               <a
                 href="mailto:support@codart.com"
-                className="flex items-center gap-3 text-gray-700 hover:text-purple-700 transition-colors duration-200 group text-sm"
+                className="flex items-center gap-3  justify-evenly md:justify-self-start text-gray-700 hover:text-purple-700 transition-colors duration-200 group text-sm"
               >
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-700 transition-colors">
                   <Mail
@@ -186,7 +180,7 @@ const Footer = () => {
                 </div>
               </a>
 
-              <div className="flex items-center gap-3 text-gray-700 text-sm">
+              <div className="flex items-center gap-3  justify-evenly md:justify-self-start text-gray-700 text-sm">
                 <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
                   <MapPin size={18} className="text-orange-700" />
                 </div>
@@ -196,6 +190,17 @@ const Footer = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* image */}
+          <div className="w-full hidden md:flex lg:hidden">
+            <Image
+              src="/images/codart2.webp"
+              alt="logo"
+              width={500}
+              height={300}
+              className="w-full h-auto object-contain"
+            />
           </div>
         </div>
 

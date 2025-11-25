@@ -117,7 +117,7 @@ const Navbar: React.FC = () => {
             {/* Logo */}
             <Link href={"/"} className="flex justify-center">
               <Image
-                src="/images/codart.png"
+                src="/images/codart.webp"
                 alt="logo"
                 height={100}
                 width={100}
@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
                     >
                       <div className="w-10 h-10 relative shrink-0">
                         <Image
-                          src={p.imageUrl || "/images/codart.png"}
+                          src={p.imageUrl || "/images/codart.webp"}
                           alt={p.name}
                           fill
                           className="object-contain rounded-md"

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Categories | Codart Shop",
     description: "Browse all product categories available at Codart Shop.",
-    images: ["/images/categories-og.png"],
+    images: ["/images/categories-og.webp"],
   },
 };
 

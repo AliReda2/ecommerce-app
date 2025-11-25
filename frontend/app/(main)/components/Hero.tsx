@@ -14,7 +14,7 @@ const defaultCards = [
     description:
       "Experience immersive audio with high-fidelity headsets designed for work, gaming, and everyday use.",
     buttonText: "Shop Now",
-    image: "/images/headset.png",
+    image: "/images/headset.webp",
   },
   {
     title: "Wireless Earbuds",
@@ -22,7 +22,7 @@ const defaultCards = [
     description:
       "Enjoy seamless connectivity and rich sound with compact, lightweight wireless earbuds.",
     buttonText: "Shop Collection",
-    image: "/images/wireless.png",
+    image: "/images/wireless.webp",
   },
   {
     title: "Fast Power Solutions",
@@ -30,7 +30,7 @@ const defaultCards = [
     description:
       "Stay charged all day with durable, fast-charging power banks built for reliability and travel.",
     buttonText: "Shop Now",
-    image: "/images/powerbank.png",
+    image: "/images/powerbank.webp",
   },
 ];
 
@@ -67,7 +67,7 @@ const Hero = () => {
           subtitle: "20% Off",
           description: "",
           buttonText: "Shop Collection",
-          imageUrl: "/images/powerbank.png",
+          imageUrl: "/images/powerbank.webp",
           imageAlt: "Powerbank",
           backgroundColor: "bg-green-100",
           order: 0,
@@ -83,7 +83,7 @@ const Hero = () => {
           subtitle: "20% Off",
           description: "",
           buttonText: "Shop Collection",
-          imageUrl: "/images/wireless.png",
+          imageUrl: "/images/wireless.webp",
           imageAlt: "Wireless",
           backgroundColor: "bg-orange-100",
           order: 1,
@@ -214,7 +214,7 @@ const Hero = () => {
                         src={
                           card.imageUrl ||
                           (card as any).image ||
-                          "/images/codart.png"
+                          "/images/codart.webp"
                         }
                         alt={card.imageAlt || card.title || "hero"}
                         fill
@@ -298,7 +298,7 @@ const Hero = () => {
             "
             >
               <Image
-                src={secondary1.imageUrl || "/images/powerbank.png"}
+                src={secondary1.imageUrl || "/images/powerbank.webp"}
                 alt={secondary1.imageAlt || secondary1.title || "secondary-1"}
                 fill
                 className="object-contain"
@@ -359,7 +359,7 @@ const Hero = () => {
             "
             >
               <Image
-                src={secondary2.imageUrl || "/images/wireless.png"}
+                src={secondary2.imageUrl || "/images/wireless.webp"}
                 alt={secondary2.imageAlt || secondary2.title || "secondary-2"}
                 fill
                 className="object-contain"

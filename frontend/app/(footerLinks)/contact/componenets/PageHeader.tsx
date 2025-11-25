@@ -1,13 +1,13 @@
 import Link from "next/link";
 
-const PageHeader = () => {
+export default function PageHeader() {
   return (
-    <div className="bg-card text-card-foreground py-6 mb-12 border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-white shadow-sm py-6 mb-12">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link
             href="/"
-            className="flex items-center gap-2 text-[#4A9EFF] font-medium"
+            className="text-blue-500 font-medium hover:text-blue-600 transition-colors inline-flex items-center gap-2"
           >
             <svg
               width="18"
@@ -23,12 +23,10 @@ const PageHeader = () => {
             </svg>
             <span>Back</span>
           </Link>
-          <h4 className="mb-0 text-foreground font-bold">Contact Us</h4>
-          <div style={{ width: "100px" }}></div>
+          <h4 className="text-gray-900 font-semibold text-lg">Contact Us</h4>
+          <div className="w-24"></div>
         </div>
       </div>
     </div>
   );
-};
-
-export default PageHeader;
+}

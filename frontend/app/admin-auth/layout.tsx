@@ -23,7 +23,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
                 <div className="flex flex-col items-center max-w-xs">
                   <Link href="/">
                     <Image
-                      src="/images/codart.png"
+                      src="/images/codart.webp"
                       width={231}
                       height={48}
                       alt="Logo"

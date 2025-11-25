@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import L from "leaflet";
 
 const defaultIcon = L.icon({
-  iconUrl: "/leaflet/marker-icon.png",
-  iconRetinaUrl: "/leaflet/marker-icon-2x.png",
-  shadowUrl: "/leaflet/marker-shadow.png",
+  iconUrl: "/leaflet/marker-icon.webp",
+  iconRetinaUrl: "/leaflet/marker-icon-2x.webp",
+  shadowUrl: "/leaflet/marker-shadow.webp",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -26,7 +26,7 @@ export default function MapComponent({
   useEffect(() => {
     const map = L.map("order-map").setView([lat, lng], 13);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.webp", {
       maxZoom: 19,
     }).addTo(map);
 

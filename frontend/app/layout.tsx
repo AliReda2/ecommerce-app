@@ -29,14 +29,14 @@ export const metadata: Metadata = {
   keywords: ["ecommerce", "shop", "online store", "products", "shopping cart"],
   authors: [{ name: "E-Commerce App" }],
   icons: {
-    icon: "/images/icon.png",
+    icon: "/images/icon.webp",
   },
   openGraph: {
     title: "E-Commerce App",
     description:
       "A modern e-commerce application for buying and selling products.",
     type: "website",
-    images: ["/images/og-home.png"],
+    images: ["/images/og-home.webp"],
   },
 };
 
