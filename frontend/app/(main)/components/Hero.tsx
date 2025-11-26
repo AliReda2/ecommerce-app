@@ -194,7 +194,7 @@ const Hero = () => {
                     xl:text-7xl
                     lg:text-6xl 
                     md:text-5xl 
-                    sm:text-3xl
+                    sm:text-3xl sm:mb-0
                     text-2xl
                     "
                     >

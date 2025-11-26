@@ -129,7 +129,7 @@ const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-4 justify-items-center md:justify-items-start">
+          <div className="space-y-4 justify-items-start">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center">
               Contact Info
             </h3>
