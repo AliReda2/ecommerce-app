@@ -3,14 +3,15 @@ import {
   Get,
   Post,
   Delete,
-  Param,
   UseGuards,
+  Body,
 } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import type { User } from '@prisma/client';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AtGuard } from 'src/auth/guard';
 import { GetUser } from 'src/auth/decorator';
+import { ToggleWishlistDto } from './dto/toggle-wishlist.dto';
 
 @ApiTags('Wishlist')
 @ApiBearerAuth('access-token')
@@ -25,27 +26,14 @@ export class WishlistController {
     return this.wishlistService.getWishlist(user);
   }
 
-  @Post(':productId')
-  @ApiOperation({ summary: 'Add a product to wishlist' })
-  async addToWishlist(
-    @GetUser() user: User,
-    @Param('productId') productId: string,
-  ) {
-    return this.wishlistService.addToWishlist(user, productId);
-  }
-
-  @Delete(':wishlistId')
-  @ApiOperation({ summary: 'Remove a wishlist item by ID' })
-  async removeFromWishlist(
-    @GetUser() user: User,
-    @Param('wishlistId') wishlistId: string,
-  ) {
-    return this.wishlistService.removeFromWishlist(user, wishlistId);
-  }
-
   @Delete()
   @ApiOperation({ summary: 'Clear all items from wishlist' })
   async clearWishlist(@GetUser() user: User) {
     return this.wishlistService.clearWishlist(user);
+  }
+
+  @Post('toggle')
+  async toggleWishlist(@GetUser() user: User, @Body() data: ToggleWishlistDto) {
+    return this.wishlistService.toggle(user.id, data);
   }
 }

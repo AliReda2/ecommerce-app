@@ -2,6 +2,7 @@ export interface WishList {
   id: string;
   userId: string;
   productId: string;
+  createdAt:string
   product: {
     id: string;
     name: string;

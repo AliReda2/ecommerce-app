@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ToggleWishlistDto } from './dto/toggle-wishlist.dto';
 
 @Injectable()
 export class WishlistService {
@@ -102,5 +103,37 @@ export class WishlistService {
     }
 
     return { data: null, msg: 'Product removed from wishlist successfully' };
+  }
+
+  async toggle(userId: string, data: { productId: string }) {
+    const { productId } = data;
+
+    // Check if item already exists
+    const existing = await this.prisma.wishlist.findFirst({
+      where: { userId, productId },
+    });
+
+    // Remove if exists
+    if (existing) {
+      await this.prisma.wishlist.delete({
+        where: { id: existing.id },
+      });
+
+      return {
+        status: 'removed',
+        item: existing, // return removed item so frontend can update state
+      };
+    }
+
+    // Otherwise add
+    const created = await this.prisma.wishlist.create({
+      data: { userId, productId },
+      include: { product: true },
+    });
+
+    return {
+      status: 'added',
+      item: created,
+    };
   }
 }

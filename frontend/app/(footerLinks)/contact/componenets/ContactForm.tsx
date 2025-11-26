@@ -1,5 +1,7 @@
 "use client";
 
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 
 const ContactForm = () => {
@@ -21,104 +23,108 @@ const ContactForm = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission here
-    // console.log("Form submitted:", formData);
-    // Add your form submission logic (API call, etc.)
+    // submit logic
   };
 
   return (
-    <div className="rounded-2xl p-6 bg-card text-card-foreground shadow-md">
-      <div className="text-center mb-4">
-        <h3 className="mb-2 text-foreground font-bold text-2xl">
+    <div className="rounded-2xl p-8 bg-card text-card-foreground shadow-md bg-white">
+      {/* Header */}
+      <div className="text-center mb-6">
+        <h3 className="text-foreground font-bold text-3xl mb-2">
           Send us a Message
         </h3>
-        <p className="text-muted-foreground">
-          Fill out the form below and we&apos;ll get back to you as soon as
-          possible.
+        <p className="text-muted-foreground text-sm">
+          Fill out the form below and we’ll respond as soon as possible.
         </p>
       </div>
 
-      <form id="contact-form" onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-3">
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Name + Email */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
             <label
               htmlFor="name"
-              className="block text-sm font-semibold text-foreground"
+              className="block text-sm font-semibold text-foreground mb-1.5"
             >
               Your Name
             </label>
             <input
-              type="text"
-              className="mt-2 w-full rounded-xl border border-border bg-input text-foreground px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ring"
               id="name"
-              placeholder="Enter your name"
+              type="text"
               value={formData.name}
               onChange={handleChange}
+              placeholder="Enter your name"
+              className="w-full rounded-xl border border-border bg-input px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>
-          <div className="mb-3">
+
+          <div>
             <label
               htmlFor="email"
-              className="block text-sm font-semibold text-foreground"
+              className="block text-sm font-semibold text-foreground mb-1.5"
             >
               Email Address
             </label>
             <input
-              type="email"
-              className="mt-2 w-full rounded-xl border border-border bg-input text-foreground px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ring"
               id="email"
-              placeholder="Enter your email"
+              type="email"
               value={formData.email}
               onChange={handleChange}
+              placeholder="Enter your email"
+              className="w-full rounded-xl border border-border bg-input px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>
         </div>
 
-        <div className="mb-3">
+        {/* Subject */}
+        <div>
           <label
             htmlFor="subject"
-            className="block text-sm font-semibold text-foreground"
+            className="block text-sm font-semibold text-foreground mb-1.5"
           >
             Subject
           </label>
           <input
-            type="text"
-            className="mt-2 w-full rounded-xl border border-border bg-input text-foreground px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ring"
             id="subject"
-            placeholder="What is this regarding?"
+            type="text"
             value={formData.subject}
             onChange={handleChange}
+            placeholder="What is this regarding?"
+            className="w-full rounded-xl border border-border bg-input px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
 
-        <div className="mb-4">
+        {/* Message */}
+        <div>
           <label
             htmlFor="message"
-            className="block text-sm font-semibold text-foreground"
+            className="block text-sm font-semibold text-foreground mb-1.5"
           >
             Message
           </label>
           <textarea
-            className="mt-2 w-full rounded-xl border border-border bg-input text-foreground px-4 py-3 focus:outline-none focus:ring-2 focus:ring-ring"
             id="message"
             rows={6}
-            placeholder="Tell us how we can help you..."
             value={formData.message}
             onChange={handleChange}
+            placeholder="Tell us how we can help you..."
+            className="w-full rounded-xl border border-border bg-input px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             required
           ></textarea>
         </div>
 
+        {/* Button */}
         <div className="text-center">
           <button
-          name="sendMessage"
+            name="sendMessage"
             type="submit"
-            className="inline-flex items-center justify-center gap-2 text-lg rounded-lg bg-primary text-primary-foreground px-6 py-3 font-semibold shadow-sm hover:shadow-md transition-transform active:translate-y-0.5"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-8 py-3 text-white font-semibold text-lg shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0"
           >
-            <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+            <FontAwesomeIcon icon={faPaperPlane} className="w-8 h-8 text-white" />
             Send Message
           </button>
         </div>

@@ -11,8 +11,9 @@ import { checkAuth } from "@/lib/features/authSlice";
 import toast from "react-hot-toast";
 import { Heart } from "lucide-react";
 import {
-  addToWishlist,
-  removeFromWishlist,
+  toggleWishlist,
+  toggleWishlistOptimistic,
+  rollbackWishlistUpdate,
 } from "@/lib/features/wishListSlice";
 
 interface ProductCardProps {
@@ -31,13 +32,15 @@ export default function ProductCard({
   const { wishListItems } = useAppSelector((state) => state.wishList);
 
   const [quantity, setQuantity] = useState(1);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
   useEffect(() => {
     if (!authChecked) dispatch(checkAuth());
   }, [dispatch, authChecked]);
 
-  const wishlistItem = useMemo(
-    () => wishListItems.find((item) => item.productId === product.id),
+  // Check if product is in wishlist
+  const isInWishlist = useMemo(
+    () => wishListItems.some((item) => item.productId === product.id),
     [wishListItems, product.id]
   );
 
@@ -46,29 +49,30 @@ export default function ProductCard({
 
   const handleAddToCart = async () => {
     if (!user || !authChecked) return toast.error("Login first");
-    try {
-      await dispatch(addToCart({ productId: product.id, quantity })).unwrap();
-      toast.success(`${product.name} added to cart!`);
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to add to cart");
-    }
+    await dispatch(addToCart({ productId: product.id, quantity }))
+      .unwrap()
+      .then(() => toast.success(`${product.name} added to cart!`))
+      .catch((error) => toast.error(error));
   };
 
   const handleWishlistToggle = async () => {
     if (!user || !authChecked) return toast.error("Login first");
 
+    setIsWishlistLoading(true);
+    const previousItems = [...wishListItems]; // Store for potential rollback
+
+    // Optimistic update
+    dispatch(toggleWishlistOptimistic({ productId: product.id }));
+
     try {
-      if (wishlistItem) {
-        await dispatch(
-          removeFromWishlist({ wishlistId: wishlistItem.id })
-        ).unwrap();
-        toast.success(`${product.name} removed from wishlist`);
-      } else {
-        await dispatch(addToWishlist({ productId: product.id })).unwrap();
-        toast.success(`${product.name} added to wishlist`);
-      }
+      await dispatch(toggleWishlist({ productId: product.id })).unwrap();
+      // Don't show success toast for toggle to avoid annoyance
     } catch (err: any) {
-      toast.error(err?.message || "Wishlist action failed");
+      // Rollback on error
+      dispatch(rollbackWishlistUpdate({ previousItems }));
+      toast.error(err || "Failed to update wishlist");
+    } finally {
+      setIsWishlistLoading(false);
     }
   };
 
@@ -99,15 +103,19 @@ export default function ProductCard({
         {/* Wishlist Toggle Button */}
         <button
           onClick={handleWishlistToggle}
-          className="absolute right-2 top-2 p-2 rounded-lg border-none transition"
+          disabled={isWishlistLoading}
+          className={`absolute right-2 top-2 p-2 rounded-lg border-none transition-all duration-200 ${
+            isWishlistLoading
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer hover:scale-110"
+          }`}
         >
           <Heart
             size={24}
-            name="like"
-            fill={wishlistItem ? "red" : "none"}
-            className={`${
-              wishlistItem ? "text-red-500" : ""
-            } hover:text-red-500`}
+            fill={isInWishlist ? "red" : "none"}
+            className={`transition-colors duration-200 ${
+              isInWishlist ? "text-red-500" : "text-gray-400 hover:text-red-500"
+            }`}
           />
         </button>
       </CardHeader>

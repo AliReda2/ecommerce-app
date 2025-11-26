@@ -1,10 +1,16 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRocket, faTruck } from "@fortawesome/free-solid-svg-icons";
+
 export default function ShippingOptions() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       {/* Standard Delivery */}
       <div className="bg-white rounded-2xl shadow-lg p-8 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-100">
         <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-200 mb-6">
-          <i className="fa fa-truck text-white text-2xl"></i>
+          <FontAwesomeIcon
+            icon={faTruck}
+            className="w-8 h-8 text-white text-2xl"
+          />
         </div>
         <h4 className="text-blue-500 font-bold text-xl mb-4">
           Standard Delivery
@@ -26,7 +32,10 @@ export default function ShippingOptions() {
       {/* Express Delivery */}
       <div className="bg-white rounded-2xl shadow-lg p-8 hover:transform hover:-translate-y-1 transition-all duration-300 border border-gray-100">
         <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-200 mb-6">
-          <i className="fa fa-rocket text-white text-2xl"></i>
+          <FontAwesomeIcon
+            icon={faRocket}
+            className="w-8 h-8 text-white text-2xl"
+          />
         </div>
         <h4 className="text-blue-500 font-bold text-xl mb-4">
           Express Delivery

@@ -48,7 +48,7 @@ const Footer = () => {
               </p>
 
               {/* Social Links */}
-              <div className="mb-6">
+              <div className="mb-6 w-full justify-items-center">
                 <p className="text-gray-700 text-sm font-medium mb-3">
                   Follow Us
                 </p>
@@ -78,9 +78,9 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="grid grid-cols-1 justify-items-center gap-8 md:grid-cols-2 lg:col-span-2">
+          <div className="grid grid-cols-1 justify-items-center gap-8 md:grid-cols-2 lg:col-span-2 w-full">
             <div className="space-y-4 justify-items-center md:justify-items-start">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center md:text-start">
                 Quick Links
               </h3>
               <ul className="space-y-3 justify-items-center md:justify-items-start">
@@ -105,7 +105,7 @@ const Footer = () => {
             </div>
 
             <div className="space-y-4 justify-items-center md:justify-items-start">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 relative inline-block w-full text-center md:text-start">
                 Support
               </h3>
               <ul className="space-y-3 justify-items-center md:justify-items-start">
@@ -154,9 +154,12 @@ const Footer = () => {
               <div className="flex items-center gap-3  justify-evenly md:justify-self-start text-gray-700 hover:text-green-600 transition-colors duration-200 group text-sm">
                 <Link
                   href="https://wa.me/96170031455"
-                  className="group w-10 h-10 flex items-center justify-center rounded-lg bg-green-100 transition-all duration-200 hover:bg-green-500"
+                  className="group w-10 h-10 flex items-center justify-center rounded-lg bg-green-200 transition-all duration-200 hover:bg-green-500"
                 >
-                  <i className="fa-brands fa-whatsapp text-2xl text-[#1447e6] transition-colors duration-200 group-hover:text-white"></i>
+                  <FontAwesomeIcon
+                    icon={faWhatsapp}
+                    className="w-5 h-5 text-[#1447e6] transition-colors duration-200 group-hover:text-white"
+                  />
                 </Link>
                 <div>
                   <p className="font-medium">WhatsApp</p>

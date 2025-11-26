@@ -180,7 +180,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm">
+      <DialogContent className="max-w-sm bg-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-center">
             {mode}
@@ -221,9 +221,9 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         </div>
         {(mode === "login" || mode === "register") && (
           <div className="grid">
-            <Button
+            <button
               onClick={handleGoogleLogin}
-              className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800"
             >
               <svg
                 width="20"
@@ -250,7 +250,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
                 />
               </svg>
               Sign in with Google
-            </Button>
+            </button>
           </div>
         )}
         {/* LOGIN FORM */}
@@ -331,7 +331,12 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
 
             <br />
             <br />
-            <Button className="w-full" size="sm" disabled={isLoggingIn}>
+            <Button
+              className="w-full hover:cursor-pointer"
+              variant={'default'}
+              size="sm"
+              disabled={isLoggingIn}
+            >
               {isLoggingIn ? "Signing in..." : "Sign in"}
             </Button>
           </form>
@@ -397,7 +402,12 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               />
             </div>
 
-            <Button className="w-full" size="sm" disabled={isRegistering}>
+            <Button
+              className="w-full hover:cursor-pointer"
+              variant={'default'}
+              size="sm"
+              disabled={isRegistering}
+            >
               {isRegistering ? "Creating account..." : "Register"}
             </Button>
           </form>
@@ -445,7 +455,11 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
                 />
               </div>
 
-              <Button className="w-full" size="sm" disabled={isVerifyingOtp}>
+              <Button
+                className="w-full hover:cursor-pointer"
+                size="sm"
+                disabled={isVerifyingOtp}
+              >
                 {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
               </Button>
             </form>
