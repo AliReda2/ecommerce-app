@@ -51,54 +51,41 @@ const initialState: AuthState = {
   authChecked: false,
 };
 
-// Single-flight guard for checkAuth
-let checkAuthPromise: Promise<{ user: AuthUser }> | null = null;
+type AuthResult = { user: AuthUser | null };
 
-/**
- * checkAuth
- * - Uses /auth/has to detect a session (server reads HttpOnly cookies)
- * - If session exists, calls /auth/me to fetch the user object
- * - Uses a single-flight promise to avoid duplicate network traffic
- */
+let checkAuthPromise: Promise<AuthResult> | null = null;
+
 export const checkAuth = createAsyncThunk<
-  { user: AuthUser },
+  AuthResult,
   void,
   { rejectValue: string }
 >("auth/checkAuth", async (_, { rejectWithValue }) => {
-  // Avoid running in SSR
   if (typeof window === "undefined") {
     return rejectWithValue("SSR");
   }
 
-  // Reuse ongoing check if present
-  if (checkAuthPromise) {
-    return checkAuthPromise;
-  }
+  if (checkAuthPromise) return checkAuthPromise;
 
   checkAuthPromise = (async () => {
     try {
       const flagResp = await api.get<{ hasAuth: boolean }>("/auth/has");
 
       if (!flagResp.data?.hasAuth) {
-        // No active session on server
-        throw new Error("No session");
+        // silently return null user instead of throwing
+        return { user: null };
       }
 
       const meResp = await api.get<{ user: AuthUser }>("/auth/me");
       return { user: meResp.data.user };
+    } catch (err: unknown) {
+      // silently handle errors
+      return { user: null };
     } finally {
-      // ensure promise cleared in all code paths
       checkAuthPromise = null;
     }
   })();
 
-  try {
-    return await checkAuthPromise;
-  } catch (err: unknown) {
-    const msg = getErrorMessage(err) || String(err) || "Failed to check auth";
-    if (typeof window !== "undefined") toast.error(msg);
-    return rejectWithValue(msg);
-  }
+  return await checkAuthPromise;
 });
 
 export const login = createAsyncThunk<
