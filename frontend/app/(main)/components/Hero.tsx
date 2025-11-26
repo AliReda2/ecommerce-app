@@ -168,7 +168,7 @@ const Hero = () => {
                   lg:grid-rows-[92%_auto] lg:px-4 lg:py-8
                   md:grid-cols-2 md:grid-rows-[95%_5%] md:py-0
                   sm:grid-cols-2 sm:grid-rows-[95%_5%] sm:py-0
-                  grid-cols-2 grid-rows-[85%_15%] py-0
+                  grid-cols-2 grid-rows-[85%_15%] py-0 px-8
                   "
                 >
                   {/* Text Content */}
@@ -194,7 +194,7 @@ const Hero = () => {
                     lg:text-6xl 
                     md:text-5xl 
                     sm:text-3xl
-                    text-xs
+                    text-2xl
                     "
                     >
                       {card.title}
@@ -208,8 +208,21 @@ const Hero = () => {
                   </div>
 
                   {/* Image */}
-                  <div className="mt-8 md:mt-0 flex justify-center md:justify-end 2xl:pr-10">
-                    <div className="relative 2xl:w-96 2xl:h-96 xl:w-96 xl:h-96 lg:w-64 lg:h-64 md:w-96 md:h-96 sm:w-50 sm:h-50 w-50 h-50">
+                  <div
+                    className="mt-8 flex justify-center 
+                    2xl:pr-10
+                    md:mt-0 md:justify-end
+                    "
+                  >
+                    <div
+                      className="relative 
+                    2xl:w-96 2xl:h-96 
+                    xl:w-96 xl:h-96 
+                    lg:w-64 lg:h-64 
+                    md:w-96 md:h-96 
+                    sm:w-50 sm:h-50 
+                    w-50 h-50"
+                    >
                       <Image
                         src={
                           card.imageUrl ||
@@ -263,7 +276,7 @@ const Hero = () => {
                 className="
             text-gray-900
               sm:text-2xl
-              text-xs 
+              text-md 
               "
               >
                 {secondary1.subtitle ?? "20% Off"}
@@ -278,7 +291,7 @@ const Hero = () => {
           text-gray-900
             md:text-4xl 
             sm:text-3xl
-            text-xs 
+            text-xl
             "
             >
               {secondary1.title ?? "Wireless Audio"}
@@ -323,7 +336,7 @@ const Hero = () => {
                 className="
               text-gray-900
               sm:text-2xl
-              text-xs 
+              text-md
               "
               >
                 {secondary2.subtitle ?? "20% Off"}
@@ -339,7 +352,7 @@ const Hero = () => {
           text-gray-900
             md:text-4xl 
             sm:text-3xl
-            text-xs 
+            text-xl
             "
             >
               {secondary2.title ?? "Power & Charging"}

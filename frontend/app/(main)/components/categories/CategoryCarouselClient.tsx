@@ -134,7 +134,7 @@ export default function CategoryCarouselClient({
       {/* Carousel */}
       <Swiper
         modules={[Navigation, Autoplay]}
-        spaceBetween={10}
+        spaceBetween={5}
         breakpoints={getOptimalSlides(categories.length)}
         className="py-6 h-72"
         onSwiper={onSwiper}
