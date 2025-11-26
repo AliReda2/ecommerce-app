@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Allow cookies to be sent from frontend. Use specific origin when possible
-  const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3001';
+  const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3001' || 'http://127.0.0.1:5500';
   app.enableCors({
     origin: [
       'https://ecommerce-app-ten-blush.vercel.app',
