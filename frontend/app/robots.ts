@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
       },
     ],
-    sitemap: "https://ecommerce-app-ten-blush.vercel.app/sitemap.xml",
+    sitemap: "https://shopcodartlb.vercel.app/sitemap.xml",
   };
 }
