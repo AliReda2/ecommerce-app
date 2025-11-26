@@ -176,12 +176,13 @@ const Hero = () => {
                     className="flex flex-col justify-center
                   lg:w-9/12 
                   md:space-y-6 md:w-10/12 
-                  px-2
+                  px-2 py-2
                   "
                   >
                     <span
                       className="text-blue-700 lg:text-2xl uppercase tracking-wide 
-                    md:text-base
+                    md:text-base 
+                    sm:mb-0
                     "
                     >
                       {card.subtitle}
