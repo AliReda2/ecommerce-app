@@ -134,7 +134,7 @@ const Footer = () => {
               Contact Info
             </h3>
 
-            <div className="space-y-4">
+            <div className="space-y-4 justify-items-start">
               <a
                 href="tel:+96170031455"
                 className="flex items-center gap-3  justify-evenly md:justify-self-start text-gray-700 hover:text-blue-700 transition-colors duration-200 group text-sm"
