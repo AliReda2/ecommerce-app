@@ -59,7 +59,7 @@ const Footer = () => {
                   >
                     <FontAwesomeIcon
                       icon={faWhatsapp}
-                      className="w-6 h-6 text-[#1447e6] transition-colors duration-200 group-hover:text-white"
+                      className="text-2xl text-[#1447e6] transition-colors duration-200 group-hover:text-white"
                     />
                   </Link>
 
@@ -69,7 +69,7 @@ const Footer = () => {
                   >
                     <FontAwesomeIcon
                       icon={faInstagram}
-                      className="w-6 h-6 text-[#1447e6] transition-colors duration-200 group-hover:text-white"
+                      className="text-2xl text-[#1447e6] transition-colors duration-200 group-hover:text-white"
                     />
                   </Link>
                 </div>
@@ -158,7 +158,7 @@ const Footer = () => {
                 >
                   <FontAwesomeIcon
                     icon={faWhatsapp}
-                    className="w-5 h-5 text-[#1447e6] transition-colors duration-200 group-hover:text-white"
+                    className="text-xl text-[#1447e6] transition-colors duration-200 group-hover:text-white"
                   />
                 </Link>
                 <div>
