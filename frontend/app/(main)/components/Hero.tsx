@@ -189,6 +189,7 @@ const Hero = () => {
                   fill
                   className="object-contain"
                   priority
+                  draggable={false}
                 />
               </div>
             </div>
