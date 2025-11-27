@@ -28,7 +28,9 @@ export default async function Products() {
 
   return (
     <div className="px-3 py-0 w-full sm:max-w-[76%] mx-auto mb-20">
-      <h1 className="text-3xl font-bold mb-8">Products</h1>
+      <h1 className="text-4xl font-mono font-semibold">Products</h1>
+      <br />
+      <br />
       <Suspense fallback={<div>Loading...</div>}>
         <ClientProvider>
           <ProductsClient initialProducts={products} />

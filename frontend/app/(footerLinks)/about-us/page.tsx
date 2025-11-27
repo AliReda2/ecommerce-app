@@ -3,30 +3,34 @@ import Link from "next/link";
 const AboutUs = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-[#f5f7fa] to-[#eef1f3]">
-      <header className="bg-white shadow-sm py-6 mb-12">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-[#4A9EFF] font-medium"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+      <div className="bg-white shadow-sm py-6 mb-12">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <Link
+              href="/"
+              className="text-blue-500 font-medium hover:text-blue-600 transition-colors inline-flex items-center gap-2"
             >
-              <path
-                fill="currentColor"
-                d="M9 12l6-6-1.41-1.41L6 12l7.59 7.59L15 18l-6-6z"
-              />
-            </svg>
-            <span>Back</span>
-          </Link>
-          <h4 className="text-[#222] m-0">About Us</h4>
-          <div className="w-[100px]"></div>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 12l6-6-1.41-1.41L6 12l7.59 7.59L15 18l-6-6z"
+                />
+              </svg>
+              <span>Back</span>
+            </Link>
+            <h4 className="text-gray-900 font-semibold text-lg">
+              About Us
+            </h4>
+            <div className="w-24"></div>
+          </div>
         </div>
-      </header>
+      </div>
       <div className="container mx-auto px-4 max-w-[1000px] py-10">
         <div className="text-center mb-12">
           <h1 className="font-nunito font-bold text-[#222] text-5xl mb-3">

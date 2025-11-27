@@ -30,7 +30,7 @@ interface LoginModalProps {
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const LoginModal = ({ open, onClose }: LoginModalProps) => {
-  const [mode, setMode] = useState<"login" | "register" | "verify">("login");
+  const [mode, setMode] = useState<"Login" | "Register" | "Verify">("Login");
 
   const dispatch = useDispatch<AppDispatch>();
   const { isRegistering, isLoggingIn, isVerifyingOtp } = useSelector(
@@ -117,7 +117,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
       .then(() => {
         toast.success("Account created successfully");
         setEmail(registerData.email); // <-- SAVE EMAIL HERE
-        setMode("verify"); // <-- Switch to verify
+        setMode("Verify"); // <-- Switch to verify
         setOtpExpiresIn(600); // reset OTP validity
         onClose(); // close modal after success
       })
@@ -189,9 +189,9 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         {/* Switcher */}
         <div className="flex justify-center gap-4 mt-2 mb-4">
           <button
-            onClick={() => setMode("login")}
+            onClick={() => setMode("Login")}
             className={`pb-1 text-sm font-medium ${
-              mode === "login"
+              mode === "Login"
                 ? "border-b-2 border-blue-600 text-blue-600"
                 : "text-gray-500"
             }`}
@@ -199,9 +199,9 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             Login
           </button>
           <button
-            onClick={() => setMode("register")}
+            onClick={() => setMode("Register")}
             className={`pb-1 text-sm font-medium ${
-              mode === "register"
+              mode === "Register"
                 ? "border-b-2 border-blue-600 text-blue-600"
                 : "text-gray-500"
             }`}
@@ -209,9 +209,9 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             Register
           </button>
           <button
-            onClick={() => setMode("verify")}
+            onClick={() => setMode("Verify")}
             className={`pb-1 text-sm font-medium ${
-              mode === "verify"
+              mode === "Verify"
                 ? "border-b-2 border-blue-600 text-blue-600"
                 : "text-gray-500"
             }`}
@@ -219,7 +219,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             Verify
           </button>
         </div>
-        {(mode === "login" || mode === "register") && (
+        {(mode === "Login" || mode === "Register") && (
           <div className="grid">
             <button
               onClick={handleGoogleLogin}
@@ -254,12 +254,12 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
           </div>
         )}
         {/* LOGIN FORM */}
-        {mode === "login" && (
+        {mode === "Login" && (
           <form className="space-y-6 mt-6" onSubmit={handleLogin}>
             <div>
               <Label>Email</Label>
               <Input
-                className="mt-1"
+                className="mt-2"
                 placeholder="info@gmail.com"
                 id="email"
                 type="email"
@@ -273,6 +273,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               <Label>Password</Label>
               <div className="relative mt-1">
                 <Input
+                  className="mt-2"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   id="password"
@@ -333,7 +334,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             <br />
             <Button
               className="w-full hover:cursor-pointer"
-              variant={'default'}
+              variant={"default"}
               size="sm"
               disabled={isLoggingIn}
             >
@@ -342,11 +343,12 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
           </form>
         )}
         {/* REGISTER FORM */}
-        {mode === "register" && (
+        {mode === "Register" && (
           <form className="space-y-6 mt-6" onSubmit={handleRegister}>
             <div>
               <Label>First Name</Label>
               <Input
+                className="mt-2"
                 id="firstName"
                 placeholder="John"
                 value={registerData.firstName}
@@ -358,6 +360,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             <div>
               <Label>Last Name</Label>
               <Input
+                className="mt-2"
                 id="lastName"
                 placeholder="Doe"
                 value={registerData.lastName}
@@ -369,6 +372,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             <div>
               <Label>Email</Label>
               <Input
+                className="mt-2"
                 id="email"
                 type="email"
                 placeholder="info@gmail.com"
@@ -381,6 +385,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             <div>
               <Label>Password</Label>
               <Input
+                className="mt-2"
                 id="password"
                 type="password"
                 placeholder="Enter password"
@@ -393,6 +398,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             <div>
               <Label>Confirm Password</Label>
               <Input
+                className="mt-2"
                 id="confirmPassword"
                 type="password"
                 placeholder="Confirm password"
@@ -404,7 +410,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
 
             <Button
               className="w-full hover:cursor-pointer"
-              variant={'default'}
+              variant={"default"}
               size="sm"
               disabled={isRegistering}
             >
@@ -413,7 +419,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
           </form>
         )}
 
-        {mode === "verify" && (
+        {mode === "Verify" && (
           <div>
             {/* RESEND + TIMER */}
             <div className="flex items-center justify-between mb-4">
@@ -436,6 +442,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               <div>
                 <Label>Email</Label>
                 <Input
+                  className="mt-2"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -446,7 +453,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               <div>
                 <Label>Enter OTP sent to {email}</Label>
                 <Input
-                  className="mt-1 text-center tracking-widest"
+                  className="mt-2 text-center tracking-widest"
                   placeholder="123456"
                   type="text"
                   value={otp}
