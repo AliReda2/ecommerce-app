@@ -18,16 +18,19 @@ import { AtGuard } from 'src/auth/guard';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Throttle } from '@nestjs/throttler';
 @Controller('category')
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
+  @Throttle({ apiGeneral: {} })
   @Get()
   @ApiOperation({ summary: 'Get all categories' })
   async getAllCategories() {
     return this.categoryService.getAllCategories();
   }
 
+  @Throttle({ apiGeneral: {} })
   @Get(':id')
   @ApiOperation({ summary: 'Get category by ID' })
   async getCategoryById(@Param('id') id: string) {

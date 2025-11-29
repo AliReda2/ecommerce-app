@@ -15,6 +15,7 @@ import { AddCartDto } from './dto/add-cart.dto';
 import { RemoveCartDto } from './dto/remove-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { AtGuard } from 'src/auth/guard';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('cart')
 @ApiBearerAuth('access-token')
@@ -22,17 +23,21 @@ import { AtGuard } from 'src/auth/guard';
 export class CartController {
   constructor(private cartService: CartService) {}
 
+  @Throttle({ apiBurst: {} })
   @Get()
   @ApiOperation({ summary: 'Get cart items' })
   async getCartItems(@GetUser() user: User) {
     return this.cartService.getCartItems(user.id);
   }
+
+  @Throttle({ apiBurst: {} })
   @Delete('clear')
   @ApiOperation({ summary: 'Clear cart' })
   async clearCart(@GetUser() user: User) {
     return this.cartService.clearCart(user.id);
   }
 
+  @Throttle({ apiBurst: {} })
   @Post('add')
   @ApiOperation({ summary: 'Add item to cart' })
   @ApiBody({
@@ -44,6 +49,7 @@ export class CartController {
     return this.cartService.addToCart(user.id, data);
   }
 
+  @Throttle({ apiBurst: {} })
   @Delete('remove')
   @ApiOperation({ summary: 'Remove item from cart' })
   @ApiBody({
@@ -55,6 +61,7 @@ export class CartController {
     return this.cartService.removeFromCart(user.id, data.cartItemId);
   }
 
+    @Throttle({ apiGeneral: {} })
   @Patch('update')
   @ApiOperation({ summary: 'Update cart item quantity' })
   @ApiBody({

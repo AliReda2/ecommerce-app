@@ -23,6 +23,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Roles } from 'src/roles/roles.decorator';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('product')
 export class ProductController {
@@ -34,6 +35,7 @@ export class ProductController {
     return this.productService.getAllProducts();
   }
 
+  @Throttle({ apiGeneral: {} })
   @Get('admin')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -43,12 +45,14 @@ export class ProductController {
     return this.productService.getAllProductsAdmin();
   }
 
+  @Throttle({ apiGeneral: {} })
   @Get(':id')
   @ApiOperation({ summary: 'Get product by ID' })
   async getProductById(@Param('id') id: string) {
     return this.productService.getProductById(id);
   }
 
+  @Throttle({ apiGeneral: {} })
   @Get('category/:categoryId')
   @ApiOperation({ summary: 'Get products by category ID' })
   async getProductsByCategory(@Param('categoryId') categoryId: string) {

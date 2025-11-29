@@ -15,6 +15,7 @@ import type { User } from '@prisma/client';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiBearerAuth('access-token')
 @UseGuards(AtGuard, RolesGuard)
@@ -22,12 +23,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Throttle({ apiBurst: {} })
   @Get('me')
   @ApiOperation({ summary: 'Get current user' })
   async getMe(@GetUser() user: User) {
     return this.userService.getCurrentUser(user);
   }
 
+  @Throttle({ apiBurst: {} })
   @Patch('me')
   @ApiOperation({ summary: 'Update current user' })
   async updateMe(@GetUser('id') userId: string, @Body() data: UpdateUserDto) {

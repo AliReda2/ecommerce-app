@@ -36,6 +36,7 @@ export class AuthController {
       this.config.get<string>('FRONTEND_URL') ?? 'http://localhost:3001';
   }
 
+  @Throttle({ authSensitive: {} })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a user (email verification required)' })
@@ -45,6 +46,7 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  @Throttle({ authSensitive: {} })
   @Post('verify-email')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify user email using OTP' })
@@ -83,6 +85,7 @@ export class AuthController {
     return { msg: result.msg };
   }
 
+  @Throttle({ authSensitive: {} })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login a user' })
@@ -135,6 +138,7 @@ export class AuthController {
     return res.sendStatus(200);
   }
 
+  @Throttle({ authSensitive: {} })
   @UseGuards(AtGuard)
   @Get('me')
   @HttpCode(HttpStatus.OK)
@@ -144,6 +148,7 @@ export class AuthController {
     return { user };
   }
 
+  @Throttle({ authSensitive: {} })
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -184,11 +189,13 @@ export class AuthController {
     return { msg: 'Tokens refreshed' };
   }
 
+  @Throttle({ authSensitive: {} })
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
   @ApiOperation({ summary: 'Google OAuth2 login' })
   googleLogin() {}
 
+  @Throttle({ authSensitive: {} })
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Req() req: Request, @Res() res: Response) {
@@ -214,18 +221,21 @@ export class AuthController {
     res.redirect(`${this.FRONTEND_URL}`);
   }
 
+  @Throttle({ authSensitive: {} })
   @Post('forgot-password')
   @ApiOperation({ summary: 'Forgot password - send reset OTP' })
   async forgotPassword(@Body('email') email: string) {
     return this.authService.forgotPassword(email);
   }
 
+  @Throttle({ authSensitive: {} })
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password using OTP' })
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
   }
 
+  @Throttle({ authSensitive: {} })
   @Get('has')
   hasAuth(@Req() req: Request) {
     const hasAccess = !!req.cookies['access_token']; // HttpOnly cookie

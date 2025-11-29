@@ -12,8 +12,9 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { MailModule } from './mail/mail.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import googleOAuthConfig from './config/google-oauth.config';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { HeroModule } from './hero/hero.module';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -23,24 +24,24 @@ import { HeroModule } from './hero/hero.module';
     }),
     ThrottlerModule.forRoot([
       {
-        name: 'auth-sensitive',
+        name: 'authSensitive',
         ttl: 60000, // 1 minute
-        limit: 1, // Login, password reset, OTP verification
+        limit: 5, // Login, password reset, OTP verification
       },
       {
-        name: 'auth-general',
+        name: 'authGeneral',
         ttl: 60000, // 1 minute
         limit: 10, // Registration, token refresh
       },
       {
-        name: 'api-general',
+        name: 'apiGeneral',
         ttl: 60000, // 1 minute
         limit: 100, // General API endpoints
       },
       {
-        name: 'api-burst',
-        ttl: 1000, // 1 second
-        limit: 10, // Short burst protection
+        name: 'apiBurst',
+        ttl: 60000, // 1 minute
+        limit: 50, // General API endpoints
       },
     ]),
     AuthModule,
@@ -55,6 +56,12 @@ import { HeroModule } from './hero/hero.module';
     MailModule,
     AnalyticsModule,
     HeroModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

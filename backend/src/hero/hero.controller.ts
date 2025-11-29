@@ -23,11 +23,13 @@ import {
   ApiConsumes,
   ApiBody,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('hero')
 export class HeroController {
   constructor(private readonly heroService: HeroService) {}
 
+  @Throttle({ apiGeneral: {} })
   @Get()
   @ApiOperation({ summary: 'Get all heros' })
   async findAll() {
