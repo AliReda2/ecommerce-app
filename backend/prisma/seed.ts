@@ -42,26 +42,44 @@ async function main() {
     }),
   ]);
 
-  // Categories to insert
+  // Categories to insert with image URLs
   const categories = [
-    'Car Accessories',
-    'Phone Accessories',
-    'Phone Cases',
-    'Watches',
-    'Chargers',
-    'Headphones',
+    {
+      name: 'Car Accessories',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/car%20accessories-Photoroom.webp',
+    },
+    {
+      name: 'Phone Accessories',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/electronics-Photoroom.webp',
+    },
+    {
+      name: 'Phone Cases',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/phone%20cases-Photoroom.webp',
+    },
+    {
+      name: 'Watches',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/smart%20watches-Photoroom.webp',
+    },
+    {
+      name: 'Chargers',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/phone%20charger-Photoroom.webp',
+    },
   ];
 
-  const categoryRecords = {};
+  const categoryRecords: Record<string, string> = {}; // id is string
 
-  // Seed Categories
-  for (const name of categories) {
+  for (const { name, imageUrl } of categories) {
     const category = await prisma.category.upsert({
       where: { name },
-      update: {},
-      create: { name },
+      update: { imageUrl },
+      create: { name, imageUrl },
     });
-    categoryRecords[name] = category.id;
+    categoryRecords[name] = category.id; // now matches string type
   }
 
   // Products to insert (2 per category)
@@ -101,13 +119,6 @@ async function main() {
         { name: 'Wireless Charger', price: 25.99 },
       ],
     },
-    {
-      category: 'Headphones',
-      items: [
-        { name: 'Wired Headphones', price: 11.99 },
-        { name: 'Noise Cancelling Headset', price: 49.99 },
-      ],
-    },
   ];
 
   // Seed Products
@@ -127,6 +138,78 @@ async function main() {
         },
       });
     }
+  }
+
+  const slides = [
+    {
+      title: 'Power Up Your Devices',
+      subtitle: 'Premium Tech',
+      description:
+        'Premium tech accessories for your daily needs. Quality products designed to power up your devices.',
+      buttonText: 'Shop Now',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/powerbank.webp',
+      imageAlt: 'Powerbank',
+      backgroundColor: 'bg-info',
+      order: 1,
+      isActive: true,
+    },
+    {
+      title: 'Premium Tech Accessories',
+      subtitle: 'Wireless Audio',
+      description:
+        'Premium tech accessories for your daily needs. Quality products designed to power up your devices.',
+      buttonText: 'Shop Collection',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/headset.webp',
+      imageAlt: 'Headset',
+      backgroundColor: 'bg-secondary',
+      order: 2,
+      isActive: true,
+    },
+    {
+      title: 'Essential Tech Solutions',
+      subtitle: 'Fast Charging',
+      description:
+        'Premium tech accessories for your daily needs. Quality products designed to power up your devices.',
+      buttonText: 'Shop Collection',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/wireless.webp',
+      imageAlt: 'Airpods',
+      backgroundColor: 'bg-warning',
+      order: 3,
+      isActive: true,
+    },
+    {
+      title: 'Wireless Audio',
+      subtitle: '20% off',
+      description: null,
+      buttonText: 'Shop Collection',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/headset.webp',
+      imageAlt: 'Headset',
+      backgroundColor: null,
+      order: 4,
+      isActive: true,
+    },
+    {
+      title: 'Power & Charging',
+      subtitle: '15% off',
+      description: null,
+      buttonText: 'Shop Collection',
+      imageUrl:
+        'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/wireless.webp',
+      imageAlt: 'Airpods',
+      backgroundColor: null,
+      order: 5,
+      isActive: true,
+    },
+  ];
+
+  for (const slide of slides) {
+    await prisma.heroSlide.create({
+      data: slide,
+    });
   }
 
   console.log('Seed successful');

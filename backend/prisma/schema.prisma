@@ -164,13 +164,13 @@ model HeroSlide {
   titleColor       String?
   subtitle         String
   subtitleColor    String?
-  description      String
+  description      String?
   descriptionColor String?
   buttonText       String
   buttonColor      String?
   imageUrl         String?
   imageAlt         String?
   backgroundColor  String?
-  order            Int
+  order            Int     @unique
   isActive         Boolean @default(true)
 }

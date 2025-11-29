@@ -257,7 +257,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         {mode === "Login" && (
           <form className="space-y-6 mt-6" onSubmit={handleLogin}>
             <div>
-              <Label>Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 className="mt-2"
                 placeholder="info@gmail.com"
@@ -270,7 +270,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </div>
 
             <div>
-              <Label>Password</Label>
+              <Label htmlFor="password">Password</Label>
               <div className="relative mt-1">
                 <Input
                   className="mt-2"
@@ -346,7 +346,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         {mode === "Register" && (
           <form className="space-y-6 mt-6" onSubmit={handleRegister}>
             <div>
-              <Label>First Name</Label>
+              <Label htmlFor="firstName">First Name</Label>
               <Input
                 className="mt-2"
                 id="firstName"
@@ -358,7 +358,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </div>
 
             <div>
-              <Label>Last Name</Label>
+              <Label htmlFor="lastName">Last Name</Label>
               <Input
                 className="mt-2"
                 id="lastName"
@@ -370,7 +370,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </div>
 
             <div>
-              <Label>Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 className="mt-2"
                 id="email"
@@ -383,7 +383,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </div>
 
             <div>
-              <Label>Password</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 className="mt-2"
                 id="password"
@@ -396,7 +396,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             </div>
 
             <div>
-              <Label>Confirm Password</Label>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 className="mt-2"
                 id="confirmPassword"
@@ -440,7 +440,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
 
             <form className="space-y-6 mt-6" onSubmit={handleVerifyOtp}>
               <div>
-                <Label>Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   className="mt-2"
                   type="email"
@@ -451,8 +451,9 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               </div>
 
               <div>
-                <Label>Enter OTP sent to {email}</Label>
+                <Label htmlFor="otp">Enter OTP sent to {email}</Label>
                 <Input
+                  id="otp"
                   className="mt-2 text-center tracking-widest"
                   placeholder="123456"
                   type="text"

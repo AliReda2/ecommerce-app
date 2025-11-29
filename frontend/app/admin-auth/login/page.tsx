@@ -29,26 +29,23 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const user = await dispatch(
-        login({
-          email: loginData.email,
-          password: loginData.password,
-        })
-      ).unwrap();
+    await dispatch(
+      login({
+        email: loginData.email,
+        password: loginData.password,
+      })
+    )
+      .unwrap()
+      .then((data) => {
+        toast.success("Logged in successfully!");
 
-      toast.success("Logged in successfully!");
-
-      if (user.user.role === "ADMIN" || user.user.role === "SUPERADMIN") {
-        router.replace("/admin");
-      } else {
-        router.replace("/");
-      }
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to login";
-      toast.error(errorMessage);
-    }
+        if (data.user.role === "ADMIN" || data.user.role === "SUPERADMIN") {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
+      })
+      .catch((error) => toast.error(error));
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -90,7 +87,7 @@ const Login = () => {
           <form onSubmit={handleLogin}>
             <div className="space-y-6 mt-6">
               <div>
-                <Label>Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   className="mt-1"
                   placeholder="info@gmail.com"
@@ -103,7 +100,7 @@ const Login = () => {
               </div>
 
               <div>
-                <Label>Password</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative mt-1">
                   <Input
                     type={showPassword ? "text" : "password"}

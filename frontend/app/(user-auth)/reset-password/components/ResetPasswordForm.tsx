@@ -38,8 +38,9 @@ const ResetPasswordForm = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label>Email</Label>
+          <Label htmlFor="email">Email</Label>
           <Input
+            id="email"
             type="email"
             value={email}
             disabled={!!emailFromQuery}
@@ -49,8 +50,9 @@ const ResetPasswordForm = () => {
         </div>
 
         <div>
-          <Label>OTP</Label>
+          <Label htmlFor="otp">OTP</Label>
           <Input
+            id="otp"
             type="text"
             placeholder="Enter the one-time code"
             value={otp}
@@ -60,8 +62,9 @@ const ResetPasswordForm = () => {
         </div>
 
         <div>
-          <Label>New Password</Label>
+          <Label htmlFor="newPassword">New Password</Label>
           <Input
+            id="newPassword"
             type="password"
             placeholder="Enter new password"
             value={password}

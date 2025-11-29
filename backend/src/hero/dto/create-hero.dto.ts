@@ -22,9 +22,9 @@ export class CreateHeroDto {
   @IsString()
   subtitleColor?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   description: string;
 
   @ApiPropertyOptional()

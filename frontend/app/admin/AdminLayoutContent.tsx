@@ -39,7 +39,9 @@ export default function AdminLayoutContent({
   const isAllowed =
     user && allowedRoles.includes(String(user.role).toUpperCase());
 
-  if (!isAllowed) return null;
+  if (!isAllowed) {
+    return null;
+  }
 
   return (
     <ThemeProvider>

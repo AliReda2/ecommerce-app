@@ -106,8 +106,9 @@ const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
 
           <form className="space-y-6 mt-6" onSubmit={handleVerifyOtp}>
             <div>
-              <Label>Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
+                id="email"
                 type="email"
                 value={email ?? ""}
                 readOnly
@@ -116,8 +117,9 @@ const VerifyOtpModal = ({ open, onClose, email }: VerifyOtpModalProps) => {
             </div>
 
             <div>
-              <Label>Enter OTP sent to {email}</Label>
+              <Label htmlFor="otp">Enter OTP sent to {email}</Label>
               <Input
+                id="otp"
                 className="mt-1 text-center tracking-widest"
                 placeholder="123456"
                 type="text"

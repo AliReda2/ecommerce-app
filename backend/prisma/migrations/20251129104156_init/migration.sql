@@ -139,7 +139,7 @@ CREATE TABLE "HeroSlide" (
     "titleColor" TEXT,
     "subtitle" TEXT NOT NULL,
     "subtitleColor" TEXT,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "descriptionColor" TEXT,
     "buttonText" TEXT NOT NULL,
     "buttonColor" TEXT,
@@ -175,6 +175,9 @@ CREATE INDEX "Wishlist_productId_idx" ON "Wishlist"("productId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Wishlist_userId_productId_key" ON "Wishlist"("userId", "productId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "HeroSlide_order_key" ON "HeroSlide"("order");
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE SET NULL ON UPDATE CASCADE;

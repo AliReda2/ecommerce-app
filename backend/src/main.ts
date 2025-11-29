@@ -14,7 +14,7 @@ async function bootstrap() {
     origin: [
       'https://shopcodartlb.vercel.app',
       'https://shopcodart.vercel.app',
-      'http://localhost:3001', // for development
+      'http://localhost:3001',
       'http://127.0.0.1:5500'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

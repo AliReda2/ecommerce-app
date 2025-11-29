@@ -51,7 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/wishlist`, // assuming this is the correct route
+      url: `${baseUrl}/wishlist`,
       lastModified: new Date(),
     },
     {
@@ -62,9 +62,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/admin-auth`,
       lastModified: new Date(),
     },
-    {
-      url: `${baseUrl}/admin`,
-      lastModified: new Date(),
-    },
+    // {
+    //   url: `${baseUrl}/admin`,
+    //   lastModified: new Date(),
+    // },
   ];
 }
