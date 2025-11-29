@@ -143,7 +143,7 @@ CREATE TABLE "HeroSlide" (
     "descriptionColor" TEXT,
     "buttonText" TEXT NOT NULL,
     "buttonColor" TEXT,
-    "imageUrl" TEXT NOT NULL,
+    "imageUrl" TEXT,
     "imageAlt" TEXT,
     "backgroundColor" TEXT,
     "order" INTEGER NOT NULL,
