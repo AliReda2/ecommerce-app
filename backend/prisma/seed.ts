@@ -150,7 +150,7 @@ async function main() {
       imageUrl:
         'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/powerbank.webp',
       imageAlt: 'Powerbank',
-      backgroundColor: 'bg-info',
+      backgroundColor: 'bg-blue-100',
       order: 1,
       isActive: true,
     },
@@ -163,7 +163,7 @@ async function main() {
       imageUrl:
         'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/headset.webp',
       imageAlt: 'Headset',
-      backgroundColor: 'bg-secondary',
+      backgroundColor: 'bg-blue-100',
       order: 2,
       isActive: true,
     },
@@ -176,7 +176,7 @@ async function main() {
       imageUrl:
         'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/wireless.webp',
       imageAlt: 'Airpods',
-      backgroundColor: 'bg-warning',
+      backgroundColor: 'bg-blue-100',
       order: 3,
       isActive: true,
     },
@@ -188,19 +188,19 @@ async function main() {
       imageUrl:
         'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/headset.webp',
       imageAlt: 'Headset',
-      backgroundColor: null,
+      backgroundColor: 'bg-green-100',
       order: 4,
       isActive: true,
     },
     {
       title: 'Power & Charging',
-      subtitle: '15% off',
+      subtitle: '20% off',
       description: null,
       buttonText: 'Shop Collection',
       imageUrl:
         'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/wireless.webp',
-      imageAlt: 'Airpods',
-      backgroundColor: null,
+      imageAlt: 'Wireless',
+      backgroundColor: 'bg-orange-100',
       order: 5,
       isActive: true,
     },

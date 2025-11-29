@@ -12,82 +12,27 @@ import { Autoplay, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
-
-const defaultCards = [
-  {
-    title: "Premium Headsets",
-    subtitle: "Crystal-Clear Sound",
-    description: "Experience immersive audio with high-fidelity headsets.",
-    buttonText: "Shop Now",
-    image: "/images/headset.webp",
-  },
-  {
-    title: "Wireless Earbuds",
-    subtitle: "True Wireless Freedom",
-    description:
-      "Enjoy seamless connectivity and rich sound with compact, lightweight wireless earbuds.",
-    buttonText: "Shop Collection",
-    image: "/images/wireless.webp",
-  },
-  {
-    title: "Fast Power Solutions",
-    subtitle: "High-Capacity Power Banks",
-    description:
-      "Stay charged all day with durable, fast-charging power banks built for reliability.",
-    buttonText: "Shop Now",
-    image: "/images/powerbank.webp",
-  },
-];
+import HeroSkeleton from "./HeroSkeleton";
 
 const Hero = () => {
   const dispatch = useAppDispatch();
   const heroesFromStore = useAppSelector(
     (s) => s.hero?.heroes ?? []
   ) as HeroType[];
+
+  const { isLoading } = useAppSelector((state) => state.hero);
   const swiperRef = useRef<SwiperType | null>(null);
 
-  const slides: HeroType[] =
-    heroesFromStore.length >= 3
-      ? heroesFromStore.slice(0, 3)
-      : defaultCards.map((c, i) => ({
-          id: `fallback-${i}`,
-          title: c.title,
-          subtitle: c.subtitle,
-          description: c.description,
-          buttonText: c.buttonText,
-          imageUrl: c.image,
-          imageAlt: c.title,
-          backgroundColor: "",
-          order: i,
-          isActive: true,
-        }));
+  const slides: HeroType[] = heroesFromStore.slice(0, 3);
 
-  const secondary1 =
-    heroesFromStore[3] ??
-    ({
-      id: "s1",
-      title: "Wireless Audio",
-      subtitle: "20% Off",
-      buttonText: "Shop Collection",
-      imageUrl: "/images/powerbank.webp",
-      imageAlt: "Powerbank",
-      backgroundColor: "bg-green-100",
-    } as HeroType);
-  const secondary2 =
-    heroesFromStore[4] ??
-    ({
-      id: "s2",
-      title: "Power & Charging",
-      subtitle: "20% Off",
-      buttonText: "Shop Collection",
-      imageUrl: "/images/wireless.webp",
-      imageAlt: "Wireless",
-      backgroundColor: "bg-orange-100",
-    } as HeroType);
+  const secondary1 = heroesFromStore[3];
+  const secondary2 = heroesFromStore[4];
 
   useEffect(() => {
     dispatch(fetchHeroes());
   }, [dispatch]);
+
+  if (isLoading) return <HeroSkeleton />;
 
   return (
     <div className="w-full min-h-screen lg:min-h-0 flex justify-center py-6 sm:py-8 md:py-8">
@@ -159,42 +104,45 @@ const Hero = () => {
         </div>
 
         {/* Secondary Cards */}
-        {[secondary1, secondary2].map((card) => (
-          <section
-            key={card.id}
-            className={`flex justify-between items-center px-6 sm:px-8 py-8 rounded-xl shadow-lg ${card.backgroundColor} 2xl:col-span-2 xl:col-span-2 lg:col-span-2 h-fit`}
-          >
-            <div className="flex flex-col space-y-3">
-              <div className="flex items-center space-x-3">
-                <span className="text-gray-900 text-xl sm:text-2xl">
-                  {card.subtitle}
-                </span>
-                <span className="text-xs tracking-wider text-gray-500 uppercase">
-                  Sale
-                </span>
-              </div>
-              <hr className="border-gray-300 w-16" />
-              <h1 className="text-gray-900 text-2xl sm:text-3xl md:text-4xl">
-                {card.title}
-              </h1>
-              <Button className="w-fit mt-4 px-4 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-600 shadow-md transition-all duration-300 transform hover:scale-105">
-                {card.buttonText}
-              </Button>
-            </div>
-            <div className="flex">
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 lg:w-60 lg:h-60">
-                <Image
-                  src={card.imageUrl}
-                  alt={card.imageAlt}
-                  fill
-                  className="object-contain"
-                  priority
-                  draggable={false}
-                />
-              </div>
-            </div>
-          </section>
-        ))}
+        {[secondary1, secondary2].map(
+          (card) =>
+            card && (
+              <section
+                key={card.id}
+                className={`flex justify-between items-center px-6 sm:px-8 py-8 rounded-xl shadow-lg ${card.backgroundColor} 2xl:col-span-2 xl:col-span-2 lg:col-span-2 h-fit`}
+              >
+                <div className="flex flex-col space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-900 text-xl sm:text-2xl">
+                      {card.subtitle}
+                    </span>
+                    <span className="text-xs tracking-wider text-gray-500 uppercase">
+                      Sale
+                    </span>
+                  </div>
+                  <hr className="border-gray-300 w-16" />
+                  <h1 className="text-gray-900 text-2xl sm:text-3xl md:text-4xl">
+                    {card.title}
+                  </h1>
+                  <Button className="w-fit mt-4 px-4 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-600 shadow-md transition-all duration-300 transform hover:scale-105">
+                    {card.buttonText}
+                  </Button>
+                </div>
+                <div className="flex">
+                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 lg:w-60 lg:h-60">
+                    <Image
+                      src={card.imageUrl}
+                      alt={card.imageAlt}
+                      fill
+                      className="object-contain"
+                      priority
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+              </section>
+            )
+        )}
       </div>
     </div>
   );

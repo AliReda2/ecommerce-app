@@ -38,7 +38,7 @@ export class HeroController {
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'Create a new product' })
+  @ApiOperation({ summary: 'Create a new hero' })
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -55,6 +55,7 @@ export class HeroController {
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
   @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'reorder hero cards' })
   async reorder(@Body() items: { id: string; order: number }[]) {
     return this.heroService.reorder(items);
   }

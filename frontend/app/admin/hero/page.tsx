@@ -130,10 +130,15 @@ const HeroPage = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Title</TableHead>
+              <TableHead>Title Color</TableHead>
               <TableHead>SubTitle</TableHead>
+              <TableHead>Subtitle Color</TableHead>
               <TableHead>Description</TableHead>
-              <TableHead>ButtonText</TableHead>
-              <TableHead>ImageAlt</TableHead>
+              <TableHead>Description Color</TableHead>
+              <TableHead>Button Text</TableHead>
+              <TableHead>Button Color</TableHead>
+              <TableHead>Image</TableHead>
+              <TableHead>Image Alt</TableHead>
               <TableHead>Background</TableHead>
               <TableHead>Order</TableHead>
               <TableHead>isActive</TableHead>
@@ -145,20 +150,27 @@ const HeroPage = () => {
             {items.map((item) => (
               <SortableRow key={item.id} item={item}>
                 <TableCell className="font-medium flex items-center gap-2">
-                  <Image
-                    src={item.imageUrl || "/images/codart.webp"}
-                    alt={item.imageAlt}
-                    width={60}
-                    height={60}
-                  />
+                  {item.imageUrl && (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.imageAlt || "hero image"}
+                      width={60}
+                      height={60}
+                    />
+                  )}
                   {item.title}
                 </TableCell>
 
+                <TableCell>{item.titleColor || "-"}</TableCell>
                 <TableCell>{item.subtitle}</TableCell>
-                <TableCell>{item.description}</TableCell>
+                <TableCell>{item.subtitleColor || "-"}</TableCell>
+                <TableCell>{item.description || "-"}</TableCell>
+                <TableCell>{item.descriptionColor || "-"}</TableCell>
                 <TableCell>{item.buttonText}</TableCell>
-                <TableCell>{item.imageAlt}</TableCell>
-                <TableCell>{item.backgroundColor}</TableCell>
+                <TableCell>{item.buttonColor || "-"}</TableCell>
+                <TableCell>{item.imageUrl ? item.imageUrl : "-"}</TableCell>
+                <TableCell>{item.imageAlt || "-"}</TableCell>
+                <TableCell>{item.backgroundColor || "-"}</TableCell>
                 <TableCell>{item.order}</TableCell>
 
                 <TableCell>

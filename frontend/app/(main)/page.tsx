@@ -1,13 +1,14 @@
 import { Suspense } from "react";
 import { ClientProvider } from "./clientProvider";
 import CategoryCarousel from "./components/categories/CategoryCarousel";
-import Hero from "./components/Hero";
+import Hero from "./components/hero/Hero";
 import Products from "./components/products/Products";
+import HeroSkeleton from "./components/hero/HeroSkeleton";
 
 const page = () => {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<HeroSkeleton />}>
         <ClientProvider>
           <Hero />
         </ClientProvider>
