@@ -14,6 +14,7 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Tag } from "@/lib/types";
 
 export default async function Product() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product`, {
@@ -23,7 +24,14 @@ export default async function Product() {
   const payload = await res.json();
   const products = payload.data;
 
-  if (products.length === 0) {
+  const res2 = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags`, {
+    cache: "no-store",
+  });
+
+  const payload2 = await res2.json();
+  const tags = payload2.data;
+
+  if (products?.length === 0) {
     return (
       <>
         <h1>NO Products To Display</h1>
@@ -40,6 +48,7 @@ export default async function Product() {
           <TableHead>Category</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Price</TableHead>
+          <TableHead>Tags</TableHead>
           <TableHead className="text-center">Action</TableHead>
         </TableRow>
       </TableHeader>
@@ -62,13 +71,28 @@ export default async function Product() {
                 <span> {product.name}</span>
               </TableCell>
               <TableCell> {product.description}</TableCell>
-              <TableCell> {product?.category?.name ?? "null"}</TableCell>
+              <TableCell> {product?.category ?? "null"}</TableCell>
               <TableCell>
                 <Badge color={product.stock === 0 ? "warning" : "light"}>
                   {product.stock}
                 </Badge>
               </TableCell>
               <TableCell> {product.price}</TableCell>
+              <TableCell>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag: Tag) => {
+                    const isActive = product.tags?.some((t) => t === tag.name);
+                    return (
+                      <Badge
+                        key={tag.id}
+                        variant={isActive ? "success" : "secondary"} // green if active
+                      >
+                        {tag.name}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </TableCell>
               <TableCell className="text-right">
                 <DeleteProduct productId={product.id} />
                 <Button variant={"success"}>

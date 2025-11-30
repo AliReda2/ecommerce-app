@@ -15,6 +15,7 @@ import googleOAuthConfig from './config/google-oauth.config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { HeroModule } from './hero/hero.module';
 import { APP_GUARD } from '@nestjs/core';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { APP_GUARD } from '@nestjs/core';
       {
         name: 'apiGeneral',
         ttl: 60000, // 1 minute
-        limit: 100, // General API endpoints
+        limit: 150, // General API endpoints
       },
       {
         name: 'apiBurst',
@@ -56,6 +57,7 @@ import { APP_GUARD } from '@nestjs/core';
     MailModule,
     AnalyticsModule,
     HeroModule,
+    TagModule,
   ],
   providers: [
     {

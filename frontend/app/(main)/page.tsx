@@ -4,6 +4,8 @@ import CategoryCarousel from "./components/categories/CategoryCarousel";
 import Hero from "./components/hero/Hero";
 import Products from "./components/products/Products";
 import HeroSkeleton from "./components/hero/HeroSkeleton";
+import TrendingProducts from "./components/products/trendingProducts/TrendingProducts";
+import NewProducts from "./components/products/newProducts/NewProducts";
 
 const page = () => {
   return (
@@ -14,6 +16,8 @@ const page = () => {
         </ClientProvider>
       </Suspense>
       <div className="w-full flex flex-col items-center justify-center pt-20 bg-white mx-auto">
+        <NewProducts />
+        <TrendingProducts />
         <CategoryCarousel />
         <Products />
       </div>

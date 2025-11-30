@@ -5,17 +5,14 @@ export interface Product {
   description?: string | null;
   price: number;
   imageUrl?: string;
-  categoryId: string;
+  categoryId?: string | null;
   stock: number;
   createdAt: Date;
   updatedAt: Date;
-  category: {
-    id?: string;
-    name: string;
-    description?: string;
-    createdAt?: string;
-  };
+  category: string | null;
+  tags: string[];
 }
+
 export interface createProductDto {
   name: string;
   description?: string;

@@ -14,19 +14,35 @@ import DeleteUser from "./components/DeleteUser";
 import { cookies } from "next/headers";
 
 const Users = async () => {
-  const cookieStore = cookies();
-  const accessToken = (await cookieStore).get("access_token")?.value;
-  const refreshToken = (await cookieStore).get("refresh_token")?.value;
+  const isProd = process.env.NODE_ENV === "production";
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`, {
-    cache: "no-store",
-    headers: {
-      Cookie: `access_token=${accessToken}; refresh_token=${refreshToken}`,
-    },
-  });
+  let res;
+
+  if (isProd) {
+    // Production: client/browser fetch should include cookies automatically
+    res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`, {
+      cache: "no-store",
+      credentials: "include", // browser sends HttpOnly cookies
+    });
+  } else {
+    // Development: server-side fetch, forward cookies manually
+    const cookieStore = cookies();
+    const cookieHeader = (await cookieStore)
+      .getAll()
+      .map((c) => `${c.name}=${c.value}`)
+      .join("; ");
+
+    res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`, {
+      cache: "no-store",
+      headers: {
+        Cookie: cookieHeader, // send cookies explicitly
+      },
+    });
+  }
 
   const payload = await res.json();
   const users = payload.data;
+  console.log(payload);
   return (
     <div className="overflow-x-auto p-4">
       <Table>

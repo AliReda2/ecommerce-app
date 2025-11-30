@@ -23,12 +23,14 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Roles } from 'src/roles/roles.decorator';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Throttle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { ToggleProductTag } from './dto/toggle-tag.sto';
 
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
 
+  @Throttle({ apiGeneral: {} })
   @Get()
   @ApiOperation({ summary: 'Get all products' })
   async getAllProducts() {
@@ -59,6 +61,7 @@ export class ProductController {
     return this.productService.getProductsByCategory(categoryId);
   }
 
+  @SkipThrottle()
   @Post()
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -76,6 +79,7 @@ export class ProductController {
     return this.productService.createProduct(data, file);
   }
 
+  @SkipThrottle()
   @Patch(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -94,6 +98,7 @@ export class ProductController {
     return this.productService.updateProduct(id, data, file);
   }
 
+  @SkipThrottle()
   @Delete(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -101,5 +106,25 @@ export class ProductController {
   @ApiOperation({ summary: 'Delete a product' })
   async deleteProduct(@Param('id') id: string) {
     return this.productService.deleteProduct(id);
+  }
+
+  @SkipThrottle()
+  @Post('toggleTag')
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'update product tag' })
+  async toggleProductTag(@Body() data: ToggleProductTag) {
+    return await this.productService.toggleProductTag(
+      data.productId,
+      data.tagName,
+    );
+  }
+
+  @SkipThrottle()
+  @Get('products/:tagName')
+  @ApiOperation({ summary: 'get products by tag' })
+  async getProductsByTagName(@Param('tagName') tagName: string) {
+    return await this.productService.getProductsByTagName(tagName);
   }
 }

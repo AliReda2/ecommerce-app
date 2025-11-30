@@ -43,6 +43,15 @@ export class ProductService {
             name: true,
           },
         },
+        tags: {
+          select: {
+            tag: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -50,8 +59,15 @@ export class ProductService {
       throw new NotFoundException('No products found');
     }
 
+    // Flatten tags to an array of names
+    const formattedProducts = products.map((product) => ({
+      ...product,
+      category: product.category ? product.category.name : null,
+      tags: product.tags.map((pt) => pt.tag.name),
+    }));
+
     return {
-      data: products,
+      data: formattedProducts,
       msg: 'Products fetched successfully',
     };
   }
@@ -273,4 +289,75 @@ export class ProductService {
     };
   }
 
+  async toggleProductTag(productId: string, tagName: string) {
+    // Ensure tag exists
+    const tag = await this.prisma.tag.findUnique({ where: { name: tagName } });
+    if (!tag) throw new NotFoundException('Tag not found');
+
+    // Ensure product exists
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+    if (!product) throw new NotFoundException('Product not found');
+
+    // Check if relation already exists
+    const existingRelation = await this.prisma.productTag.findUnique({
+      where: {
+        productId_tagId: {
+          productId,
+          tagId: tag.id,
+        },
+      },
+    });
+
+    let result;
+
+    if (existingRelation) {
+      // Remove tag
+      result = await this.prisma.productTag.delete({
+        where: {
+          productId_tagId: {
+            productId,
+            tagId: tag.id,
+          },
+        },
+      });
+    } else {
+      // Add tag
+      result = await this.prisma.productTag.create({
+        data: {
+          productId,
+          tagId: tag.id,
+        },
+      });
+    }
+
+    return {
+      data: result,
+      msg: 'Tag toggled successfully',
+    };
+  }
+
+  async getProductsByTagName(tagName: string) {
+    const tag = await this.prisma.tag.findUnique({ where: { name: tagName } });
+    if (!tag) throw new NotFoundException('Tag not found');
+
+    const taggedProducts = await this.prisma.productTag.findMany({
+      where: { tagId: tag.id },
+      include: {
+        product: true, // Get the full product object
+      },
+    });
+
+    if (!taggedProducts.length)
+      throw new NotFoundException('No products found for selected tag');
+
+    // Extract only the product objects
+    const products = taggedProducts.map((entry) => entry.product);
+
+    return {
+      data: products,
+      msg: 'Fetched products of selected tag',
+    };
+  }
 }

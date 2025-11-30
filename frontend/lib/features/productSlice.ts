@@ -10,6 +10,7 @@ import { getErrorMessage } from "../getErrorMessage";
 
 interface productState {
   products: Product[];
+  productsByTag: Product[];
   currentProduct: Product | null;
   isLoading: boolean;
   error: string | null;
@@ -17,6 +18,7 @@ interface productState {
 
 const initialState: productState = {
   products: [],
+  productsByTag: [],
   currentProduct: null,
   isLoading: false,
   error: null,
@@ -65,7 +67,6 @@ export const createProduct = createAsyncThunk<
         },
       }
     );
-    toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
@@ -97,7 +98,6 @@ export const updateProduct = createAsyncThunk<
           }
         : undefined
     );
-    toast.success(response.data.msg);
     return response.data.data;
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
@@ -110,8 +110,7 @@ export const deleteProduct = createAsyncThunk<
   { rejectValue: string }
 >("product/delete", async (productId, { rejectWithValue }) => {
   try {
-    const response = await api.delete(`/product/${productId}`);
-    toast.success(response.data.msg);
+    await api.delete(`/product/${productId}`);
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
   }
@@ -126,6 +125,36 @@ export const fetchProductsByCategory = createAsyncThunk<
     const response = await api.get<ProductResponse>(
       `/product/category/${category}`
     );
+    return response.data.data;
+  } catch (err: unknown) {
+    return rejectWithValue(getErrorMessage(err));
+  }
+});
+
+export const fetchProductsByTag = createAsyncThunk<
+  Product[],
+  string,
+  { rejectValue: string }
+>("product/fetchByTag", async (tag, { rejectWithValue }) => {
+  try {
+    const response = await api.get<ProductResponse>(`/product/products/${tag}`);
+    return response.data.data;
+  } catch (err: unknown) {
+    return rejectWithValue(getErrorMessage(err));
+  }
+});
+
+export const toggleTag = createAsyncThunk<
+  Product,
+  { productId: string; tagName: string },
+  { rejectValue: string }
+>("product/toggleTag", async (body, { rejectWithValue }) => {
+  try {
+    const response = await api.post<SingleProductResponse>(
+      "/product/toggleTag",
+      body
+    );
+
     return response.data.data;
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
@@ -196,6 +225,7 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || "Failed to update product";
       })
+
       .addCase(fetchProductsByCategory.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -208,6 +238,19 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || "Failed to fetch products by category";
       })
+      .addCase(fetchProductsByTag.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchProductsByTag.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.productsByTag = action.payload;
+      })
+      .addCase(fetchProductsByTag.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Failed to fetch products by tag";
+      })
+
       .addCase(fetchProducts.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -219,6 +262,44 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Failed to fetch products";
+      })
+      .addCase(toggleTag.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(toggleTag.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const updated = action.payload;
+
+        if (updated) {
+          // Update products list
+          const idx = state.products.findIndex((p) => p.id === updated.id);
+          if (idx !== -1) {
+            state.products[idx] = { ...state.products[idx], ...updated };
+          } else {
+            state.products.push(updated);
+          }
+
+          // Update productsByTag list if exists
+          const tagIdx = state.productsByTag.findIndex(
+            (p) => p.id === updated.id
+          );
+          if (tagIdx !== -1) {
+            state.productsByTag[tagIdx] = {
+              ...state.productsByTag[tagIdx],
+              ...updated,
+            };
+          }
+
+          // Update currentProduct if it matches
+          if (state.currentProduct?.id === updated.id) {
+            state.currentProduct = { ...state.currentProduct, ...updated };
+          }
+        }
+      })
+      .addCase(toggleTag.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Failed to toggle tag";
       });
   },
 });

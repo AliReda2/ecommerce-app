@@ -6,21 +6,35 @@ import {
   TableBody,
   Table,
 } from "@/components/ui/table";
-import { cookies } from "next/headers";
 import OrderRow from "./components/OrderRow";
 import { Order } from "@/lib/types";
+import { cookies } from "next/headers";
 
 export default async function OrdersPage() {
-  const cookieStore = cookies();
-  const access = (await cookieStore).get("access_token")?.value ?? "";
-  const refresh = (await cookieStore).get("refresh_token")?.value ?? "";
+  const isProd = process.env.NODE_ENV === "production";
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/order`, {
-    cache: "no-store",
-    headers: {
-      Cookie: `access_token=${access}; refresh_token=${refresh}`,
-    },
-  });
+  let res;
+  if (isProd) {
+    // Production: client/browser fetch should include cookies automatically
+    res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/order`, {
+      cache: "no-store",
+      credentials: "include", // browser sends HttpOnly cookies
+    });
+  } else {
+    // Development: server-side fetch, forward cookies manually
+    const cookieStore = cookies();
+    const cookieHeader = (await cookieStore)
+      .getAll()
+      .map((c) => `${c.name}=${c.value}`)
+      .join("; ");
+
+    res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/order`, {
+      cache: "no-store",
+      headers: {
+        Cookie: cookieHeader, // send cookies explicitly
+      },
+    });
+  }
 
   const payload = await res.json();
   const orders = payload.data;

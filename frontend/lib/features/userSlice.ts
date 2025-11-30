@@ -62,7 +62,7 @@ export const banUser = createAsyncThunk<User, string, { rejectValue: string }>(
       const response = await api.get<SingleUserResponse>(
         `/users/ban/${userId}`
       );
-      toast.success(response.data.msg);
+
       return response.data.data;
     } catch (err: unknown) {
       return rejectWithValue(getErrorMessage(err));
@@ -79,7 +79,7 @@ export const unbanUser = createAsyncThunk<
     const response = await api.get<SingleUserResponse>(
       `/users/unban/${userId}`
     );
-    toast.success(response.data.msg);
+
     return response.data.data;
   } catch (err: unknown) {
     return rejectWithValue(getErrorMessage(err));
@@ -130,6 +130,8 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || "Failed to fetch current user";
       })
+
+
       .addCase(banUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -156,6 +158,8 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || "Failed to ban user";
       })
+
+      
       .addCase(unbanUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;

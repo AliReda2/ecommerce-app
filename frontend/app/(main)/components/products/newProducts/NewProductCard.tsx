@@ -18,15 +18,9 @@ import {
 
 interface ProductCardProps {
   product: Product;
-  highlight?: boolean;
-  innerRef?: React.Ref<HTMLDivElement>;
 }
 
-export default function ProductCard({
-  product,
-  highlight,
-  innerRef,
-}: ProductCardProps) {
+export default function NewProductCard({ product }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const { user, authChecked } = useAppSelector((state) => state.auth);
   const { wishListItems } = useAppSelector((state) => state.wishList);
@@ -78,14 +72,11 @@ export default function ProductCard({
 
   return (
     <Card
-      ref={innerRef}
-      className={`product-card flex flex-col justify-between border border-gray-200 shadow-md rounded-xl bg-white p-3 sm:p-4 h-full transition-all duration-300 ${
-        highlight ? "ring-4 ring-yellow-400" : ""
-      }`}
+      className={`product-card flex flex-col justify-between border border-gray-200 shadow-md rounded-xl bg-white p-3 sm:p-4 h-full transition-all duration-300 `}
     >
       <CardHeader className="flex items-center justify-center p-0 rounded-t-2xl relative">
         <div
-          className="relative mx-auto bg-white
+          className="relative mx-auto
         lg:w-48 lg:h-48
         md:w-40 md:h-40 
         sm:w-32 sm:h-32 
@@ -94,7 +85,7 @@ export default function ProductCard({
         >
           <Image
             src={product.imageUrl || "/images/codart.webp"}
-            alt={product.name}
+            alt={product.name ?? 'product'}
             fill
             className="object-contain transition-transform duration-300 hover:scale-105"
           />
@@ -145,7 +136,7 @@ export default function ProductCard({
         >
           <div className="flex justify-between items-center sm:mt-2 m-0">
             <span className="text-sm sm:text-xl font-bold text-blue-700">
-              ${product.price.toFixed(2)}
+              ${product?.price?.toFixed(2)}
             </span>
           </div>
           <div className="flex items-center border rounded-md overflow-hidden h-8 sm:h-9">

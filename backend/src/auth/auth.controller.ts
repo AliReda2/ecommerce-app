@@ -138,7 +138,7 @@ export class AuthController {
     return res.sendStatus(200);
   }
 
-  @Throttle({ authSensitive: {} })
+  @Throttle({ authGeneral: {} })
   @UseGuards(AtGuard)
   @Get('me')
   @HttpCode(HttpStatus.OK)
@@ -148,7 +148,7 @@ export class AuthController {
     return { user };
   }
 
-  @Throttle({ authSensitive: {} })
+  @Throttle({ authGeneral: {} })
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -189,13 +189,13 @@ export class AuthController {
     return { msg: 'Tokens refreshed' };
   }
 
-  @Throttle({ authSensitive: {} })
+  @Throttle({ authGeneral: {} })
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
   @ApiOperation({ summary: 'Google OAuth2 login' })
   googleLogin() {}
 
-  @Throttle({ authSensitive: {} })
+  @Throttle({ authGeneral: {} })
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Req() req: Request, @Res() res: Response) {
@@ -221,21 +221,21 @@ export class AuthController {
     res.redirect(`${this.FRONTEND_URL}`);
   }
 
-  @Throttle({ authSensitive: {} })
+  @Throttle({ authGeneral: {} })
   @Post('forgot-password')
   @ApiOperation({ summary: 'Forgot password - send reset OTP' })
   async forgotPassword(@Body('email') email: string) {
     return this.authService.forgotPassword(email);
   }
 
-  @Throttle({ authSensitive: {} })
+  @Throttle({ authGeneral: {} })
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password using OTP' })
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
   }
 
-  @Throttle({ authSensitive: {} })
+  @Throttle({ authGeneral: {} })
   @Get('has')
   hasAuth(@Req() req: Request) {
     const hasAccess = !!req.cookies['access_token']; // HttpOnly cookie

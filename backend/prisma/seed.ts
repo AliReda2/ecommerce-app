@@ -87,36 +87,86 @@ async function main() {
     {
       category: 'Car Accessories',
       items: [
-        { name: 'Car Air Freshener', price: 5.99 },
-        { name: 'Car Phone Holder', price: 12.99 },
+        {
+          name: 'Car Air Freshener',
+          price: 5.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/WhatsApp Image 2025-11-30 at 18.14.19_ff4bf708.png',
+        },
+        {
+          name: 'Car Phone Holder',
+          price: 12.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/pngtree-mobile-phone-holder-smart-device-convenient-adjustment-and-portability-png-image_4006204.png',
+        },
       ],
     },
     {
       category: 'Phone Accessories',
       items: [
-        { name: 'Screen Protector', price: 7.99 },
-        { name: 'Bluetooth Earbuds', price: 19.99 },
+        {
+          name: 'Screen Protector',
+          price: 7.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/WhatsApp Image 2025-11-30 at 18.19.49_c90b0058.png',
+        },
+        {
+          name: 'Bluetooth Earbuds',
+          price: 19.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/pngtree-wireless-bluetooth-headphones-with-transparent-background-png-image_14789479.png',
+        },
       ],
     },
     {
       category: 'Phone Cases',
       items: [
-        { name: 'Silicone Case', price: 9.99 },
-        { name: 'Shockproof Case', price: 14.99 },
+        {
+          name: 'Silicone Case',
+          price: 9.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/pngtree-pure-color-silicone-phone-case-for-iphone-soft-and-durable-cover-png-image_15880662.png',
+        },
+        {
+          name: 'Shockproof Case',
+          price: 14.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/WhatsApp Image 2025-11-30 at 18.27.24_bf1e83e5.png',
+        },
       ],
     },
     {
       category: 'Watches',
       items: [
-        { name: 'Digital Watch', price: 29.99 },
-        { name: 'Smartwatch Classic', price: 89.99 },
+        {
+          name: 'Digital Watch',
+          price: 29.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/black-resourcesforbitches-square-black-casio-digital-watch.png',
+        },
+        {
+          name: 'Smartwatch Classic',
+          price: 89.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/smartwatch-apple-watch-wearable-technology-watch.png',
+        },
       ],
     },
     {
       category: 'Chargers',
       items: [
-        { name: 'Fast Charger 20W', price: 15.99 },
-        { name: 'Wireless Charger', price: 25.99 },
+        {
+          name: 'Fast Charger 20W',
+          price: 15.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/acefast-a119-pd45w-gan-usbc-charger-eu.webp',
+        },
+        {
+          name: 'Wireless Charger',
+          price: 25.99,
+          imageUrl:
+            'https://jeobmgaazjoevrncujqn.storage.supabase.co/storage/v1/object/public/products/products/WhatsApp Image 2025-11-30 at 18.36.13_ad36c259.png',
+        },
       ],
     },
   ];
@@ -134,6 +184,7 @@ async function main() {
           price: product.price,
           stock: 50,
           description: `${product.name} description`,
+          imageUrl: product.imageUrl,
           categoryId,
         },
       });

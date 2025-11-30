@@ -5,3 +5,4 @@ export * from "./order";
 export * from "./cart";
 export * from "./wishList";
 export * from "./hero";
+export * from "./tag";

@@ -15,7 +15,7 @@ import type { User } from '@prisma/client';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Throttle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @ApiBearerAuth('access-token')
 @UseGuards(AtGuard, RolesGuard)
@@ -37,6 +37,7 @@ export class UserController {
     return this.userService.updateCurrentUser(userId, data);
   }
 
+  @SkipThrottle()
   @Roles('ADMIN', 'SUPERADMIN')
   @Get()
   @ApiOperation({ summary: 'Get all users' })
@@ -44,6 +45,7 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
+  @SkipThrottle()
   @Roles('SUPERADMIN')
   @Get('ban/:userId')
   @ApiOperation({ summary: 'Ban a user' })
@@ -51,6 +53,7 @@ export class UserController {
     return this.userService.banUser(userId);
   }
 
+  @SkipThrottle()
   @Roles('SUPERADMIN')
   @Get('unban/:userId')
   @ApiOperation({ summary: 'Unban a user' })
@@ -58,6 +61,7 @@ export class UserController {
     return this.userService.unbanUser(userId);
   }
 
+  @SkipThrottle()
   @Roles('SUPERADMIN')
   @Delete(':userId')
   @ApiOperation({ summary: 'Delete a user' })

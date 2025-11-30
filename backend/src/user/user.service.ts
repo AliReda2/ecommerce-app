@@ -65,7 +65,11 @@ export class UserService {
 
   async getAllUsers() {
     const users = await this.prisma.user.findMany({
-      where: { role: 'CUSTOMER' },
+      where: {
+        role: {
+          in: ['CUSTOMER', 'ADMIN'],
+        },
+      },
       select: {
         id: true,
         firstName: true,
@@ -75,6 +79,7 @@ export class UserService {
         updatedAt: true,
         isActive: true,
         isVerified: true,
+        role: true,
       },
     });
 
