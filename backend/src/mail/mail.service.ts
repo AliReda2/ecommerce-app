@@ -112,8 +112,6 @@ export class MailService {
       },
     };
 
-    console.log(`Sending OTP ${otp} to ${email}`);
-
     return await this.apiInstance.sendTransacEmail(sendSmtpEmail);
   }
 
@@ -229,8 +227,6 @@ export class MailService {
         LOGO_URL: 'https://codart.vercel.app/codart1.png',
       },
     };
-
-    console.log(`Sending OTP ${otp} to ${email}`);
 
     return await this.apiInstance.sendTransacEmail(sendSmtpEmail);
   }

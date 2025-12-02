@@ -171,9 +171,6 @@ export class HeroService {
       throw new Error('No items to reorder');
     }
 
-    // Log the incoming items to verify the structure
-    console.log('Reorder items:', items);
-
     // Get existing heroes by the provided IDs
     const existingHeroes = await this.prisma.heroSlide.findMany({
       where: {
@@ -181,12 +178,6 @@ export class HeroService {
       },
       select: { id: true },
     });
-
-    // Log the existing heroes to confirm if any IDs don't exist
-    console.log(
-      'Existing heroes in database:',
-      existingHeroes.map((hero) => hero.id),
-    );
 
     // Create a Set of valid IDs from the existing heroes
     const existingIds = new Set(existingHeroes.map((h) => h.id));

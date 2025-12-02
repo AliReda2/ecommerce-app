@@ -42,7 +42,6 @@ const Users = async () => {
 
   const payload = await res.json();
   const users = payload.data;
-  console.log(payload);
   return (
     <div className="overflow-x-auto p-4">
       <Table>

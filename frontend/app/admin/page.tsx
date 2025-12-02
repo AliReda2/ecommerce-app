@@ -26,12 +26,10 @@ export default function AdminDashboard() {
     const fetchAnalytics = async () => {
       try {
         // PAGEVIEWS
-        console.log("Fetching pageviews...");
         const pageviewsRes = await fetch(`${BASE_URL}/analytics/pageviews`);
         if (!pageviewsRes.ok)
           throw new Error(`Pageviews fetch failed: ${pageviewsRes.status}`);
         const pageviewsData: AnalyticsPageviews = await pageviewsRes.json();
-        console.log("Pageviews data:", pageviewsData);
         setPageviews(pageviewsData.count);
 
         // // TOP PRODUCTS

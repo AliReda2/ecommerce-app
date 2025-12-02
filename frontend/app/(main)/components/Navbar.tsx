@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { User, Heart, ShoppingCart, Search } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
-import LoginModal from "./LoginModal";
-import { useAppSelector, useAppDispatch } from "@/lib/hooks";
-import toast from "react-hot-toast";
-import { checkAuth, logout } from "@/lib/features/authSlice";
-import { getCartItems } from "@/lib/features/cartSlice";
-import { fetchWishlist } from "@/lib/features/wishListSlice";
-import VerifyModal from "./VerifyModal";
-import { useRouter } from "next/navigation";
-import { setHighlightedProduct } from "@/lib/features/uiSlice";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Input } from '@/components/ui/input';
+import Image from 'next/image';
+import { User, Heart, ShoppingCart, Search } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState, useRef } from 'react';
+import LoginModal from './LoginModal';
+import { useAppSelector, useAppDispatch } from '@/lib/hooks';
+import toast from 'react-hot-toast';
+import { checkAuth, logout } from '@/lib/features/authSlice';
+import { getCartItems } from '@/lib/features/cartSlice';
+import { fetchWishlist } from '@/lib/features/wishListSlice';
+import VerifyModal from './VerifyModal';
+import { useRouter } from 'next/navigation';
+import { setHighlightedProduct } from '@/lib/features/uiSlice';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
   const [openVerify, setOpenVerify] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const filteredProducts = (products || []).filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -44,13 +44,19 @@ const Navbar: React.FC = () => {
 
   // Close panel when clicking outside
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
         setOpenPanel(false);
       }
     };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
   useEffect(() => {
@@ -74,10 +80,10 @@ const Navbar: React.FC = () => {
   const handleLogout = async () => {
     await dispatch(logout())
       .unwrap()
-      .then(() => toast.success("Logout succesful"))
+      .then(() => toast.success('Logout succesful'))
       .catch((error) => toast.error(error));
 
-    router.replace("/");
+    router.replace('/');
 
     setOpenPanel(false);
   };
@@ -100,22 +106,22 @@ const Navbar: React.FC = () => {
       lastScrollY.current = currentScroll;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <>
       <nav
         className={`bg-white shadow-md fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
+          isVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
         <div className="mx-auto px-0 sm:px-6 lg:px-8">
           <div className="flex items-center justify-evenly h-26">
             {/* Logo */}
-            <Link href={"/"} className="flex justify-center">
+            <Link href={'/'} className="flex justify-center">
               <Image
                 src="/images/codart.webp"
                 alt="logo"
@@ -129,7 +135,7 @@ const Navbar: React.FC = () => {
             <div className="flex-1 md:px-0 sm:px-4 sm:max-w-xl sm:relative row-start-2 col-span-2 sm:mx-0 mx-5 sm:block hidden">
               <Input
                 type="search"
-                placeholder={isMobile ? "Search..." : "Search for products..."}
+                placeholder={isMobile ? 'Search...' : 'Search for products...'}
                 className="
                 w-full h-12 rounded-3xl bg-gray-50 border-gray-200  
                 focus:border-gray-300    
@@ -153,12 +159,12 @@ const Navbar: React.FC = () => {
                       className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-100"
                       onClick={() => {
                         dispatch(setHighlightedProduct(String(p.id)));
-                        setSearchTerm("");
+                        setSearchTerm('');
                       }}
                     >
                       <div className="w-10 h-10 relative shrink-0">
                         <Image
-                          src={p.imageUrl || "/images/codart.webp"}
+                          src={p.imageUrl || '/images/codart.webp'}
                           alt={p.name}
                           fill
                           className="object-contain rounded-md"
@@ -235,7 +241,7 @@ const Navbar: React.FC = () => {
                   aria-label="wishlist"
                 >
                   {user ? (
-                    <Link href={"/wishList"} className="relative">
+                    <Link href={'/wishList'} className="relative">
                       <Heart size={24} />
                       {wishListItems.length > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
@@ -246,7 +252,7 @@ const Navbar: React.FC = () => {
                   ) : authChecked ? (
                     <Heart
                       size={24}
-                      onClick={() => toast.error("Login first")}
+                      onClick={() => toast.error('Login first')}
                     />
                   ) : (
                     <Heart size={24} className="opacity-50" />
@@ -270,7 +276,7 @@ const Navbar: React.FC = () => {
                   ) : authChecked ? (
                     <ShoppingCart
                       size={24}
-                      onClick={() => toast.error("Login first")}
+                      onClick={() => toast.error('Login first')}
                     />
                   ) : (
                     <ShoppingCart size={24} className="opacity-50" />

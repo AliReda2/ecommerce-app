@@ -48,11 +48,11 @@ const Footer = () => {
                 <Link
                   aria-label="Visit our Instagram page"
                   href="https://www.instagram.com/codartlb/"
-                  className="group w-12 h-12 flex items-center justify-center rounded-xl bg-pink-200 transition-all duration-300 hover:bg-pink-500 hover:-translate-y-1 shadow-sm"
+                  className="group w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100 transition-all duration-300 hover:bg-pink-500 hover:-translate-y-1 active:bg-pink-500 shadow-sm"
                 >
                   <FontAwesomeIcon
                     icon={faInstagram}
-                    className="text-2xl text-[#1447e6] group-hover:text-white transition-colors"
+                    className="text-2xl text-[#1447e6] group-hover:text-white group-active:text-white transition-colors"
                   />
                 </Link>
               </div>
@@ -135,12 +135,12 @@ inline-block text-sm
               {/* Phone */}
               <a
                 href="tel:+96170031455"
-                className="flex items-center gap-4 text-gray-700 hover:text-blue-700 group transition-colors"
+                className="flex items-center gap-4 text-gray-700 hover:text-blue-700 active:text-blue-700 group transition-colors"
               >
-                <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-700 transition-colors">
+                <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-700 group-active:bg-blue-700 transition-colors">
                   <Phone
                     size={18}
-                    className="text-blue-700 group-hover:text-white"
+                    className="text-blue-700 group-hover:text-white group-active:text-white"
                   />
                 </div>
                 <div>
@@ -152,12 +152,12 @@ inline-block text-sm
               {/* WhatsApp */}
               <a
                 href="https://wa.me/96170031455"
-                className="flex items-center gap-4 text-gray-700 hover:text-green-600 group transition-colors"
+                className="flex items-center gap-4 text-gray-700 hover:text-green-600 active:text-green-600 group transition-colors"
               >
-                <div className="w-11 h-11 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-green-500 transition-colors">
+                <div className="w-11 h-11 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-green-500 group-active:bg-green-500 transition-colors">
                   <FontAwesomeIcon
                     icon={faWhatsapp}
-                    className="text-xl text-blue-700 group-hover:text-white"
+                    className="text-xl text-blue-700 group-hover:text-white group-active:text-white"
                   />
                 </div>
                 <div>
@@ -169,12 +169,12 @@ inline-block text-sm
               {/* Email */}
               <a
                 href="mailto:support@codart.com"
-                className="flex items-center gap-4 text-gray-700 hover:text-purple-700 group transition-colors"
+                className="flex items-center gap-4 text-gray-700 hover:text-purple-700 active:text-purple-700 group transition-colors"
               >
-                <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-purple-700 transition-colors">
+                <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-purple-700 group-active:bg-purple-700 transition-colors">
                   <Mail
                     size={18}
-                    className="text-blue-700 group-hover:text-white"
+                    className="text-blue-700 group-hover:text-white group-active:text-white"
                   />
                 </div>
                 <div>
@@ -184,9 +184,12 @@ inline-block text-sm
               </a>
 
               {/* Location */}
-              <div className="flex items-center gap-4 text-gray-700">
-                <div className="w-11 h-11 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <MapPin size={18} className="text-orange-700" />
+              <div className="flex items-center gap-4 text-gray-700 hover:text-orange-600 active:text-orange-600 group transition-colors">
+                <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-orange-600 group-active:bg-orange-600 transition-colors">
+                  <MapPin
+                    size={18}
+                    className="text-blue-700 group-hover:text-white group-active:text-white"
+                  />
                 </div>
                 <div>
                   <p className="font-medium">Lebanon</p>

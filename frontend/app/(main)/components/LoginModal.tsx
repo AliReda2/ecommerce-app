@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
-import toast from "react-hot-toast";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/lib/store';
+import toast from 'react-hot-toast';
 import {
   login,
   register,
   resendOtp,
   verifyOtp,
-} from "@/lib/features/authSlice";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import posthog from "posthog-js";
+} from '@/lib/features/authSlice';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import posthog from 'posthog-js';
 
 interface LoginModalProps {
   open: boolean;
@@ -30,21 +30,21 @@ interface LoginModalProps {
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const LoginModal = ({ open, onClose }: LoginModalProps) => {
-  const [mode, setMode] = useState<"Login" | "Register" | "Verify">("Login");
+  const [mode, setMode] = useState<'Login' | 'Register' | 'Verify'>('Login');
 
   const dispatch = useDispatch<AppDispatch>();
   const { isRegistering, isLoggingIn, isVerifyingOtp } = useSelector(
     (state: RootState) => state.auth
   );
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
   // -------------------------
   // LOGIN STATE + HANDLERS
   // -------------------------
   const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const handleGoogleLogin = () => {
@@ -66,7 +66,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
     )
       .unwrap()
       .then((data) => {
-        toast.success("Logged in successfully");
+        toast.success('Logged in successfully');
 
         // Identify the user in PostHog
         posthog.identify(data.user.id, {
@@ -86,11 +86,11 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
   // REGISTER STATE + HANDLERS
   // -------------------------
   const [registerData, setRegisterData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +101,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
     e.preventDefault();
 
     if (registerData.password !== registerData.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error('Passwords do not match');
       return;
     }
 
@@ -115,16 +115,16 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
     )
       .unwrap()
       .then(() => {
-        toast.success("Account created successfully");
+        toast.success('Account created successfully');
         setEmail(registerData.email); // <-- SAVE EMAIL HERE
-        setMode("Verify"); // <-- Switch to verify
+        setMode('Verify'); // <-- Switch to verify
         setOtpExpiresIn(600); // reset OTP validity
         onClose(); // close modal after success
       })
       .catch((error) => toast.error(error));
   };
 
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState('');
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOtp(e.target.value);
@@ -137,7 +137,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
       await dispatch(verifyOtp({ email, otp }))
         .unwrap()
         .then(() => {
-          toast.success("OTP verified successfully");
+          toast.success('OTP verified successfully');
           onClose(); // close modal after success
         })
         .catch((error) => toast.error(error));
@@ -148,7 +148,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
     dispatch(resendOtp({ email }))
       .unwrap()
       .then(() => {
-        toast.success("OTP sent");
+        toast.success('OTP sent');
         setResendCooldown(90); // start cooldown again
         setOtpExpiresIn(600); // new OTP validity
       })
@@ -189,37 +189,37 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
         {/* Switcher */}
         <div className="flex justify-center gap-4 mt-2 mb-4">
           <button
-            onClick={() => setMode("Login")}
+            onClick={() => setMode('Login')}
             className={`pb-1 text-sm font-medium ${
-              mode === "Login"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-500"
+              mode === 'Login'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-500'
             }`}
           >
             Login
           </button>
           <button
-            onClick={() => setMode("Register")}
+            onClick={() => setMode('Register')}
             className={`pb-1 text-sm font-medium ${
-              mode === "Register"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-500"
+              mode === 'Register'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-500'
             }`}
           >
             Register
           </button>
           <button
-            onClick={() => setMode("Verify")}
+            onClick={() => setMode('Verify')}
             className={`pb-1 text-sm font-medium ${
-              mode === "Verify"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-500"
+              mode === 'Verify'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-500'
             }`}
           >
             Verify
           </button>
         </div>
-        {(mode === "Login" || mode === "Register") && (
+        {(mode === 'Login' || mode === 'Register') && (
           <div className="grid">
             <button
               onClick={handleGoogleLogin}
@@ -254,7 +254,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
           </div>
         )}
         {/* LOGIN FORM */}
-        {mode === "Login" && (
+        {mode === 'Login' && (
           <form className="space-y-6 mt-6" onSubmit={handleLogin}>
             <div>
               <Label htmlFor="email">Email</Label>
@@ -274,7 +274,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               <div className="relative mt-1">
                 <Input
                   className="mt-2"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   id="password"
                   value={loginData.password}
@@ -334,16 +334,16 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
             <br />
             <Button
               className="w-full hover:cursor-pointer"
-              variant={"default"}
+              variant={'default'}
               size="sm"
               disabled={isLoggingIn}
             >
-              {isLoggingIn ? "Signing in..." : "Sign in"}
+              {isLoggingIn ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
         )}
         {/* REGISTER FORM */}
-        {mode === "Register" && (
+        {mode === 'Register' && (
           <form className="space-y-6 mt-6" onSubmit={handleRegister}>
             <div>
               <Label htmlFor="firstName">First Name</Label>
@@ -410,16 +410,16 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
 
             <Button
               className="w-full hover:cursor-pointer"
-              variant={"default"}
+              variant={'default'}
               size="sm"
               disabled={isRegistering}
             >
-              {isRegistering ? "Creating account..." : "Register"}
+              {isRegistering ? 'Creating account...' : 'Register'}
             </Button>
           </form>
         )}
 
-        {mode === "Verify" && (
+        {mode === 'Verify' && (
           <div>
             {/* RESEND + TIMER */}
             <div className="flex items-center justify-between mb-4">
@@ -430,7 +430,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
               >
                 {resendCooldown > 0
                   ? `Resend in ${resendCooldown}s`
-                  : "Resend OTP"}
+                  : 'Resend OTP'}
               </Button>
 
               <span className="text-xs text-gray-500">
@@ -468,7 +468,7 @@ const LoginModal = ({ open, onClose }: LoginModalProps) => {
                 size="sm"
                 disabled={isVerifyingOtp}
               >
-                {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
+                {isVerifyingOtp ? 'Verifying...' : 'Verify OTP'}
               </Button>
             </form>
           </div>

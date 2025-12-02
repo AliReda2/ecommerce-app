@@ -104,8 +104,6 @@ const HeroPage = () => {
       order: i.order,
     }));
 
-    console.log(payload);
-
     // Send to backend
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hero/reorder`, {
       method: "PATCH",

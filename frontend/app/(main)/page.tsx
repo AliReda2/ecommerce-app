@@ -28,9 +28,6 @@ const MainPage = async () => {
   const payload2 = await res2.json();
   const trendingProducts = payload2?.data || [];
 
-  console.log({ newProducts });
-  console.log({ trendingProducts });
-
   return (
     <>
       <Suspense fallback={<HeroSkeleton />}>
