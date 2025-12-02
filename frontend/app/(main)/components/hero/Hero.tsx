@@ -58,7 +58,7 @@ const Hero = () => {
                     <span className="text-blue-700 uppercase tracking-wide text-sm sm:text-base lg:text-xl">
                       {card.subtitle}
                     </span>
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-medium">
                       {card.title}
                     </h1>
                     <p className="text-sm sm:text-base md:text-lg lg:text-xl">
