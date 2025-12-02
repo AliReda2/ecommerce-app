@@ -218,7 +218,7 @@ const WishListPage = () => {
                               {
                                 ...item.product,
                                 imageUrl: item.product?.imageUrl ?? undefined,
-                                category: item.product?.category ?? undefined,
+                                category: item.product?.category?.name ?? undefined,
                               },
                               productId || ""
                             )
