@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
-import { Product } from "@/lib/types";
-import { addToCart } from "@/lib/features/cartSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { checkAuth } from "@/lib/features/authSlice";
-import toast from "react-hot-toast";
-import { Heart } from "lucide-react";
+import { useEffect, useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
+import { Product } from '@/lib/types';
+import { addToCart } from '@/lib/features/cartSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { checkAuth } from '@/lib/features/authSlice';
+import toast from 'react-hot-toast';
+import { Heart } from 'lucide-react';
 import {
   toggleWishlist,
   toggleWishlistOptimistic,
   rollbackWishlistUpdate,
-} from "@/lib/features/wishListSlice";
+} from '@/lib/features/wishListSlice';
 
 interface ProductCardProps {
   product: Product;
@@ -42,7 +42,7 @@ export default function NewProductCard({ product }: ProductCardProps) {
   const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
   const handleAddToCart = async () => {
-    if (!user || !authChecked) return toast.error("Login first");
+    if (!user || !authChecked) return toast.error('Login first');
     await dispatch(addToCart({ productId: product.id, quantity }))
       .unwrap()
       .then(() => toast.success(`${product.name} added to cart!`))
@@ -50,7 +50,7 @@ export default function NewProductCard({ product }: ProductCardProps) {
   };
 
   const handleWishlistToggle = async () => {
-    if (!user || !authChecked) return toast.error("Login first");
+    if (!user || !authChecked) return toast.error('Login first');
 
     setIsWishlistLoading(true);
     const previousItems = [...wishListItems]; // Store for potential rollback
@@ -64,7 +64,7 @@ export default function NewProductCard({ product }: ProductCardProps) {
     } catch (err: any) {
       // Rollback on error
       dispatch(rollbackWishlistUpdate({ previousItems }));
-      toast.error(err || "Failed to update wishlist");
+      toast.error(err || 'Failed to update wishlist');
     } finally {
       setIsWishlistLoading(false);
     }
@@ -84,7 +84,7 @@ export default function NewProductCard({ product }: ProductCardProps) {
         "
         >
           <Image
-            src={product.imageUrl || "/images/codart.webp"}
+            src={product.imageUrl || '/images/codart.webp'}
             alt={product.name ?? 'product'}
             fill
             className="object-contain transition-transform duration-300 hover:scale-105"
@@ -93,19 +93,20 @@ export default function NewProductCard({ product }: ProductCardProps) {
 
         {/* Wishlist Toggle Button */}
         <button
+          aria-label="toggleWishlist"
           onClick={handleWishlistToggle}
           disabled={isWishlistLoading}
           className={`absolute right-2 top-2 p-2 rounded-lg border-none transition-all duration-200 ${
             isWishlistLoading
-              ? "opacity-50 cursor-not-allowed"
-              : "cursor-pointer hover:scale-110"
+              ? 'opacity-50 cursor-not-allowed'
+              : 'cursor-pointer hover:scale-110'
           }`}
         >
           <Heart
             size={24}
-            fill={isInWishlist ? "red" : "none"}
+            fill={isInWishlist ? 'red' : 'none'}
             className={`transition-colors duration-200 ${
-              isInWishlist ? "text-red-500" : "text-gray-400 hover:text-red-500"
+              isInWishlist ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
             }`}
           />
         </button>
@@ -121,7 +122,7 @@ export default function NewProductCard({ product }: ProductCardProps) {
           </p>
 
           <p className="text-xs sm:text-sm text-gray-500 sm:block hidden">
-            {product?.category ?? "Uncategorized"}
+            {product?.category ?? 'Uncategorized'}
           </p>
         </div>
 
@@ -148,6 +149,7 @@ export default function NewProductCard({ product }: ProductCardProps) {
             </button>
 
             <input
+              aria-label="Quantity"
               type="number"
               value={quantity}
               onChange={(e) =>

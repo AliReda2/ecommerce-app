@@ -1,10 +1,10 @@
-import CurrentYear from "@/components/CurrentYear";
-import { Phone, Mail, MapPin } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
-import { Suspense } from "react";
+import CurrentYear from '@/components/CurrentYear';
+import { Phone, Mail, MapPin } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { Suspense } from 'react';
 
 const Footer = () => {
   return (
@@ -15,7 +15,7 @@ const Footer = () => {
           className="absolute inset-0"
           style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, #0053ff 1px, transparent 0)`,
-            backgroundSize: "18px 18px",
+            backgroundSize: '18px 18px',
           }}
         ></div>
       </div>
@@ -46,6 +46,7 @@ const Footer = () => {
 
               <div className="flex gap-3">
                 <Link
+                  aria-label="Visit our Instagram page"
                   href="https://www.instagram.com/codartlb/"
                   className="group w-12 h-12 flex items-center justify-center rounded-xl bg-pink-200 transition-all duration-300 hover:bg-pink-500 hover:-translate-y-1 shadow-sm"
                 >
@@ -66,11 +67,11 @@ const Footer = () => {
 
             <ul className="space-y-3">
               {[
-                { href: "/", label: "Home" },
-                { href: "/about-us", label: "About Us" },
-                { href: "/shipping-info", label: "Shipping" },
-                { href: "/contact", label: "Contact" },
-                { href: "/faq", label: "FAQ" },
+                { href: '/', label: 'Home' },
+                { href: '/about-us', label: 'About Us' },
+                { href: '/shipping-info', label: 'Shipping' },
+                { href: '/contact', label: 'Contact' },
+                { href: '/faq', label: 'FAQ' },
               ].map((link, i) => (
                 <li key={i}>
                   <Link
@@ -100,9 +101,9 @@ inline-block text-sm
 
             <ul className="space-y-3">
               {[
-                { href: "/privacy-policy", label: "Privacy Policy" },
-                { href: "/terms-conditions", label: "Terms & Conditions" },
-                { href: "/returns-refunds", label: "Returns & Refunds" },
+                { href: '/privacy-policy', label: 'Privacy Policy' },
+                { href: '/terms-conditions', label: 'Terms & Conditions' },
+                { href: '/returns-refunds', label: 'Returns & Refunds' },
               ].map((link, i) => (
                 <li key={i}>
                   <Link
@@ -199,10 +200,10 @@ inline-block text-sm
         {/* Footer Bottom */}
         <div className="border-t border-gray-200 mt-12 pt-6">
           <div className="text-center text-gray-600 text-sm">
-            ©{" "}
+            ©{' '}
             <Suspense fallback="...">
               <CurrentYear />
-            </Suspense>{" "}
+            </Suspense>{' '}
             Codart Shop. All rights reserved.
           </div>
         </div>
