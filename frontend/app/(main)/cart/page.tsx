@@ -1,22 +1,23 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store";
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/lib/store';
 import {
   getCartItems,
   removeFromCart,
   updateCartItemQuantity as updateQuantity,
-} from "@/lib/features/cartSlice";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, ShoppingCart, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { useAppSelector } from "@/lib/hooks";
-import { createOrder } from "@/lib/features/orderSlice";
-import toast from "react-hot-toast";
-import useGoBack from "@/hooks/useGoBack";
+} from '@/lib/features/cartSlice';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Loader2, ShoppingCart, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useAppSelector } from '@/lib/hooks';
+import { createOrder } from '@/lib/features/orderSlice';
+import toast from 'react-hot-toast';
+import useGoBack from '@/hooks/useGoBack';
+import router from 'next/router';
 
 const Cart = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,10 +30,13 @@ const Cart = () => {
 
   useEffect(() => {
     setQuantities(
-      cartItems.reduce((acc, item) => {
-        acc[item.id] = item.quantity;
-        return acc;
-      }, {} as Record<string, number>)
+      cartItems.reduce(
+        (acc, item) => {
+          acc[item.id] = item.quantity;
+          return acc;
+        },
+        {} as Record<string, number>
+      )
     );
   }, [cartItems]);
 
@@ -85,14 +89,14 @@ const Cart = () => {
   const handleRemove = async (cartItemId: string) =>
     await dispatch(removeFromCart({ cartItemId }))
       .unwrap()
-      .then(() => toast.success("order created"))
+      .then(() => toast.success('order created'))
       .catch((error) => toast.error(error));
 
   const handleOrder = async () => {
     await dispatch(createOrder())
       .unwrap()
       .then(() => {
-        toast.success("order created");
+        toast.success('order created');
         dispatch(getCartItems());
       })
       .catch((error) => toast.error(error));
@@ -112,8 +116,8 @@ const Cart = () => {
       <div className="flex items-center space-x-4 sm:space-x-5 w-full sm:w-auto">
         <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
           <Image
-            src={item.product?.imageUrl || "/images/codart.webp"}
-            alt={item.product?.name || "product name"}
+            src={item.product?.imageUrl || '/images/codart.webp'}
+            alt={item.product?.name || 'product name'}
             fill
             className="object-contain rounded-md bg-gray-50"
           />
@@ -136,7 +140,7 @@ const Cart = () => {
       <div className="flex items-center space-x-3 mt-3 sm:mt-0">
         <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <button
-            name="decreaseQuantity"
+            aria-label="decreaseQuantity"
             onClick={() => handleDecrease(item.id)}
             className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
             disabled={updatingItemId === item.id}
@@ -144,7 +148,7 @@ const Cart = () => {
             {updatingItemId === item.id ? (
               <Loader2 className="animate-spin w-4 h-4 mx-auto" />
             ) : (
-              "−"
+              '−'
             )}
           </button>
 
@@ -153,7 +157,7 @@ const Cart = () => {
           </div>
 
           <button
-            name="increaseQuantity"
+            aria-label="increaseQuantity"
             onClick={() => handleIncrease(item.id)}
             className="px-3 py-1 text-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50"
             disabled={updatingItemId === item.id}
@@ -161,13 +165,13 @@ const Cart = () => {
             {updatingItemId === item.id ? (
               <Loader2 className="animate-spin w-4 h-4 mx-auto" />
             ) : (
-              "+"
+              '+'
             )}
           </button>
         </div>
 
         <Button
-          name="removeItem"
+          aria-label="removeItem"
           variant="ghost"
           size="icon"
           onClick={() => handleRemove(item.id)}
@@ -192,7 +196,7 @@ const Cart = () => {
       <div className="max-w-6xl mx-auto py-12 px-4 md:px-8">
         {/* Back button */}
         <button
-          name="goBack"
+          aria-label="goBack"
           onClick={goBack}
           className="flex items-center gap-2 text-gray-700 mb-6 hover:text-gray-900 transition hover:cursor-pointer"
         >
@@ -225,7 +229,7 @@ const Cart = () => {
               Add products to your cart to see them here.
             </p>
             <Button
-              name="continueShopping"
+              aria-label="continueShopping"
               className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 rounded-lg"
             >
               <Link href="/">Continue Shopping</Link>
@@ -261,7 +265,7 @@ const Cart = () => {
                 </div>
 
                 <Button
-                  name="checkout"
+                  aria-label="checkout"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-base font-medium shadow-sm rounded-lg"
                   onClick={handleOrder}
                 >
@@ -269,11 +273,12 @@ const Cart = () => {
                 </Button>
 
                 <Button
-                  name="continueShopping"
+                  aria-label="Continue Shopping"
                   variant="outline"
                   className="w-full border-gray-300 text-gray-700 hover:bg-gray-100 py-3 rounded-lg"
+                  onClick={() => router.push('/')}
                 >
-                  <Link href="/">Continue Shopping</Link>
+                  Continue Shopping
                 </Button>
               </CardContent>
             </Card>

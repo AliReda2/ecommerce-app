@@ -10,7 +10,7 @@ import { cacheLife } from 'next/cache';
 
 const MainPage = async () => {
   'use cache';
-  cacheLife('minutes');
+  cacheLife('hours');
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/product/products/NEW`,

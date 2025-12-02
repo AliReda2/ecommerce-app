@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { fetchCurrentUser, updateCurrentUser } from "@/lib/features/userSlice";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import toast from "react-hot-toast";
-import dynamic from "next/dynamic";
-import { Label } from "@/components/ui/label";
-import useGoBack from "@/hooks/useGoBack";
+import { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { fetchCurrentUser, updateCurrentUser } from '@/lib/features/userSlice';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import toast from 'react-hot-toast';
+import dynamic from 'next/dynamic';
+import { Label } from '@/components/ui/label';
+import useGoBack from '@/hooks/useGoBack';
 
 const UserProfileMap = dynamic(
-  () => import("@/app/(main)/profile/components/UserProfileMap"),
+  () => import('@/app/(main)/profile/components/UserProfileMap'),
   { ssr: false }
 );
 
@@ -32,11 +32,11 @@ export default function UserProfilePage() {
   );
 
   const [form, setForm] = useState<ProfileForm>({
-    firstName: "",
-    lastName: "",
-    address: "",
-    coordinates: "",
-    phone: "",
+    firstName: '',
+    lastName: '',
+    address: '',
+    coordinates: '',
+    phone: '',
   });
 
   const [loadingLocation, setLoadingLocation] = useState(false);
@@ -53,18 +53,18 @@ export default function UserProfilePage() {
 
     if (user.coordinates) {
       const initialCoords = user.coordinates
-        .split(",")
+        .split(',')
         .map((n) => parseFloat(n.trim())) as [number, number];
       setTimeout(() => setMarkerPos(initialCoords), 0);
     }
 
     setTimeout(() => {
       setForm({
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        address: user.address || "",
-        coordinates: user.coordinates || "",
-        phone: user.phone || "",
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        address: user.address || '',
+        coordinates: user.coordinates || '',
+        phone: user.phone || '',
       });
     }, 0);
   }, [user]);
@@ -79,16 +79,16 @@ export default function UserProfilePage() {
     try {
       await dispatch(updateCurrentUser(form))
         .unwrap()
-        .then(() => toast.success("Profile updated successfully"))
+        .then(() => toast.success('Profile updated successfully'))
         .catch((error) => toast.error(error));
     } catch {
-      toast.error("Failed to update profile");
+      toast.error('Failed to update profile');
     }
   };
 
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
-      toast.error("Geolocation is not supported by your browser.");
+      toast.error('Geolocation is not supported by your browser.');
       return;
     }
 
@@ -113,13 +113,13 @@ export default function UserProfilePage() {
         if (address) {
           setForm((prev) => ({ ...prev, address }));
         } else {
-          toast.error("Unable to get address from coordinates.");
+          toast.error('Unable to get address from coordinates.');
         }
 
         setLoadingLocation(false);
       },
       () => {
-        toast.error("Unable to retrieve your location");
+        toast.error('Unable to retrieve your location');
         setLoadingLocation(false);
       }
     );
@@ -127,7 +127,7 @@ export default function UserProfilePage() {
 
   const handleClearMarker = () => {
     setMarkerPos(null);
-    setForm((prev) => ({ ...prev, coordinates: "" }));
+    setForm((prev) => ({ ...prev, coordinates: '' }));
   };
 
   return (
@@ -167,14 +167,14 @@ export default function UserProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               placeholder="First Name"
-              name="firstName"
+              aria-label="firstName"
               value={form.firstName}
               onChange={handleChange}
               className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             />
             <Input
               placeholder="Last Name"
-              name="lastName"
+              aria-label="lastName"
               value={form.lastName}
               onChange={handleChange}
               className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -183,7 +183,7 @@ export default function UserProfilePage() {
 
           <Input
             placeholder="Address"
-            name="address"
+            aria-label="address"
             value={form.address}
             onChange={handleChange}
             className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -191,7 +191,7 @@ export default function UserProfilePage() {
 
           <Input
             placeholder="Phone"
-            name="phone"
+            aria-label="phone"
             value={form.phone}
             onChange={handleChange}
             className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -217,7 +217,7 @@ export default function UserProfilePage() {
 
           <Input
             placeholder="Coordinates"
-            name="coordinates"
+            aria-label="coordinates"
             value={form.coordinates}
             readOnly
             className="border-gray-300 bg-gray-100 text-gray-700 cursor-not-allowed"
@@ -233,7 +233,7 @@ export default function UserProfilePage() {
               {loadingLocation && (
                 <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
               )}
-              {loadingLocation ? "Locating..." : "Use My Location"}
+              {loadingLocation ? 'Locating...' : 'Use My Location'}
             </Button>
 
             <Button
@@ -248,7 +248,7 @@ export default function UserProfilePage() {
               type="submit"
               className="w-full md:w-auto px-6 py-3 rounded-full bg-blue-500 hover:bg-blue-600 shadow-md transition-colors duration-200 text-white font-semibold"
             >
-              {isLoading ? "Updating..." : "Update Profile"}
+              {isLoading ? 'Updating...' : 'Update Profile'}
             </Button>
           </div>
         </form>
@@ -263,15 +263,15 @@ async function reverseGeocode(lat: number, lon: number): Promise<string> {
       `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
       {
         headers: {
-          "User-Agent": "YourAppName/1.0 (your@email.com)",
+          'User-Agent': 'YourAppName/1.0 (your@email.com)',
         },
       }
     );
 
-    if (!res.ok) return "";
+    if (!res.ok) return '';
     const data = await res.json();
-    return data.display_name || "";
+    return data.display_name || '';
   } catch {
-    return "";
+    return '';
   }
 }

@@ -120,7 +120,7 @@ const ContactForm = () => {
         {/* Button */}
         <div className="text-center">
           <button
-            name="sendMessage"
+            aria-label="sendMessage"
             type="submit"
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-8 py-3 text-white font-semibold text-lg shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0"
           >

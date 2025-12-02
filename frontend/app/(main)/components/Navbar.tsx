@@ -185,7 +185,7 @@ const Navbar: React.FC = () => {
                 {/* Profile */}
                 <button
                   onClick={handleProfileClick}
-                  name="profile"
+                  aria-label="profile"
                   className="hover:text-blue-600 hover:scale-110 transition-transform duration-200"
                 >
                   <User size={24} />
@@ -232,7 +232,7 @@ const Navbar: React.FC = () => {
                 {/* Wishlist */}
                 <button
                   className="hover:text-red-600 hover:scale-110 transition-transform duration-200"
-                  name="wishlist"
+                  aria-label="wishlist"
                 >
                   {user ? (
                     <Link href={"/wishList"} className="relative">
@@ -256,7 +256,7 @@ const Navbar: React.FC = () => {
                 {/* Cart */}
                 <button
                   className="hover:scale-110 transition-transform duration-200"
-                  name="cart"
+                  aria-label="cart"
                 >
                   {user ? (
                     <Link href="/cart" className="relative">
