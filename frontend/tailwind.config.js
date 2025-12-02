@@ -4,7 +4,11 @@ module.exports = {
         './app/**/*.{js,ts,jsx,tsx}',
         './components/**/*.{js,ts,jsx,tsx}',
     ],
-
+    safelist: [
+        'bg-blue-100',
+        'bg-green-100',
+        'bg-orange-100',
+    ],
     theme: {
         extend: {
             fontFamily: {
@@ -13,4 +17,4 @@ module.exports = {
             },
         },
     },
-}
+};
