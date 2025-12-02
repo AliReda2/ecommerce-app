@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tag } from "@/lib/types";
+import ToggleTag from "./components/ToggleTag";
 
 export default async function Product() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product`, {
@@ -34,7 +35,7 @@ export default async function Product() {
   if (products?.length === 0) {
     return (
       <>
-        <h1>NO Products To Display</h1>
+        <h1>NO Products To Display</h1> 
       </>
     );
   }
@@ -82,13 +83,14 @@ export default async function Product() {
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag: Tag) => {
                     const isActive = product.tags?.some((t) => t === tag.name);
+
                     return (
-                      <Badge
+                      <ToggleTag
                         key={tag.id}
-                        variant={isActive ? "success" : "secondary"} // green if active
-                      >
-                        {tag.name}
-                      </Badge>
+                        tagName={tag.name}
+                        productId={product.id}
+                        isActive={isActive}
+                      />
                     );
                   })}
                 </div>

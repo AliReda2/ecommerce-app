@@ -257,11 +257,19 @@ async function main() {
     },
   ];
 
-  for (const slide of slides) {
-    await prisma.heroSlide.create({
-      data: slide,
-    });
-  }
+  // for (const slide of slides) {
+  //   await prisma.heroSlide.create({
+  //     data: slide,
+  //   });
+  // }
+
+  await prisma.tag.createMany({
+    data: [
+      { name: "NEW" },
+      { name: "TRENDING" }
+    ]
+  });
+
 
   console.log('Seed successful');
 }

@@ -25,23 +25,23 @@ import { Throttle } from '@nestjs/throttler';
 @UseGuards(AtGuard, RolesGuard)
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
 
-  @Throttle({ authSensitive: {} })
+
   @Post('create')
   @ApiOperation({ summary: 'Create a new order from cart items' })
   async createOrder(@GetUser() user: User) {
     return this.orderService.createOrder(user.id);
   }
 
-  @Throttle({ apiBurst: {} })
+
   @Get('me')
   @ApiOperation({ summary: 'Get all of my orders' })
   async getUserOrders(@GetUser() user: User) {
     return this.orderService.getUserOrders(user.id);
   }
 
-  @Throttle({ apiBurst: {} })
+
   @Get(':id')
   @ApiOperation({ summary: 'Get order details by ID' })
   @ApiParam({ name: 'id', type: 'string', required: true })
@@ -49,7 +49,7 @@ export class OrderController {
     return this.orderService.getOrderById(id, user.id);
   }
 
-  @Throttle({ apiBurst: {} })
+
   @Patch(':id/cancel')
   @ApiOperation({ summary: 'Cancel a pending order (for user)' })
   async cancelOrder(@GetUser() user: User, @Param('id') id: string) {

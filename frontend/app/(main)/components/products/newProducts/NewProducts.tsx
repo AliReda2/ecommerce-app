@@ -1,33 +1,27 @@
-import { cacheLife } from "next/cache";
-import { Metadata } from "next";
-import { ClientProvider } from "../../../clientProvider";
-import { Suspense } from "react";
-import NewProductsClient from "./NewProductsClient";
+import { Metadata } from 'next';
+import { ClientProvider } from '../../../clientProvider';
+import { Suspense } from 'react';
+import NewProductsClient from './NewProductsClient';
+import { Product } from '@/lib/types';
 
 export const metadata: Metadata = {
-  title: "Products | Codart Shop",
+  title: 'Products | Codart Shop',
   description:
-    "Browse all products available at Codart Shop with fast delivery.",
+    'Browse all products available at Codart Shop with fast delivery.',
   openGraph: {
-    title: "Products | Codart Shop",
+    title: 'Products | Codart Shop',
     description:
-      "Browse all products available at Codart Shop with fast delivery.",
-    images: ["/images/products-og.webp"],
+      'Browse all products available at Codart Shop with fast delivery.',
+    images: ['/images/products-og.webp'],
   },
 };
 
-export default async function NewProducts() {
-  "use cache";
-  cacheLife("hours");
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/product/products/NEW`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  const payload = await res.json();
-  const products = payload.data;
+export default async function NewProducts({
+  newProducts,
+}: {
+  newProducts: Product[];
+}) {
+  const products = newProducts;
   return (
     <div className="px-3 py-0 w-full sm:max-w-[76%] mx-auto mb-20">
       <h1 className="text-4xl font-mono font-semibold">New Products</h1>

@@ -6,9 +6,9 @@ import { Throttle } from '@nestjs/throttler';
 
 @Controller('mail')
 export class MailController {
-  constructor(private mailService: MailService) {}
+  constructor(private mailService: MailService) { }
 
-  @Throttle({ authSensitive: {} })
+
   @Post('otp')
   @ApiProperty({ description: 'Send OTP to user email' })
   async sendOtpMail(@Body() data: SendOtpDto) {

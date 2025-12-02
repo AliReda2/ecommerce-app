@@ -27,9 +27,9 @@ import { Throttle } from '@nestjs/throttler';
 
 @Controller('hero')
 export class HeroController {
-  constructor(private readonly heroService: HeroService) {}
+  constructor(private readonly heroService: HeroService) { }
 
-  @Throttle({ apiGeneral: {} })
+
   @Get()
   @ApiOperation({ summary: 'Get all heros' })
   async findAll() {

@@ -12,23 +12,23 @@ import { Throttle } from '@nestjs/throttler';
 @UseGuards(AtGuard)
 @Controller('wishlist')
 export class WishlistController {
-  constructor(private wishlistService: WishlistService) {}
+  constructor(private wishlistService: WishlistService) { }
 
-  @Throttle({ apiBurst: {} })
+
   @Get()
   @ApiOperation({ summary: 'Get user wishlist' })
   async getWishlist(@GetUser() user: User) {
     return this.wishlistService.getWishlist(user);
   }
 
-  @Throttle({ apiBurst: {} })
+
   @Delete()
   @ApiOperation({ summary: 'Clear all items from wishlist' })
   async clearWishlist(@GetUser() user: User) {
     return this.wishlistService.clearWishlist(user);
   }
 
-  @Throttle({ apiBurst: {} })
+
   @Post('toggle')
   async toggleWishlist(@GetUser() user: User, @Body() data: ToggleWishlistDto) {
     return this.wishlistService.toggle(user.id, data);

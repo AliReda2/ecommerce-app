@@ -28,16 +28,16 @@ import { ToggleProductTag } from './dto/toggle-tag.sto';
 
 @Controller('product')
 export class ProductController {
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService) { }
 
-  @Throttle({ apiGeneral: {} })
+
   @Get()
   @ApiOperation({ summary: 'Get all products' })
   async getAllProducts() {
     return this.productService.getAllProducts();
   }
 
-  @Throttle({ apiGeneral: {} })
+
   @Get('admin')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -47,21 +47,21 @@ export class ProductController {
     return this.productService.getAllProductsAdmin();
   }
 
-  @Throttle({ apiGeneral: {} })
+
   @Get(':id')
   @ApiOperation({ summary: 'Get product by ID' })
   async getProductById(@Param('id') id: string) {
     return this.productService.getProductById(id);
   }
 
-  @Throttle({ apiGeneral: {} })
+
   @Get('category/:categoryId')
   @ApiOperation({ summary: 'Get products by category ID' })
   async getProductsByCategory(@Param('categoryId') categoryId: string) {
     return this.productService.getProductsByCategory(categoryId);
   }
 
-  @SkipThrottle()
+
   @Post()
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -79,7 +79,7 @@ export class ProductController {
     return this.productService.createProduct(data, file);
   }
 
-  @SkipThrottle()
+
   @Patch(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -98,7 +98,7 @@ export class ProductController {
     return this.productService.updateProduct(id, data, file);
   }
 
-  @SkipThrottle()
+
   @Delete(':id')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -108,7 +108,7 @@ export class ProductController {
     return this.productService.deleteProduct(id);
   }
 
-  @SkipThrottle()
+
   @Post('toggleTag')
   @UseGuards(AtGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')
@@ -121,7 +121,7 @@ export class ProductController {
     );
   }
 
-  @SkipThrottle()
+
   @Get('products/:tagName')
   @ApiOperation({ summary: 'get products by tag' })
   async getProductsByTagName(@Param('tagName') tagName: string) {

@@ -23,28 +23,14 @@ import { TagModule } from './tag/tag.module';
       isGlobal: true,
       load: [googleOAuthConfig],
     }),
-    ThrottlerModule.forRoot([
-      {
-        name: 'authSensitive',
-        ttl: 60000, // 1 minute
-        limit: 5, // Login, password reset, OTP verification
-      },
-      {
-        name: 'authGeneral',
-        ttl: 60000, // 1 minute
-        limit: 10, // Registration, token refresh
-      },
-      {
-        name: 'apiGeneral',
-        ttl: 60000, // 1 minute
-        limit: 150, // General API endpoints
-      },
-      {
-        name: 'apiBurst',
-        ttl: 60000, // 1 minute
-        limit: 50, // General API endpoints
-      },
-    ]),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 200,
+        },
+      ],
+    }),
     AuthModule,
     PrismaModule,
     UserModule,
@@ -66,4 +52,4 @@ import { TagModule } from './tag/tag.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

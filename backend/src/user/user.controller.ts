@@ -21,23 +21,23 @@ import { SkipThrottle, Throttle } from '@nestjs/throttler';
 @UseGuards(AtGuard, RolesGuard)
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
-  @Throttle({ apiBurst: {} })
+
   @Get('me')
   @ApiOperation({ summary: 'Get current user' })
   async getMe(@GetUser() user: User) {
     return this.userService.getCurrentUser(user);
   }
 
-  @Throttle({ apiBurst: {} })
+
   @Patch('me')
   @ApiOperation({ summary: 'Update current user' })
   async updateMe(@GetUser('id') userId: string, @Body() data: UpdateUserDto) {
     return this.userService.updateCurrentUser(userId, data);
   }
 
-  @SkipThrottle()
+
   @Roles('ADMIN', 'SUPERADMIN')
   @Get()
   @ApiOperation({ summary: 'Get all users' })
@@ -45,7 +45,7 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
-  @SkipThrottle()
+
   @Roles('SUPERADMIN')
   @Get('ban/:userId')
   @ApiOperation({ summary: 'Ban a user' })
@@ -53,7 +53,7 @@ export class UserController {
     return this.userService.banUser(userId);
   }
 
-  @SkipThrottle()
+
   @Roles('SUPERADMIN')
   @Get('unban/:userId')
   @ApiOperation({ summary: 'Unban a user' })
@@ -61,7 +61,7 @@ export class UserController {
     return this.userService.unbanUser(userId);
   }
 
-  @SkipThrottle()
+
   @Roles('SUPERADMIN')
   @Delete(':userId')
   @ApiOperation({ summary: 'Delete a user' })

@@ -5,24 +5,29 @@ import {
   SingleProductResponse,
 } from "../types/product";
 import { api } from "@/api/axios";
-import toast from "react-hot-toast";
 import { getErrorMessage } from "../getErrorMessage";
 
-interface productState {
+interface ProductState {
   products: Product[];
-  productsByTag: Product[];
+  productsByTag: Record<string, Product[]>; // NEW, TRENDING, etc.
   currentProduct: Product | null;
   isLoading: boolean;
+
+  isLoadingByTag: Record<string, boolean>;
+  isToggling: boolean;
   error: string | null;
 }
 
-const initialState: productState = {
+const initialState: ProductState = {
   products: [],
-  productsByTag: [],
+  productsByTag: {},
   currentProduct: null,
   isLoading: false,
+  isLoadingByTag: {},
+  isToggling: false,
   error: null,
 };
+
 
 export const fetchProducts = createAsyncThunk<
   Product[],
@@ -78,8 +83,8 @@ export const updateProduct = createAsyncThunk<
   {
     productId: string;
     productData:
-      | FormData
-      | Partial<Omit<Product, "id" | "category" | "createdAt" | "updatedAt">>;
+    | FormData
+    | Partial<Omit<Product, "id" | "category" | "createdAt" | "updatedAt">>;
   },
   { rejectValue: string }
 >("product/update", async ({ productId, productData }, { rejectWithValue }) => {
@@ -92,10 +97,10 @@ export const updateProduct = createAsyncThunk<
       productData as unknown,
       isFormData
         ? {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
         : undefined
     );
     return response.data.data;
@@ -238,17 +243,19 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || "Failed to fetch products by category";
       })
-      .addCase(fetchProductsByTag.pending, (state) => {
-        state.isLoading = true;
+      .addCase(fetchProductsByTag.pending, (state, action) => {
+        state.isLoadingByTag[action.meta.arg] = true;
         state.error = null;
       })
       .addCase(fetchProductsByTag.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.productsByTag = action.payload;
+        const tag = action.meta.arg;
+        state.isLoadingByTag[tag] = false;
+        state.productsByTag[tag] = action.payload;
       })
       .addCase(fetchProductsByTag.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload || "Failed to fetch products by tag";
+        const tag = action.meta.arg;
+        state.isLoadingByTag[tag] = false;
+        state.error = action.payload || `Failed to fetch products for tag ${tag}`;
       })
 
       .addCase(fetchProducts.pending, (state) => {
@@ -264,15 +271,15 @@ const productSlice = createSlice({
         state.error = action.payload || "Failed to fetch products";
       })
       .addCase(toggleTag.pending, (state) => {
-        state.isLoading = true;
+        state.isToggling = true;
         state.error = null;
       })
       .addCase(toggleTag.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isToggling = false;
         const updated = action.payload;
 
         if (updated) {
-          // Update products list
+          // Update main products list
           const idx = state.products.findIndex((p) => p.id === updated.id);
           if (idx !== -1) {
             state.products[idx] = { ...state.products[idx], ...updated };
@@ -280,15 +287,17 @@ const productSlice = createSlice({
             state.products.push(updated);
           }
 
-          // Update productsByTag list if exists
-          const tagIdx = state.productsByTag.findIndex(
-            (p) => p.id === updated.id
-          );
-          if (tagIdx !== -1) {
-            state.productsByTag[tagIdx] = {
-              ...state.productsByTag[tagIdx],
-              ...updated,
-            };
+          // Update productsByTag lists
+          for (const tag in state.productsByTag) {
+            const tagIdx = state.productsByTag[tag].findIndex(
+              (p) => p.id === updated.id
+            );
+            if (tagIdx !== -1) {
+              state.productsByTag[tag][tagIdx] = {
+                ...state.productsByTag[tag][tagIdx],
+                ...updated,
+              };
+            }
           }
 
           // Update currentProduct if it matches
@@ -297,8 +306,9 @@ const productSlice = createSlice({
           }
         }
       })
+
       .addCase(toggleTag.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isToggling = false;
         state.error = action.payload || "Failed to toggle tag";
       });
   },
