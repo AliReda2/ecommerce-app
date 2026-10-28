@@ -8,8 +8,6 @@
 ![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma\&logoColor=white)
 ![License](https://img.shields.io/badge/Source_Code-Private-red)
 
-This repository contains **public documentation** for the **E-Commerce App**, a modern full-stack shopping platform.
-The full source code lives in a **private repo**.
 This documentation summarizes the project's architecture, features, and visuals.
 
 ---
